@@ -3,107 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExamSpeed Math - Pro Learning</title>
+    <title>ExamSpeed Math - Study & Play</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --primary: #22d3ee; --accent: #f472b6; --text: #f8fafc; }
-        * { box-sizing: border-box; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 80px; }
+        :root { --bg: #0f172a; --card: #1e293b; --primary: #22d3ee; --text: #f8fafc; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 70px; }
         
-        /* Bottom Navigation Bar */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #334155; z-index: 1000; }
-        .nav-btn { background: none; border: none; color: #94a3b8; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        /* Navigation */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #111827; display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #334155; z-index: 1000; }
+        .nav-btn { background: none; border: none; color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
         .nav-btn.active { color: var(--primary); }
-        .nav-icon { font-size: 22px; margin-bottom: 3px; }
+        .icon { font-size: 20px; margin-bottom: 3px; }
 
         .container { max-width: 450px; margin: auto; padding: 20px; }
-        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid #334155; }
+        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid #334155; }
         
-        /* Study/Formula View */
-        .formula-item { background: #0f172a; padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; font-family: monospace; }
-        .formula-item span:first-child { color: var(--primary); font-weight: bold; }
+        /* Study View */
+        .formula-box { background: #0f172a; padding: 10px; border-radius: 12px; margin-top: 10px; border-left: 3px solid var(--primary); }
+        .f-row { display: flex; justify-content: space-between; font-family: monospace; font-size: 15px; margin: 5px 0; }
 
         /* Game UI */
-        #ques { font-size: 54px; font-weight: 800; text-align: center; margin: 30px 0; color: #fff; }
-        #ans-input { width: 100%; background: #0f172a; border: 2px solid #334155; border-radius: 16px; color: var(--primary); font-size: 36px; padding: 15px; text-align: center; outline: none; }
-        .timer-bg { width: 100%; height: 8px; background: #334155; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
-        #timer-bar { height: 100%; width: 100%; background: var(--primary); }
+        #ques { font-size: 50px; font-weight: 800; text-align: center; margin: 20px 0; }
+        #ans { width: 100%; background: #0f172a; border: 2px solid #334155; border-radius: 15px; color: var(--primary); font-size: 32px; padding: 15px; text-align: center; outline: none; }
+        .t-bg { width: 100%; height: 8px; background: #334155; border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
+        #t-bar { height: 100%; width: 100%; background: var(--primary); transition: width 0.1s linear; }
 
-        .btn-start { background: var(--primary); color: #0f172a; border: none; padding: 18px; border-radius: 15px; font-weight: 800; width: 100%; cursor: pointer; font-size: 18px; }
-        .hidden { display: none; }
-        h2 { margin: 0 0 10px 0; color: var(--primary); font-size: 22px; }
+        .btn-go { background: var(--primary); color: #0f172a; border: none; padding: 15px; border-radius: 12px; font-weight: 800; width: 100%; cursor: pointer; font-size: 16px; }
+        .hidden { display: none !important; }
+        h2 { margin: 0 0 10px 0; color: var(--primary); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="home-tab">
+    <div id="home-sec">
         <div class="card">
             <h2>Dashboard</h2>
-            <p style="color: #94a3b8;">Hello, Future Officer! 👋</p>
-            <div style="display: flex; justify-content: space-between; margin-top: 25px;">
+            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
                 <div style="text-align: center;">
-                    <div style="font-size: 28px; font-weight: 800;" id="high-score">0</div>
-                    <div style="font-size: 10px; color: #64748b; text-transform: uppercase;">Best Streak</div>
+                    <div style="font-size: 24px; font-weight: 800;" id="best">0</div>
+                    <div style="font-size: 10px; color: #64748b;">BEST STREAK</div>
                 </div>
                 <div style="text-align: center;">
-                    <div style="font-size: 28px; font-weight: 800;" id="total-solved">0</div>
-                    <div style="font-size: 10px; color: #64748b; text-transform: uppercase;">Total Solved</div>
+                    <div style="font-size: 24px; font-weight: 800;" id="total">0</div>
+                    <div style="font-size: 10px; color: #64748b;">TOTAL SOLVED</div>
                 </div>
             </div>
         </div>
         <div class="card">
-            <h3>Login Details</h3>
-            <p style="font-size: 14px; color: #94a3b8;">System: Offline Local Mode (Security High)</p>
-            <button class="btn-start" style="font-size: 14px; padding: 10px;" onclick="alert('Profile linked to this device!')">Sync Profile</button>
+            <h3>Student Profile</h3>
+            <p id="user-status" style="font-size: 14px; color: #94a3b8;">Status: Offline Mode</p>
+            <button class="btn-go" style="padding: 10px; font-size: 13px;" onclick="setName()">Set Student Name</button>
         </div>
     </div>
 
-    <div id="study-tab" class="hidden">
-        <h2>Study Material 📚</h2>
+    <div id="study-sec" class="hidden">
+        <h2>Study Notes 📚</h2>
         <div class="card">
-            <h4 style="color:var(--accent)">Algebra Identities</h4>
-            <div class="formula-item"><span>(a+b)²</span><span>a²+b²+2ab</span></div>
-            <div class="formula-item"><span>(a-b)²</span><span>a²+b²-2ab</span></div>
-            <div class="formula-item"><span>a²-b²</span><span>(a-b)(a+b)</span></div>
+            <h4 style="margin:0; color:var(--primary)">Trigonometry Basics</h4>
+            <div class="formula-box">
+                <div class="f-row"><span>sin 0°</span><span>0</span></div>
+                <div class="f-row"><span>sin 30°</span><span>1/2</span></div>
+                <div class="f-row"><span>sin 90°</span><span>1</span></div>
+            </div>
         </div>
         <div class="card">
-            <h4 style="color:var(--primary)">Trigonometry Table (Sin)</h4>
-            <div class="formula-item"><span>sin 0°</span><span>0</span></div>
-            <div class="formula-item"><span>sin 30°</span><span>1/2</span></div>
-            <div class="formula-item"><span>sin 90°</span><span>1</span></div>
-        </div>
-        <div class="card">
-            <h4 style="color:var(--accent)">Important Squares</h4>
-            <div id="squares-list"></div>
+            <h4 style="margin:0; color:var(--primary)">Squares (11-20)</h4>
+            <div class="formula-box" id="sq-list"></div>
         </div>
     </div>
 
-    <div id="practice-tab" class="hidden">
-        <div id="game-intro">
+    <div id="game-sec" class="hidden">
+        <div id="menu">
             <div class="card" style="text-align: center;">
                 <h2>Practice Arena</h2>
-                <p style="color: #94a3b8; margin-bottom: 25px;">Solve as many as you can before time runs out!</p>
-                <button class="btn-start" onclick="startGame()">START SPRINT ⚡</button>
+                <p style="color:#94a3b8">Ready to test your speed?</p>
+                <button class="btn-go" onclick="startGame()">START GAME ⚡</button>
             </div>
         </div>
-        <div id="game-play" class="hidden">
-            <div class="score-label" style="text-align:center; font-weight:bold; margin-bottom:10px;">Current Score: <span id="cur-score">0</span></div>
-            <div class="timer-bg"><div id="timer-bar"></div></div>
+        <div id="play" class="hidden">
+            <div style="text-align:center; margin-bottom:10px;">Score: <span id="score">0</span></div>
+            <div class="t-bg"><div id="t-bar"></div></div>
             <div class="card">
                 <div id="ques">--</div>
-                <input type="number" id="ans-input" placeholder="?" inputmode="numeric" autocomplete="off">
+                <input type="number" id="ans" placeholder="?" inputmode="numeric">
             </div>
         </div>
     </div>
 </div>
 
-<nav class="bottom-nav">
-    <div class="nav-btn active" onclick="showTab('home')" id="btn-home">
-        <span class="nav-icon">🏠</span><span>Dashboard</span>
-    </div>
-    <div class="nav-btn" onclick="showTab('study')" id="btn-study">
-        <span class="nav-icon">📖</span><span>Study</span>
-    </div>
-    <div class="nav-btn" onclick="showTab('practice')" id="btn-practice">
-                                           
+<nav class="nav-bar">
+    <button class="nav-btn active" onclick="tab('home')" id="n-home"><span class="icon">🏠</span>Home</button>
+    <button class="nav-btn" onclick="tab('study')" id="n-study"><span class="icon">📖</span>Study</button>
+    <button class="nav-btn" onclick="tab('game')" id="n-game"><span class="icon">🎯</span>Practice</button>
+</nav>
+
+<script>
+    let score = 0, best = localStorage.getItem('es_best') || 0, total = localStorage.getItem('es_total') || 0;
+    let timer, timeLeft, curAns;
+
+    function refreshStats() {
+        document.getElementById('best').innerText = best;
+        document.getElementById('total').innerText = total;
+        let name = localStorage.getItem('es_name') || "Offline Mode";
+        document.getElementById('user-status').innerText = "Student: " + name;
+    }
+    refreshStats();
+
+    function tab(name) {
+        document.getElementById('home-sec').classList.add('hidden');
+        document.getElementById('study-sec').classList.add('hidden');
+        document.getElementById('game-sec').classList.add('hidden');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+        document.getElementById(name + '-sec').classList.remove('hidden');
+        document.getElementById('n-' + name).classList.add('active');
+        if(name !== 'game') resetGame();
+    }
+
+    function setName() {
+        let n = prompt("Enter Student Name:");
+        if(n) { localStorage.setItem('es_name', n); refreshStats(); }
+    }
+
+    // Study: Squares
+    let s = ""; for(let i=11; i<=20; i++) s += `<div class="f-row"><span>${i}²</span><span>${i*i}</span></div>`;
+    document.getElementById('sq-list').innerHTML = s;
+
+    // Game
+    function startGame() {
+        document.getElementById('menu').classList.add('hidden');
+        document.getElementById('play').classList.remove('hidden');
+        score = 0; document.getElementById('score').innerText = score;
+        next();
+    }
+
+    function resetGame() {
+        clearInterval(timer);
+        document.getElementById('menu').classList.remove('hidden');
+        document.getElementById('play').classList.add('hidden');
+    }
+
+    function next() {
+        let n1 = Math.floor(Math.random()*20)+5, n2 = Math.floor(Math.random()*20)+5;
+        curAns = n1 + n2;
+        document.getElementById('ques').innerText = n1 + " + " + n2;
+        document.getElementById('ans').value = '';
+        document.getElementById('ans').focus();
+        timeLeft = 100; startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft -= (1 + (score * 0.05));
+            document.getElementById('t-bar').style.width = timeLeft + "%";
+            if(timeLeft <= 0) {
+                clearInterval(timer);
+                alert("Game Over! Score: " + score);
+                total = parseInt(total) + score;
+                if(score > best) best = score;
+                localStorage.setItem('es_best', best);
+                localStorage.setItem('es_total', total);
+                refreshStats(); resetGame();
+            }
+        }, 100);
+    }
+
+    document.getElementById('ans').addEventListener('input', function() {
+        if(parseInt(this.value) === curAns) {
+            score++; document.getElementById('score').innerText = score;
+            next();
+        }
+    });
+</script>
+</body>
+</html>
