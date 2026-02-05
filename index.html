@@ -10,16 +10,19 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 80px; }
         
+        /* Navigation Bar */
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: #0f172a; display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #1e293b; z-index: 1000; }
-        .nav-btn { background: none; border: none; color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; text-decoration: none; }
+        .nav-btn { background: none; border: none; color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
         .nav-btn.active { color: var(--primary); }
 
         .container { max-width: 450px; margin: auto; padding: 20px; }
         .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid #1e293b; }
         
+        /* Profile Section */
         .profile-pic { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
         .auth-input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #334155; background: #020617; color: white; outline: none; }
         
+        /* Study Material */
         .formula-header { background: #1e293b; color: var(--primary); padding: 8px; border-radius: 8px; font-weight: 800; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; }
         .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1e293b; font-size: 14px; font-family: monospace; }
         
@@ -32,9 +35,9 @@
 <div class="container">
     <div id="sec-home">
         <div class="card" id="login-box">
-            <h2>Student Login 🔒</h2>
+            <h2 style="margin-top:0">Student Login 🔒</h2>
             <input type="number" id="phone" class="auth-input" placeholder="Mobile Number">
-            <input type="number" id="otp" class="auth-input hidden" placeholder="Enter OTP (1234)">
+            <input type="number" id="otp" class="auth-input hidden" placeholder="OTP (Enter 1234)">
             <button class="btn-action" id="btn-auth" onclick="handleLogin()">Get OTP</button>
         </div>
 
@@ -42,8 +45,8 @@
             <div style="display: flex; align-items: center; gap: 15px;">
                 <img id="u-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="profile-pic" onclick="document.getElementById('file-in').click()">
                 <div>
-                    <h3 id="u-name" style="margin:0">Aspirant</h3>
-                    <p style="font-size:12px; color:var(--primary)">SSC/Railway Candidate</p>
+                    <h3 id="u-name" style="margin:0">Student</h3>
+                    <p style="font-size:12px; color:var(--primary); margin:0">Aspirant Profile</p>
                 </div>
             </div>
             <input type="file" id="file-in" class="hidden" accept="image/*" onchange="loadImg(this)">
@@ -54,4 +57,56 @@
         </div>
     </div>
 
+    <div id="sec-study" class="hidden">
+        <h2 style="margin-top:0">Study Material 📚</h2>
+        <div class="card">
+            <div class="formula-header">Maths Quick Revision</div>
+            <div class="row"><span>(a+b)²</span><span>a²+b²+2ab</span></div>
+            <div class="row"><span>sin 30°</span><span>1/2</span></div>
+            <div class="row"><span>Circle Area</span><span>πr²</span></div>
+        </div>
+        <div class="card">
+            <div class="formula-header">Tables (12-15)</div>
+            <div id="table-list"></div>
+        </div>
+    </div>
+
+    <div id="sec-game" class="hidden">
+        <div class="card" style="text-align:center">
+            <h2 id="q-box" style="font-size:45px; margin:20px 0;">Ready?</h2>
+            <input type="number" id="g-input" class="auth-input hidden" placeholder="Answer here" inputmode="numeric">
+            <button class="btn-action" id="btn-start" onclick="startGame()">Start Practice ⚡</button>
+        </div>
+    </div>
+</div>
+
+<nav class="nav-bar">
+    <button class="nav-btn active" id="n-home" onclick="nav('home')"><span>🏠</span>Home</button>
+    <button class="nav-btn" id="n-study" onclick="nav('study')"><span>📖</span>Study</button>
+    <button class="nav-btn" id="n-game" onclick="nav('game')"><span>🎯</span>Practice</button>
+</nav>
+
+<script>
+    let score = 0, curAns;
+
+    function nav(id) {
+        document.getElementById('sec-home').classList.add('hidden');
+        document.getElementById('sec-study').classList.add('hidden');
+        document.getElementById('sec-game').classList.add('hidden');
+        
+        document.getElementById('n-home').classList.remove('active');
+        document.getElementById('n-study').classList.remove('active');
+        document.getElementById('n-game').classList.remove('active');
+        
+        document.getElementById('sec-' + id).classList.remove('hidden');
+        document.getElementById('n-' + id).classList.add('active');
+    }
+
+    function handleLogin() {
+        let phone = document.getElementById('phone');
+        let otp = document.getElementById('otp');
+        let btn = document.getElementById('btn-auth');
+        
+        if(otp.classList.contains('hidden')) {
+            if(phone.value.length < 10)
     
