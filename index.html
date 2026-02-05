@@ -3,185 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExamSpeed Math - Become a Human Calculator</title>
+    <title>ExamSpeed Math - Professional Trainer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        :root {
-            --bg: #0f172a;
-            --accent: #10b981;
-            --secondary: #3b82f6;
-            --error: #ef4444;
-            --text: #f8fafc;
-        }
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            text-align: center; 
-            margin: 0; 
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .app-card {
-            background: #1e293b;
-            padding: 2rem;
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            width: 90%;
-            max-width: 400px;
-            border: 1px solid #334155;
-        }
-        .header { font-size: 1.5rem; font-weight: 800; color: var(--accent); letter-spacing: -1px; margin-bottom: 1rem; }
-        .stats { display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-weight: 600; font-size: 0.9rem; opacity: 0.8; }
-        .question-box {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin: 1.5rem 0;
-            color: var(--text);
-            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .timer-container {
-            width: 100%;
-            height: 8px;
-            background: #334155;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-            overflow: hidden;
-        }
-        #timer-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--secondary), var(--accent));
-            width: 100%;
-            transition: width 0.1s linear;
-        }
-        input {
-            background: #0f172a;
-            border: 2px solid #334155;
-            border-radius: 12px;
-            color: white;
-            font-size: 2rem;
-            padding: 12px;
-            width: 80%;
-            outline: none;
-            transition: 0.3s;
-            text-align: center;
-        }
-        input:focus { border-color: var(--secondary); box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
-        .btn-start {
-            background: var(--accent);
-            color: #064e3b;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 1rem;
-        }
-        .btn-start:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4); }
+        :root { --bg: #0f172a; --accent: #10b981; --secondary: #3b82f6; --text: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); text-align: center; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .app-card { background: #1e293b; padding: 2rem; border-radius: 24px; width: 90%; max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid #334155; }
+        .header { font-size: 1.8rem; font-weight: 800; color: var(--accent); margin-bottom: 0.5rem; }
+        .mode-btn { background: #334155; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; margin: 10px 0; font-size: 1.1rem; cursor: pointer; transition: 0.3s; font-weight: 600; }
+        .mode-btn:hover { background: var(--secondary); transform: scale(1.02); }
+        .question-box { font-size: 3.5rem; font-weight: 800; margin: 1rem 0; color: var(--text); }
+        input { background: #0f172a; border: 2px solid #334155; border-radius: 12px; color: white; font-size: 2rem; padding: 12px; width: 80%; text-align: center; outline: none; }
+        .timer-container { width: 100%; height: 8px; background: #334155; border-radius: 10px; margin: 1.5rem 0; overflow: hidden; }
+        #timer-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--accent)); width: 100%; }
+        .hidden { display: none; }
+        .back-btn { background: none; border: none; color: #94a3b8; cursor: pointer; margin-top: 20px; text-decoration: underline; }
     </style>
 </head>
 <body>
 
 <div class="app-card animate__animated animate__fadeIn">
-    <div class="header">ExamSpeed Math</div>
-    <div class="stats">
-        <span>SCORE: <span id="score">0</span></span>
-        <span>BEST: <span id="highscore">0</span></span>
+    <div id="menu-screen">
+        <div class="header">ExamSpeed Math 🚀</div>
+        <p style="color:#94a3b8">Apni calculation speed ko boost karein</p>
+        <button class="mode-btn" onclick="startMode('add')">➕ Addition Sprint</button>
+        <button class="mode-btn" onclick="startMode('mul')">✖️ Multiplication Mastery</button>
+        <button class="mode-btn" onclick="startMode('sq')">🔢 Squares (1-50)</button>
+        <div style="margin-top:20px; font-size:0.8rem; color:#64ffda">Next Update: Daily Leaderboard</div>
     </div>
 
-    <div class="timer-container">
-        <div id="timer-fill"></div>
-    </div>
-
-    <div id="game-ui" style="display:none;">
-        <div class="question-box animate__animated animate__pulse animate__infinite" id="ques">24 + 13</div>
-        <input type="number" id="ans" placeholder="?" autocomplete="off">
-    </div>
-
-    <div id="start-ui">
-        <h2 style="margin-top:0">Ready to Race?</h2>
-        <p style="color:#94a3b8; font-size:0.9rem">Quickly solve additions to beat the clock.</p>
-        <button class="btn-start" onclick="initGame()">START SPRINT</button>
+    <div id="game-screen" class="hidden">
+        <div id="game-title" style="font-weight:bold; color:var(--accent)">MODE</div>
+        <div class="timer-container"><div id="timer-fill"></div></div>
+        <div class="question-box" id="ques">0 + 0</div>
+        <input type="number" id="ans" placeholder="?" pattern="\d*">
+        <br>
+        <button class="back-btn" onclick="showMenu()">← Back to Menu</button>
     </div>
 </div>
 
 <script>
-    let score = 0;
-    let highscore = localStorage.getItem('es_highscore') || 0;
-    let timeLeft = 100;
-    let timerId;
-    let currentAns;
-    
-    document.getElementById('highscore').innerText = highscore;
+    let score = 0, timeLeft = 100, timerId, currentAns, currentMode;
 
-    // Audio Context for Professional Sounds (No files needed)
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSound(freq, type, duration) {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-    }
-
-    function initGame() {
-        document.getElementById('start-ui').style.display = 'none';
-        document.getElementById('game-ui').style.display = 'block';
+    function startMode(mode) {
+        currentMode = mode;
+        document.getElementById('menu-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+        document.getElementById('game-title').innerText = mode.toUpperCase() + " SPRINT";
         score = 0;
-        document.getElementById('score').innerText = score;
-        nextLevel();
-        document.getElementById('ans').focus();
+        nextQ();
     }
 
-    function nextLevel() {
-        let n1 = Math.floor(Math.random() * (15 + score)) + 2; 
-        let n2 = Math.floor(Math.random() * (15 + score)) + 2;
-        currentAns = n1 + n2;
-        document.getElementById('ques').innerText = `${n1} + ${n2}`;
+    function showMenu() {
+        clearInterval(timerId);
+        document.getElementById('menu-screen').classList.remove('hidden');
+        document.getElementById('game-screen').classList.add('hidden');
+    }
+
+    function nextQ() {
+        let n1, n2;
+        if(currentMode === 'add') {
+            n1 = Math.floor(Math.random() * 50) + 10;
+            n2 = Math.floor(Math.random() * 50) + 10;
+            currentAns = n1 + n2;
+            document.getElementById('ques').innerText = `${n1} + ${n2}`;
+        } else if(currentMode === 'mul') {
+            n1 = Math.floor(Math.random() * 15) + 2;
+            n2 = Math.floor(Math.random() * 12) + 2;
+            currentAns = n1 * n2;
+            document.getElementById('ques').innerText = `${n1} × ${n2}`;
+        } else {
+            n1 = Math.floor(Math.random() * 50) + 1;
+            currentAns = n1 * n1;
+            document.getElementById('ques').innerText = `${n1}²`;
+        }
         document.getElementById('ans').value = '';
+        document.getElementById('ans').focus();
         timeLeft = 100;
-        resetTimer();
+        startTimer();
     }
 
-    function resetTimer() {
+    function startTimer() {
         clearInterval(timerId);
         timerId = setInterval(() => {
-            timeLeft -= (1 + (score * 0.05)); // Harder as you score more
+            timeLeft -= (0.8 + (score * 0.02));
             document.getElementById('timer-fill').style.width = timeLeft + "%";
-            if(timeLeft <= 0) gameOver();
+            if(timeLeft <= 0) {
+                clearInterval(timerId);
+                alert("Game Over! Score: " + score);
+                showMenu();
+            }
         }, 100);
     }
 
     document.getElementById('ans').addEventListener('input', function() {
         if(parseInt(this.value) === currentAns) {
             score++;
-            playSound(800, 'sine', 0.1); // Success Sound
-            document.getElementById('score').innerText = score;
-            nextLevel();
+            nextQ();
         }
     });
-
-    function gameOver() {
-        clearInterval(timerId);
-        playSound(200, 'square', 0.3); // Game Over Sound
-        alert("Time's Up! Score: " + score);
-        if(score > highscore) {
-            localStorage.setItem('es_highscore', score);
-            highscore = score;
-            document.getElementById('highscore').innerText = highscore;
-        }
-        location.reload();
-    }
 </script>
-
 </body>
 </html>
