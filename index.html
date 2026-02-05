@@ -2,72 +2,58 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ExamSpeed Math - Study & Play</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #020617; --card: #0f172a; --primary: #38bdf8; --accent: #f472b6; --text: #f1f5f9; }
-        * { box-sizing: border-box; transition: 0.3s; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+        :root { --bg: #0f172a; --card: #1e293b; --primary: #22d3ee; --accent: #f472b6; --text: #f8fafc; }
+        * { box-sizing: border-box; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 70px; overflow-x: hidden; }
         
-        .navbar { background: var(--card); padding: 15px; display: flex; justify-content: space-around; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #1e293b; }
-        .nav-item { cursor: pointer; font-size: 14px; font-weight: 600; color: #94a3b8; }
-        .nav-item.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        /* Bottom Navigation */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #334155; z-index: 1000; }
+        .nav-btn { background: none; border: none; color: #94a3b8; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .nav-btn.active { color: var(--primary); }
+        .nav-icon { font-size: 20px; margin-bottom: 4px; }
 
         .container { max-width: 450px; margin: auto; padding: 20px; }
-        .card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1px solid #1e293b; }
+        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid #334155; }
         
-        /* Formula Styles */
-        .formula-list { text-align: left; }
-        .formula-item { background: #1e293b; padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .formula-item span:first-child { color: var(--accent); font-weight: bold; }
+        /* Study Material Section */
+        .formula-card { background: #0f172a; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
+        .formula-title { font-weight: 800; color: var(--primary); margin-bottom: 8px; font-size: 14px; }
+        .formula-row { display: flex; justify-content: space-between; font-family: monospace; font-size: 16px; margin: 5px 0; }
 
-        /* Login Simulation */
-        input.auth { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #334155; background: #020617; color: white; }
-        
-        .btn-action { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 15px; color: #020617; font-weight: 800; cursor: pointer; }
+        /* Practice Game Section */
+        .game-box { text-align: center; }
+        #ques { font-size: 48px; font-weight: 800; margin: 20px 0; color: #fff; }
+        #ans-input { width: 100%; background: #0f172a; border: 2px solid #334155; border-radius: 15px; color: var(--primary); font-size: 32px; padding: 15px; text-align: center; outline: none; }
+        .timer-bg { width: 100%; height: 6px; background: #334155; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); }
+
+        .btn-start { background: var(--primary); color: #0f172a; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 800; width: 100%; cursor: pointer; font-size: 16px; }
         .hidden { display: none; }
-        .math-text { font-family: 'serif'; font-style: italic; color: #38bdf8; }
+        h2 { margin-top: 0; color: var(--primary); }
     </style>
 </head>
 <body>
 
-<div class="navbar">
-    <div class="nav-item active" id="nav-home" onclick="showTab('home')">Home</div>
-    <div class="nav-item" id="nav-study" onclick="showTab('study')">Study</div>
-    <div class="nav-item" id="nav-game" onclick="showTab('game-menu')">Practice</div>
-</div>
-
 <div class="container">
-    <div id="tab-home" class="tab-content">
-        <div class="card" id="login-form">
-            <h2>Student Login</h2>
-            <input type="text" id="stu-name" class="auth" placeholder="Enter Name">
-            <input type="password" id="stu-pass" class="auth" placeholder="Enter Password">
-            <button class="btn-action" onclick="saveProfile()">Login & Setup</button>
-        </div>
-        <div class="card hidden" id="profile-card">
-            <h3>Welcome, <span id="display-name" style="color:var(--primary)">User</span>! 👋</h3>
-            <p style="font-size: 14px; color: #94a3b8;">Target: SSC/Banking Exams</p>
-            <hr style="border: 0.5px solid #1e293b;">
-            <div style="display:flex; justify-content: space-between;">
-                <span>Rank: #1240</span>
-                <span>Points: 450</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="tab-study" class="tab-content hidden">
-        <h2>Formula Vault 📚</h2>
+    <div id="home-tab">
         <div class="card">
-            <h4>Trigonometry Basics</h4>
-            <div class="formula-list">
-                <div class="formula-item"><span>sin²θ + cos²θ</span><span>= 1</span></div>
-                <div class="formula-item"><span>1 + tan²θ</span><span>= sec²θ</span></div>
-                <div class="formula-item"><span>sin(2θ)</span><span>= 2sinθcosθ</span></div>
+            <h2>My Dashboard</h2>
+            <p style="color: #94a3b8;">Welcome back, Future Officer!</p>
+            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 24px; font-weight: 800;" id="high-score">0</div>
+                    <div style="font-size: 11px; color: #64748b;">BEST SCORE</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 24px; font-weight: 800;" id="total-solved">0</div>
+                    <div style="font-size: 11px; color: #64748b;">QUESTIONS SOLVED</div>
+                </div>
             </div>
         </div>
         <div class="card">
-            <h4>Squares (Quick Reference)</h4>
-            <div class="formula-list" id="squares
+            <h3>Daily
                 
