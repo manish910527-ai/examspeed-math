@@ -3,24 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExamSpeed Math - Super App</title>
+    <title>ExamSpeed Math - Official</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #020617; --card: #0f172a; --primary: #38bdf8; --accent: #f472b6; --text: #f1f5f9; }
-        * { box-sizing: border-box; transition: 0.3s; -webkit-tap-highlight-color: transparent; }
+        :root { --bg: #020617; --card: #0f172a; --primary: #38bdf8; --text: #f1f5f9; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 80px; }
         
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: #0f172a; display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #1e293b; z-index: 1000; }
-        .nav-btn { background: none; border: none; color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .nav-btn { background: none; border: none; color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; text-decoration: none; }
         .nav-btn.active { color: var(--primary); }
 
         .container { max-width: 450px; margin: auto; padding: 20px; }
-        .card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1px solid #1e293b; }
+        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid #1e293b; }
         
-        /* Profile & Photo */
-        .profile-pic { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; margin-bottom: 10px; }
-        .auth-input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #334155; background: #020617; color: white; outline: none; }
+        .profile-pic { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+        .auth-input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #334155; background: #020617; color: white; outline: none; }
         
-        /* Study Material */
-        .formula-group { margin-top:
-            
+        .formula-header { background: #1e293b; color: var(--primary); padding: 8px; border-radius: 8px; font-weight: 800; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; }
+        .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1e293b; font-size: 14px; font-family: monospace; }
+        
+        .btn-action { width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 12px; color: #020617; font-weight: 800; cursor: pointer; margin-top: 10px; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="sec-home">
+        <div class="card" id="login-box">
+            <h2>Student Login 🔒</h2>
+            <input type="number" id="phone" class="auth-input" placeholder="Mobile Number">
+            <input type="number" id="otp" class="auth-input hidden" placeholder="Enter OTP (1234)">
+            <button class="btn-action" id="btn-auth" onclick="handleLogin()">Get OTP</button>
+        </div>
+
+        <div class="card hidden" id="profile-box">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img id="u-img" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="profile-pic" onclick="document.getElementById('file-in').click()">
+                <div>
+                    <h3 id="u-name" style="margin:0">Aspirant</h3>
+                    <p style="font-size:12px; color:var(--primary)">SSC/Railway Candidate</p>
+                </div>
+            </div>
+            <input type="file" id="file-in" class="hidden" accept="image/*" onchange="loadImg(this)">
+            <div style="margin-top:20px; display:flex; justify-content:space-between; font-size:13px; color:#94a3b8">
+                <span>Total Solved: <b id="stat-total" style="color:white">0</b></span>
+                <span>Best Streak: <b id="stat-best" style="color:white">0</b></span>
+            </div>
+        </div>
+    </div>
+
+    
