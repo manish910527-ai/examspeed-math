@@ -2,136 +2,143 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExamSpeed Math - Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamSpeed Math - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --primary: #22d3ee;
-            --accent: #818cf8;
-            --success: #4ade80;
-            --text: #f8fafc;
-        }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); 
-            margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden;
-        }
-        .app-container {
-            width: 90%; max-width: 400px; background: var(--card); padding: 30px; 
-            border-radius: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1); text-align: center;
-        }
-        .brand-title { color: var(--primary); font-size: 24px; font-weight: 800; margin-bottom: 5px; letter-spacing: 1px; }
-        .score-row { display: flex; justify-content: space-between; margin: 20px 0; font-weight: 600; font-size: 14px; color: #94a3b8; }
-        .timer-bg { width: 100%; height: 6px; background: #334155; border-radius: 10px; margin-bottom: 30px; overflow: hidden; }
-        #timer-bar { height: 100%; width: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 0.1s linear; }
-        .ques-box { font-size: 52px; font-weight: 800; margin: 20px 0; color: #fff; text-shadow: 0 0 20px rgba(34, 211, 238, 0.3); }
-        input { 
-            width: 100%; background: #0f172a; border: 2px solid #334155; border-radius: 16px; 
-            color: var(--primary); font-size: 32px; padding: 15px; text-align: center; outline: none; transition: 0.3s;
-        }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(34, 211, 238, 0.2); }
-        .mode-btn { 
-            width: 100%; padding: 18px; margin: 10px 0; border: none; border-radius: 16px; 
-            background: #334155; color: white; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.2s;
-        }
-        .mode-btn:hover { background: var(--primary); color: #0f172a; transform: translateY(-2px); }
+        :root { --bg: #030712; --card: #111827; --primary: #22d3ee; --gold: #fbbf24; --text: #f9fafb; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .app-container { width: 95%; max-width: 420px; background: var(--card); border-radius: 28px; padding: 25px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); border: 1px solid #1f2937; }
+        
+        /* Dashboard Styles */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .stat-card { background: #1f2937; padding: 15px; border-radius: 18px; border: 1px solid #374151; }
+        .stat-val { display: block; font-size: 20px; font-weight: bold; color: var(--primary); }
+        .stat-label { font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; }
+
+        .level-badge { background: linear-gradient(45deg, var(--primary), #818cf8); padding: 10px; border-radius: 12px; margin-bottom: 20px; font-weight: bold; font-size: 14px; }
+        
+        /* Game Styles */
+        .ques-box { font-size: 48px; font-weight: 800; margin: 30px 0; }
+        input { width: 100%; background: #030712; border: 2px solid #374151; border-radius: 16px; color: var(--primary); font-size: 32px; padding: 15px; text-align: center; outline: none; }
+        
+        .btn-main { width: 100%; padding: 18px; border-radius: 16px; border: none; background: var(--primary); color: #030712; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn-main:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(34, 211, 238, 0.4); }
         .hidden { display: none; }
-        #status-msg { height: 20px; font-size: 14px; margin-top: 10px; font-weight: 600; }
+        
+        .progress-container { width: 100%; height: 6px; background: #374151; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #bar { height: 100%; width: 100%; background: var(--primary); }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div id="menu">
-        <div class="brand-title">EXAM SPEED MATH</div>
-        <p style="color: #64748b; font-size: 13px; margin-bottom: 30px;">Sharpen Your Calculation Speed</p>
-        <button class="mode-btn" onclick="start('add')">Addition Sprint</button>
-        <button class="mode-btn" onclick="start('mul')">Multiplication Pro</button>
-        <button class="mode-btn" onclick="start('sq')">Square Mastery</button>
-        <p style="margin-top: 20px; color: #475569; font-size: 11px;">PRO VERSION 1.0</p>
+    <div id="dashboard">
+        <div style="text-align: left;">
+            <div class="level-badge" id="rank-tag">LEVEL: ROOKIE 🛡️</div>
+            <h1 style="margin: 0; font-size: 28px;">Welcome, Pro!</h1>
+            <p style="color: #9ca3af; font-size: 14px;">Tayaar ho aaj ka record todne ke liye?</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card"><span class="stat-val" id="best-score">0</span><span class="stat-label">Best Score</span></div>
+            <div class="stat-card"><span class="stat-val" id="total-solved">0</span><span class="stat-label">Total Solved</span></div>
+        </div>
+
+        <button class="btn-main" onclick="showModes()">START CHALLENGE</button>
+        <p style="font-size: 12px; color: #4b5563; margin-top: 20px;">ExamSpeed Math v2.5 - Advanced Analytics</p>
+    </div>
+
+    <div id="modes" class="hidden">
+        <h2 style="margin-bottom: 20px;">Choose Level</h2>
+        <button class="btn-main" style="margin-bottom: 10px; background: #10b981;" onclick="startGame('basic')">BASIC (Easy)</button>
+        <button class="btn-main" style="margin-bottom: 10px; background: #f59e0b;" onclick="startGame('inter')">INTERMEDIATE (Medium)</button>
+        <button class="btn-main" style="background: #ef4444;" onclick="startGame('adv')">ADVANCED (Legend)</button>
+        <button onclick="showDashboard()" style="background:none; border:none; color:#9ca3af; margin-top:15px; cursor:pointer;">← Back</button>
     </div>
 
     <div id="game" class="hidden">
-        <div class="score-row">
-            <span>SCORE: <span id="cur-score" style="color:white">0</span></span>
-            <span>BEST: <span id="best-score" style="color:white">0</span></span>
+        <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px;">
+            <span>SCORE: <b id="cur-score">0</b></span>
+            <span id="level-name">BASIC</span>
         </div>
-        <div class="timer-bg"><div id="timer-bar"></div></div>
+        <div class="progress-container"><div id="bar"></div></div>
         <div class="ques-box" id="ques-display">--</div>
-        <input type="number" id="user-input" placeholder="?" inputmode="numeric">
-        <div id="status-msg"></div>
+        <input type="number" id="user-ans" placeholder="?" inputmode="numeric">
     </div>
 </div>
 
 <script>
-    let score = 0, highscore = localStorage.getItem('es_math_best') || 0, timer, timeLeft, currentAns, mode;
-    document.getElementById('best-score').innerText = highscore;
+    let score = 0, totalSolved = localStorage.getItem('es_total') || 0, highscore = localStorage.getItem('es_best') || 0;
+    let timer, timeLeft, currentAns, currentMode;
 
-    function start(m) {
-        mode = m;
-        document.getElementById('menu').classList.add('hidden');
+    // Load Stats
+    function updateDashboard() {
+        document.getElementById('best-score').innerText = highscore;
+        document.getElementById('total-solved').innerText = totalSolved;
+        if(totalSolved > 100) document.getElementById('rank-tag').innerText = "LEVEL: WARRIOR ⚔️";
+        if(totalSolved > 500) document.getElementById('rank-tag').innerText = "LEVEL: MATH GENIUS 🧠";
+    }
+    updateDashboard();
+
+    function showModes() {
+        document.getElementById('dashboard').classList.add('hidden');
+        document.getElementById('modes').classList.remove('hidden');
+    }
+
+    function showDashboard() {
+        document.getElementById('modes').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        updateDashboard();
+    }
+
+    function startGame(mode) {
+        currentMode = mode;
+        document.getElementById('modes').classList.add('hidden');
         document.getElementById('game').classList.remove('hidden');
+        document.getElementById('level-name').innerText = mode.toUpperCase();
         score = 0;
-        document.getElementById('cur-score').innerText = 0;
         nextQuest();
     }
 
     function nextQuest() {
         let n1, n2;
-        if(mode === 'add') {
-            n1 = Math.floor(Math.random() * 40) + 10;
-            n2 = Math.floor(Math.random() * 40) + 10;
-            currentAns = n1 + n2;
-            document.getElementById('ques-display').innerText = n1 + "+" + n2;
-        } else if(mode === 'mul') {
-            n1 = Math.floor(Math.random() * 12) + 2;
-            n2 = Math.floor(Math.random() * 12) + 2;
-            currentAns = n1 * n2;
-            document.getElementById('ques-display').innerText = n1 + "×" + n2;
-        } else {
-            n1 = Math.floor(Math.random() * 30) + 2;
-            currentAns = n1 * n1;
-            document.getElementById('ques-display').innerText = n1 + "²";
-        }
-        document.getElementById('user-input').value = '';
-        document.getElementById('user-input').focus();
+        if(currentMode === 'basic') { n1 = r(1, 20); n2 = r(1, 20); }
+        else if(currentMode === 'inter') { n1 = r(20, 100); n2 = r(20, 100); }
+        else { n1 = r(100, 999); n2 = r(100, 999); }
+        
+        currentAns = n1 + n2;
+        document.getElementById('ques-display').innerText = n1 + "+" + n2;
+        document.getElementById('user-ans').value = '';
+        document.getElementById('user-ans').focus();
         timeLeft = 100;
-        initTimer();
+        startTimer();
     }
 
-    function initTimer() {
+    function r(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+    function startTimer() {
         clearInterval(timer);
         timer = setInterval(() => {
-            timeLeft -= (0.7 + (score * 0.05));
-            document.getElementById('timer-bar').style.width = timeLeft + "%";
-            if(timeLeft <= 0) endGame();
+            timeLeft -= (currentMode === 'basic' ? 0.8 : currentMode === 'inter' ? 1.2 : 2);
+            document.getElementById('bar').style.width = timeLeft + "%";
+            if(timeLeft <= 0) {
+                alert("Time Up! Score: " + score);
+                totalSolved = parseInt(totalSolved) + score;
+                localStorage.setItem('es_total', totalSolved);
+                if(score > highscore) localStorage.setItem('es_best', score);
+                location.reload();
+            }
         }, 100);
     }
 
-    document.getElementById('user-input').addEventListener('input', function() {
+    document.getElementById('user-ans').addEventListener('input', function() {
         if(parseInt(this.value) === currentAns) {
             score++;
             document.getElementById('cur-score').innerText = score;
-            document.getElementById('status-msg').innerText = "CORRECT!";
-            document.getElementById('status-msg').style.color = "#4ade80";
-            setTimeout(() => { document.getElementById('status-msg').innerText = ""; }, 500);
             nextQuest();
         }
     });
-
-    function endGame() {
-        clearInterval(timer);
-        if(score > highscore) {
-            localStorage.setItem('es_math_best', score);
-            highscore = score;
-        }
-        alert("GAME OVER! Score: " + score);
-        location.reload();
-    }
 </script>
 </body>
 </html>
