@@ -3,105 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExamSpeed Math - Professional Trainer</title>
+    <title>Speed Math - Pro Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        :root { --bg: #0f172a; --accent: #10b981; --secondary: #3b82f6; --text: #f8fafc; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); text-align: center; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-        .app-card { background: #1e293b; padding: 2rem; border-radius: 24px; width: 90%; max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid #334155; }
-        .header { font-size: 1.8rem; font-weight: 800; color: var(--accent); margin-bottom: 0.5rem; }
-        .mode-btn { background: #334155; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; margin: 10px 0; font-size: 1.1rem; cursor: pointer; transition: 0.3s; font-weight: 600; }
-        .mode-btn:hover { background: var(--secondary); transform: scale(1.02); }
-        .question-box { font-size: 3.5rem; font-weight: 800; margin: 1rem 0; color: var(--text); }
-        input { background: #0f172a; border: 2px solid #334155; border-radius: 12px; color: white; font-size: 2rem; padding: 12px; width: 80%; text-align: center; outline: none; }
-        .timer-container { width: 100%; height: 8px; background: #334155; border-radius: 10px; margin: 1.5rem 0; overflow: hidden; }
-        #timer-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--accent)); width: 100%; }
+        :root {
+            --bg: #050a14;
+            --card-bg: #111827;
+            --primary: #00f2ff; /* Neon Blue */
+            --success: #10b981;
+            --accent: #f59e0b;
+            --text: #ffffff;
+        }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .app-container {
+            width: 90%;
+            max-width: 420px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 30px;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            position: relative;
+        }
+        .score-badge {
+            background: rgba(0, 242, 255, 0.1);
+            color: var(--primary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        .timer-ring {
+            width: 100%;
+            height: 6px;
+            background: #1f2937;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        #progress {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            transition: width 0.1s linear;
+        }
+        .question {
+            font-size: 4rem;
+            font-weight: 800;
+            margin: 10px 0;
+            letter-spacing: -2px;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        input {
+            background: #1f2937;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            color: var(--primary);
+            font-size: 2.5rem;
+            width: 80%;
+            padding: 15px;
+            text-align: center;
+            outline: none;
+            transition: 0.3s;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        }
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+        }
+        .mode-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .btn {
+            background: #1f2937;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: var(--primary);
+            color: #000;
+            transform: translateY(-5px);
+        }
+        .flash-success { background: rgba(16, 185, 129, 0.2) !important; }
         .hidden { display: none; }
-        .back-btn { background: none; border: none; color: #94a3b8; cursor: pointer; margin-top: 20px; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-<div class="app-card animate__animated animate__fadeIn">
-    <div id="menu-screen">
-        <div class="header">ExamSpeed Math 🚀</div>
-        <p style="color:#94a3b8">Apni calculation speed ko boost karein</p>
-        <button class="mode-btn" onclick="startMode('add')">➕ Addition Sprint</button>
-        <button class="mode-btn" onclick="startMode('mul')">✖️ Multiplication Mastery</button>
-        <button class="mode-btn" onclick="startMode('sq')">🔢 Squares (1-50)</button>
-        <div style="margin-top:20px; font-size:0.8rem; color:#64ffda">Next Update: Daily Leaderboard</div>
+<div class="app-container animate__animated animate__zoomIn" id="main-card">
+    <div id="menu">
+        <h1 style="color: var(--primary); margin: 0;">SPEED MATH</h1>
+        <p style="color: #6b7280; margin-bottom: 30px;">Choose your challenge</p>
+        <div class="mode-grid">
+            <button class="btn" onclick="start('add')">➕<br>Add</button>
+            <button class="btn" onclick="start('mul')">✖️<br>Multiply</button>
+            <button class="btn" onclick="start('sq')">x²<br>Square</button>
+            <button class="btn" onclick="start('mix')">🎲<br>Mixed</button>
+        </div>
     </div>
 
-    <div id="game-screen" class="hidden">
-        <div id="game-title" style="font-weight:bold; color:var(--accent)">MODE</div>
-        <div class="timer-container"><div id="timer-fill"></div></div>
-        <div class="question-box" id="ques">0 + 0</div>
+    <div id="game" class="hidden">
+        <div class="score-badge">SCORE: <span id="score">0</span></div>
+        <div class="timer-ring"><div id="progress"></div></div>
+        <div class="question" id="ques">24 + 18</div>
         <input type="number" id="ans" placeholder="?" pattern="\d*">
-        <br>
-        <button class="back-btn" onclick="showMenu()">← Back to Menu</button>
+        <p id="msg" style="height: 20px; color: var(--success); font-weight: bold;"></p>
     </div>
 </div>
 
 <script>
-    let score = 0, timeLeft = 100, timerId, currentAns, currentMode;
+    let score = 0, timeLeft = 100, timerId, currentAns, mode;
 
-    function startMode(mode) {
-        currentMode = mode;
-        document.getElementById('menu-screen').classList.add('hidden');
-        document.getElementById('game-screen').classList.remove('hidden');
-        document.getElementById('game-title').innerText = mode.toUpperCase() + " SPRINT";
+    function start(selectedMode) {
+        mode = selectedMode;
+        document.getElementById('menu').classList.add('hidden');
+        document.getElementById('game').classList.remove('hidden');
         score = 0;
-        nextQ();
+        newQuest();
     }
 
-    function showMenu() {
-        clearInterval(timerId);
-        document.getElementById('menu-screen').classList.remove('hidden');
-        document.getElementById('game-screen').classList.add('hidden');
-    }
+    function newQuest() {
+        let n1, n2, type = mode;
+        if(mode === 'mix') {
+            const types = ['add', 'mul', 'sq'];
+            type = types[Math.floor(Math.random() * types.length)];
+        }
 
-    function nextQ() {
-        let n1, n2;
-        if(currentMode === 'add') {
-            n1 = Math.floor(Math.random() * 50) + 10;
-            n2 = Math.floor(Math.random() * 50) + 10;
+        if(type === 'add') {
+            n1 = Math.floor(Math.random() * (20 + score)) + 5;
+            n2 = Math.floor(Math.random() * (20 + score)) + 5;
             currentAns = n1 + n2;
-            document.getElementById('ques').innerText = `${n1} + ${n2}`;
-        } else if(currentMode === 'mul') {
-            n1 = Math.floor(Math.random() * 15) + 2;
-            n2 = Math.floor(Math.random() * 12) + 2;
+            document.getElementById('ques').innerText = `${n1}+${n2}`;
+        } else if(type === 'mul') {
+            n1 = Math.floor(Math.random() * 12) + 2;
+            n2 = Math.floor(Math.random() * 10) + 2;
             currentAns = n1 * n2;
-            document.getElementById('ques').innerText = `${n1} × ${n2}`;
+            document.getElementById('ques').innerText = `${n1}×${n2}`;
         } else {
-            n1 = Math.floor(Math.random() * 50) + 1;
+            n1 = Math.floor(Math.random() * 30) + 2;
             currentAns = n1 * n1;
             document.getElementById('ques').innerText = `${n1}²`;
         }
+
         document.getElementById('ans').value = '';
         document.getElementById('ans').focus();
         timeLeft = 100;
-        startTimer();
+        runTimer();
     }
 
-    function startTimer() {
-        clearInterval(timerId);
-        timerId = setInterval(() => {
-            timeLeft -= (0.8 + (score * 0.02));
-            document.getElementById('timer-fill').style.width = timeLeft + "%";
-            if(timeLeft <= 0) {
-                clearInterval(timerId);
-                alert("Game Over! Score: " + score);
-                showMenu();
-            }
-        }, 100);
-    }
-
-    document.getElementById('ans').addEventListener('input', function() {
-        if(parseInt(this.value) === currentAns) {
-            score++;
-            nextQ();
-        }
-    });
-</script>
-</body>
-</html>
+    function runTimer() {
+        clearInterval(
+    
