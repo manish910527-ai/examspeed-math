@@ -3,55 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExamSpeed Math - Rocket</title>
+    <title>ExamSpeed Math - Professional</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #4a148c; --card: #1e293b; --neon: #00e5ff; --pink: #d81b60; }
         * { box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: white; margin: 0; padding-bottom: 80px; overflow-x: hidden; }
+        body { background: var(--bg); color: white; margin: 0; padding-bottom: 80px; overflow-x: hidden; height: 100vh; }
 
-        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .container { padding: 0 15px; }
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); }
+        .container { padding: 15px; }
         
         /* Dashboard */
         .stats-card { background: var(--card); border-radius: 20px; padding: 20px; border: 1px solid #334155; margin-bottom: 20px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .box { background: white; color: #1e293b; padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 10px; font-weight: 800; cursor: pointer; }
+        .box { background: white; color: #1e293b; padding: 20px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .box:active { transform: scale(0.9); }
 
         /* Game Screen */
         #game-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 9999; padding: 20px; text-align: center; display: none; }
-        .q-circle { width: 200px; height: 200px; border: 8px solid var(--neon); border-radius: 50%; margin: 50px auto; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: 800; box-shadow: 0 0 20px var(--neon); }
-        .ans-input { width: 100%; padding: 20px; border-radius: 15px; border: 2px solid var(--neon); background: rgba(255,255,255,0.1); color: white; font-size: 30px; text-align: center; outline: none; }
+        .q-circle { width: 180px; height: 180px; border: 6px solid var(--neon); border-radius: 50%; margin: 40px auto; display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 800; box-shadow: 0 0 15px var(--neon); }
+        .ans-input { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid var(--neon); background: rgba(255,255,255,0.1); color: white; font-size: 28px; text-align: center; outline: none; }
 
-        /* Result */
+        /* Result Popup */
         #result-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .res-card { background: var(--card); padding: 30px; border-radius: 25px; text-align: center; width: 100%; border: 2px solid var(--neon); }
 
-        .nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top-left-radius: 20px; border-top-right-radius: 20px; }
-        .nav-item { color: #64748b; font-size: 12px; font-weight: 800; text-align: center; }
-        .active { color: #3b82f6; }
+        .nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px; border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .nav-item { color: #64748b; font-size: 11px; font-weight: 800; text-align: center; border: none; background: none; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div><b style="color:var(--neon); font-size:22px;">🚀 ExamSpeed</b><br><small>Level Up Your Brain</small></div>
-        <div style="font-size:24px;">🏆</div>
-    </div>
-
-    <div class="container">
-        <div class="stats-card">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
-                <div style="width:50px; height:50px; background:var(--neon); border-radius:50%;"></div>
-                <div><b>Student Hero</b><br><small id="xp-display">0 XP Earned</small></div>
-            </div>
+    <div id="main-ui">
+        <div class="header">
+            <div><b style="color:var(--neon); font-size:20px;">🚀 ExamSpeed</b><br><small>Math Practice Pro</small></div>
+            <div style="font-size:22px;">🏆</div>
         </div>
 
-        <div class="grid">
-            <div class="box" onclick="startGame('+')"><span>➕</span> Addition</div>
-            <div class="box" onclick="startGame('-')"><span>➖</span> Subtract</div>
-            <div class="box" onclick="startGame('x')"><span>✖️</span> Multiply</div>
-            <div class="box" onclick="startGame('/')"><span>➗</span> Division</div>
+        <div class="container">
+            <div class="stats-card">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="width:45px; height:45px; background:var(--neon); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#000; font-weight:800;">U</div>
+                    <div><b>Dashboard</b><br><small id="xp-display">0 XP Earned</small></div>
+                </div>
+            </div>
+
+            <h3 style="margin-left:5px; margin-bottom:10px;">Practice Modes</h3>
+            <div class="grid">
+                <div class="box" onclick="startGame('+')"><span style="font-size:24px;">➕</span> Addition</div>
+                <div class="box" onclick="startGame('-')"><span style="font-size:24px;">➖</span> Subtract</div>
+                <div class="box" onclick="startGame('x')"><span style="font-size:24px;">✖️</span> Multiply</div>
+                <div class="box" onclick="startGame('/')"><span style="font-size:24px;">➗</span> Division</div>
+            </div>
         </div>
     </div>
 
@@ -59,5 +62,92 @@
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <button onclick="location.reload()" style="background:none; border:none; color:white; font-size:24px;">✕</button>
             <b id="timer" style="color:var(--pink); font-size:20px;">20s</b>
-            <b>Score: <span
-                          
+            <b>Score: <span id="score">0</span></b>
+        </div>
+        <div class="q-circle" id="question">--</div>
+        <input type="number" id="user-input" class="ans-input" placeholder="Answer?" inputmode="numeric">
+        <p style="margin-top:20px; color:#94a3b8;">Enter correct answer to proceed</p>
+    </div>
+
+    <div id="result-screen">
+        <div class="res-card">
+            <h1 style="color:var(--neon);">AWESOME! 🏁</h1>
+            <p>You earned</p>
+            <div style="font-size:48px; margin:15px 0; font-weight:800;"><span id="final-score">0</span> XP</div>
+            <button onclick="location.reload()" style="width:100%; padding:15px; background:var(--neon); border:none; border-radius:10px; font-weight:800; color:#000;">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <div class="nav">
+        <button class="nav-item" style="color:#3b82f6;">🏠<br>Home</button>
+        <button class="nav-item">🎯<br>Practice</button>
+        <button class="nav-item">📖<br>Revision</button>
+        <button class="nav-item">👤<br>Profile</button>
+    </div>
+
+    <script>
+        // Global Variables
+        let score = 0;
+        let correctAnswer = 0;
+        let timeLeft = 20;
+        let gameMode = '+';
+        let xp = localStorage.getItem('user_xp') || 0;
+
+        document.getElementById('xp-display').innerText = xp + " XP Earned";
+
+        function startGame(mode) {
+            gameMode = mode;
+            score = 0;
+            timeLeft = 20;
+            
+            // Show Game Screen
+            document.getElementById('game-screen').style.display = 'block';
+            document.getElementById('main-ui').style.display = 'none';
+            
+            generateQuestion();
+            
+            // Start Timer
+            const countdown = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft + "s";
+                
+                if(timeLeft <= 0) {
+                    clearInterval(countdown);
+                    finishGame();
+                }
+            }, 1000);
+        }
+
+        function generateQuestion() {
+            let n1 = Math.floor(Math.random() * 12) + 2;
+            let n2 = Math.floor(Math.random() * 12) + 2;
+            
+            if(gameMode === '+') { correctAnswer = n1 + n2; document.getElementById('question').innerText = n1 + " + " + n2; }
+            if(gameMode === '-') { if(n1 < n2) [n1, n2] = [n2, n1]; correctAnswer = n1 - n2; document.getElementById('question').innerText = n1 + " - " + n2; }
+            if(gameMode === 'x') { correctAnswer = n1 * n2; document.getElementById('question').innerText = n1 + " × " + n2; }
+            if(gameMode === '/') { correctAnswer = n1; document.getElementById('question').innerText = (n1*n2) + " ÷ " + n2; }
+            
+            document.getElementById('user-input').value = "";
+            document.getElementById('user-input').focus();
+        }
+
+        document.getElementById('user-input').addEventListener('input', (e) => {
+            if(parseInt(e.target.value) === correctAnswer) {
+                score += 10;
+                document.getElementById('score').innerText = score;
+                generateQuestion();
+            }
+        });
+
+        function finishGame() {
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'flex';
+            document.getElementById('final-score').innerText = score;
+            
+            // Save XP
+            let newXP = parseInt(xp) + score;
+            localStorage.setItem('user_xp', newXP);
+        }
+    </script>
+</body>
+</html>
