@@ -3,37 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExamSpeed Math - Study & Play</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>ExamSpeed Math - Pro Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0f172a; --card: #1e293b; --primary: #22d3ee; --accent: #f472b6; --text: #f8fafc; }
         * { box-sizing: border-box; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 70px; overflow-x: hidden; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 80px; }
         
-        /* Bottom Navigation */
+        /* Bottom Navigation Bar */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #334155; z-index: 1000; }
-        .nav-btn { background: none; border: none; color: #94a3b8; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .nav-btn { background: none; border: none; color: #94a3b8; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
         .nav-btn.active { color: var(--primary); }
-        .nav-icon { font-size: 20px; margin-bottom: 4px; }
+        .nav-icon { font-size: 22px; margin-bottom: 3px; }
 
         .container { max-width: 450px; margin: auto; padding: 20px; }
         .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid #334155; }
         
-        /* Study Material Section */
-        .formula-card { background: #0f172a; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
-        .formula-title { font-weight: 800; color: var(--primary); margin-bottom: 8px; font-size: 14px; }
-        .formula-row { display: flex; justify-content: space-between; font-family: monospace; font-size: 16px; margin: 5px 0; }
+        /* Study/Formula View */
+        .formula-item { background: #0f172a; padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; font-family: monospace; }
+        .formula-item span:first-child { color: var(--primary); font-weight: bold; }
 
-        /* Practice Game Section */
-        .game-box { text-align: center; }
-        #ques { font-size: 48px; font-weight: 800; margin: 20px 0; color: #fff; }
-        #ans-input { width: 100%; background: #0f172a; border: 2px solid #334155; border-radius: 15px; color: var(--primary); font-size: 32px; padding: 15px; text-align: center; outline: none; }
-        .timer-bg { width: 100%; height: 6px; background: #334155; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        /* Game UI */
+        #ques { font-size: 54px; font-weight: 800; text-align: center; margin: 30px 0; color: #fff; }
+        #ans-input { width: 100%; background: #0f172a; border: 2px solid #334155; border-radius: 16px; color: var(--primary); font-size: 36px; padding: 15px; text-align: center; outline: none; }
+        .timer-bg { width: 100%; height: 8px; background: #334155; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
         #timer-bar { height: 100%; width: 100%; background: var(--primary); }
 
-        .btn-start { background: var(--primary); color: #0f172a; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 800; width: 100%; cursor: pointer; font-size: 16px; }
+        .btn-start { background: var(--primary); color: #0f172a; border: none; padding: 18px; border-radius: 15px; font-weight: 800; width: 100%; cursor: pointer; font-size: 18px; }
         .hidden { display: none; }
-        h2 { margin-top: 0; color: var(--primary); }
+        h2 { margin: 0 0 10px 0; color: var(--primary); font-size: 22px; }
     </style>
 </head>
 <body>
@@ -41,19 +39,71 @@
 <div class="container">
     <div id="home-tab">
         <div class="card">
-            <h2>My Dashboard</h2>
-            <p style="color: #94a3b8;">Welcome back, Future Officer!</p>
-            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+            <h2>Dashboard</h2>
+            <p style="color: #94a3b8;">Hello, Future Officer! 👋</p>
+            <div style="display: flex; justify-content: space-between; margin-top: 25px;">
                 <div style="text-align: center;">
-                    <div style="font-size: 24px; font-weight: 800;" id="high-score">0</div>
-                    <div style="font-size: 11px; color: #64748b;">BEST SCORE</div>
+                    <div style="font-size: 28px; font-weight: 800;" id="high-score">0</div>
+                    <div style="font-size: 10px; color: #64748b; text-transform: uppercase;">Best Streak</div>
                 </div>
                 <div style="text-align: center;">
-                    <div style="font-size: 24px; font-weight: 800;" id="total-solved">0</div>
-                    <div style="font-size: 11px; color: #64748b;">QUESTIONS SOLVED</div>
+                    <div style="font-size: 28px; font-weight: 800;" id="total-solved">0</div>
+                    <div style="font-size: 10px; color: #64748b; text-transform: uppercase;">Total Solved</div>
                 </div>
             </div>
         </div>
         <div class="card">
-            <h3>Daily
-                
+            <h3>Login Details</h3>
+            <p style="font-size: 14px; color: #94a3b8;">System: Offline Local Mode (Security High)</p>
+            <button class="btn-start" style="font-size: 14px; padding: 10px;" onclick="alert('Profile linked to this device!')">Sync Profile</button>
+        </div>
+    </div>
+
+    <div id="study-tab" class="hidden">
+        <h2>Study Material 📚</h2>
+        <div class="card">
+            <h4 style="color:var(--accent)">Algebra Identities</h4>
+            <div class="formula-item"><span>(a+b)²</span><span>a²+b²+2ab</span></div>
+            <div class="formula-item"><span>(a-b)²</span><span>a²+b²-2ab</span></div>
+            <div class="formula-item"><span>a²-b²</span><span>(a-b)(a+b)</span></div>
+        </div>
+        <div class="card">
+            <h4 style="color:var(--primary)">Trigonometry Table (Sin)</h4>
+            <div class="formula-item"><span>sin 0°</span><span>0</span></div>
+            <div class="formula-item"><span>sin 30°</span><span>1/2</span></div>
+            <div class="formula-item"><span>sin 90°</span><span>1</span></div>
+        </div>
+        <div class="card">
+            <h4 style="color:var(--accent)">Important Squares</h4>
+            <div id="squares-list"></div>
+        </div>
+    </div>
+
+    <div id="practice-tab" class="hidden">
+        <div id="game-intro">
+            <div class="card" style="text-align: center;">
+                <h2>Practice Arena</h2>
+                <p style="color: #94a3b8; margin-bottom: 25px;">Solve as many as you can before time runs out!</p>
+                <button class="btn-start" onclick="startGame()">START SPRINT ⚡</button>
+            </div>
+        </div>
+        <div id="game-play" class="hidden">
+            <div class="score-label" style="text-align:center; font-weight:bold; margin-bottom:10px;">Current Score: <span id="cur-score">0</span></div>
+            <div class="timer-bg"><div id="timer-bar"></div></div>
+            <div class="card">
+                <div id="ques">--</div>
+                <input type="number" id="ans-input" placeholder="?" inputmode="numeric" autocomplete="off">
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <div class="nav-btn active" onclick="showTab('home')" id="btn-home">
+        <span class="nav-icon">🏠</span><span>Dashboard</span>
+    </div>
+    <div class="nav-btn" onclick="showTab('study')" id="btn-study">
+        <span class="nav-icon">📖</span><span>Study</span>
+    </div>
+    <div class="nav-btn" onclick="showTab('practice')" id="btn-practice">
+                                           
