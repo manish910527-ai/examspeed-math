@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExamSpeed Math - Global</title>
+    <title>ExamSpeed Math - Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -12,24 +12,24 @@
         body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
         .nav { padding: 15px 20px; background: var(--card); border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
-        .container { flex: 1; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; }
+        .container { flex: 1; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-        /* Stats Section */
-        .stats-box { background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 30px; padding: 35px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: center; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        .xp-text { font-size: 60px; font-weight: 900; color: white; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
-        .rank-label { background: var(--primary); color: #0f172a; padding: 4px 15px; border-radius: 20px; font-size: 12px; font-weight: 900; margin-top: 15px; display: inline-block; }
+        /* Stats Card */
+        .stats-box { background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 30px; padding: 30px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: center; margin-bottom: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .xp-text { font-size: 55px; font-weight: 900; color: white; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
+        .high-score { color: var(--accent); font-size: 14px; font-weight: 800; margin-top: 5px; }
 
-        /* Game Modes */
+        /* Buttons Grid */
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 400px; }
-        .mode-btn { background: white; color: #0f172a; padding: 22px; border-radius: 20px; font-weight: 900; border: none; font-size: 15px; cursor: pointer; transition: 0.2s; box-shadow: 0 6px 0 #cbd5e1; }
+        .mode-btn { background: white; color: #0f172a; padding: 20px; border-radius: 20px; font-weight: 900; border: none; font-size: 15px; cursor: pointer; box-shadow: 0 6px 0 #cbd5e1; transition: 0.1s; }
         .mode-btn:active { transform: translateY(4px); box-shadow: none; }
 
-        /* Gameplay UI */
+        /* Game UI */
         #game-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 30px; text-align: center; }
-        .timer-track { height: 8px; background: #1e293b; border-radius: 10px; margin: 30px 0; overflow: hidden; }
+        .timer-track { height: 8px; background: #1e293b; border-radius: 10px; margin: 25px 0; overflow: hidden; }
         #timer-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 100%; transition: 1s linear; }
-        .q-display { font-size: 80px; font-weight: 900; margin: 40px 0; letter-spacing: -3px; }
-        .ans-field { width: 100%; background: #1e293b; border: 4px solid var(--primary); padding: 20px; border-radius: 22px; color: white; font-size: 50px; text-align: center; }
+        .q-display { font-size: 75px; font-weight: 900; margin: 35px 0; letter-spacing: -2px; }
+        .ans-field { width: 100%; background: #1e293b; border: 4px solid var(--primary); padding: 18px; border-radius: 22px; color: white; font-size: 45px; text-align: center; }
 
         #result-screen { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
     </style>
@@ -37,6 +37,98 @@
 <body>
 
     <div class="nav">
-        <b style="color:var(--primary); font-size: 18px;">EXAM SPEED MATH</b>
-        <div style="font-weight: 900; color: #fbbf24; font-size: 14px;">🔥 STRE
+        <b style="color:var(--primary); font-size: 18px;">EXAM SPEED</b>
+        <div style="font-weight: 900; color: #fbbf24; font-size: 13px;">🔥 ENGLISH MODE</div>
+    </div>
+
+    <div class="container">
+        <div class="stats-box">
+            <p style="color: #94a3b8; font-weight: 800; font-size: 11px; letter-spacing: 2px;">TOTAL BRAIN XP</p>
+            <div class="xp-text" id="main-xp">0</div>
+            <div class="high-score">BEST SESSION: <span id="best-score">0</span></div>
+        </div>
+
+        <div class="btn-grid">
+            <button class="mode-btn" onclick="initGame('+')">ADDITION</button>
+            <button class="mode-btn" onclick="initGame('-')">SUBTRACT</button>
+            <button class="mode-btn" onclick="initGame('x')">MULTIPLY</button>
+            <button class="mode-btn" onclick="initGame('/')">DIVISION</button>
+        </div>
+    </div>
+
+    <div id="game-overlay">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <button onclick="location.reload()" style="background:none; border:none; color:#64748b; font-weight:900;">✕ EXIT</button>
+            <div style="font-weight:900; font-size: 20px; color:var(--primary);">XP: <span id="live-score">0</span></div>
+        </div>
+        <div class="timer-track"><div id="timer-bar"></div></div>
+        <div class="q-display" id="q-text">--</div>
+        <input type="number" id="ans-input" class="ans-field" placeholder="?" inputmode="numeric">
+    </div>
+
+    <div id="result-screen">
+        <h1 style="font-size: 40px; margin-bottom: 5px;">TIME'S UP!</h1>
+        <div style="font-size: 70px; font-weight: 900; color: var(--primary); margin: 20px 0;">+<span id="final-score">0</span></div>
+        <p id="new-best-msg" style="color: #22c55e; font-weight: 800; display: none; margin-bottom: 20px;">🎉 NEW BEST SCORE!</p>
+        <button onclick="location.reload()" style="background:var(--primary); color:#0f172a; width:100%; max-width:280px; padding:18px; border:none; border-radius:18px; font-weight:900; font-size: 18px; cursor:pointer;">COLLECT XP</button>
+    </div>
+
+    <script>
+        let xp = parseInt(localStorage.getItem('math_xp')) || 0;
+        let best = parseInt(localStorage.getItem('math_best')) || 0;
+        let score = 0, target = 0, timeLeft = 20, mode = '+';
+        
+        document.getElementById('main-xp').innerText = xp;
+        document.getElementById('best-score').innerText = best;
+
+        function initGame(m) {
+            mode = m; score = 0; timeLeft = 20;
+            document.getElementById('game-overlay').style.display = 'flex';
+            newQuestion();
+            let timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-bar').style.width = (timeLeft/20)*100 + "%";
+                if(timeLeft <= 0) {
+                    clearInterval(timer);
+                    finish();
+                }
+            }, 1000);
+        }
+
+        function newQuestion() {
+            let range = score > 100 ? 20 : 12;
+            let a = Math.floor(Math.random() * range) + 2;
+            let b = Math.floor(Math.random() * range) + 2;
+            if(mode === '+') { target = a+b; document.getElementById('q-text').innerText = a+"+"+b; }
+            if(mode === '-') { if(a<b) [a,b]=[b,a]; target = a-b; document.getElementById('q-text').innerText = a+"-"+b; }
+            if(mode === 'x') { target = a*b; document.getElementById('q-text').innerText = a+"×"+b; }
+            if(mode === '/') { target = a; document.getElementById('q-text').innerText = (a*b)+"÷"+b; }
+            document.getElementById('ans-input').value = "";
+            document.getElementById('ans-input').focus();
+        }
+
+        document.getElementById('ans-input').addEventListener('input', (e) => {
+            if(parseInt(e.target.value) === target) {
+                if(navigator.vibrate) navigator.vibrate(50);
+                score += 10;
+                document.getElementById('live-score').innerText = score;
+                newQuestion();
+            }
+        });
+
+        function finish() {
+            document.getElementById('game-overlay').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'flex';
+            document.getElementById('final-score').innerText = score;
             
+            if(score > best) {
+                localStorage.setItem('math_best', score);
+                document.getElementById('new-best-msg').style.display = 'block';
+            }
+            
+            localStorage.setItem('math_xp', xp + score);
+            if(score > 0) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        }
+    </script>
+</body>
+</html>
