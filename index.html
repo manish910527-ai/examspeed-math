@@ -23,23 +23,17 @@
         * { box-sizing: border-box; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Navbar */
         .nav { padding: 15px 20px; background: var(--card); border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
-        
-        /* Container */
         .container { flex: 1; padding: 20px; overflow-y: auto; padding-bottom: 90px; }
         
-        /* Stats Dashboard */
         .header-stats { display: flex; gap: 10px; margin-bottom: 10px; }
         .stat-card { flex: 1; background: #1e293b; padding: 15px; border-radius: 16px; border: 1px solid #334155; text-align: center; }
         .stat-val { font-size: 24px; font-weight: 900; color: white; }
         .stat-lbl { font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
 
-        /* Section Styling */
         .section-title { font-size: 13px; color: #94a3b8; font-weight: 800; letter-spacing: 1px; margin: 25px 0 12px 0; display: flex; align-items: center; gap: 10px; }
         .section-title::after { content: ''; flex: 1; height: 1px; background: #334155; }
 
-        /* Buttons */
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .mode-btn { background: white; color: #0f172a; padding: 18px 12px; border-radius: 18px; font-weight: 800; border: none; font-size: 15px; cursor: pointer; box-shadow: 0 4px 0 #cbd5e1; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.1s; }
         .mode-btn:active { transform: translateY(4px); box-shadow: none; }
@@ -49,31 +43,31 @@
         .btn-purple { color: #7c3aed; }
         .btn-pink { color: #db2777; }
 
-        /* Footer Revision Button */
         .rev-fab { position: fixed; bottom: 20px; left: 20px; right: 20px; background: var(--gold); color: #0f172a; padding: 16px; border-radius: 50px; font-weight: 900; border: none; font-size: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); z-index: 100; cursor: pointer; }
 
-        /* Game Overlay */
         #game-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 30px; }
         .q-display { font-size: 60px; font-weight: 900; text-align: center; margin: 40px 0; min-height: 80px; }
         .ans-field { width: 100%; background: #1e293b; border: 3px solid var(--primary); padding: 20px; border-radius: 20px; color: white; font-size: 40px; text-align: center; }
 
-        /* Result Screen */
         #result-screen { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 25px; text-align: center; }
         .result-box { background: #1e293b; padding: 25px; border-radius: 25px; border: 1px solid #334155; width: 100%; max-width: 320px; margin-bottom: 20px; }
         .metric-row { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 1px solid #334155; }
 
-        /* Revision Overlay */
         #rev-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1500; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
-        .data-card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: none; }
+        .data-card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: none; border: 1px solid #334155; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: left; }
+        th, td { padding: 10px; border-bottom: 1px solid #334155; text-align: left; font-size: 14px; }
+        th { color: var(--primary); }
+
+        .table-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .table-item { background: #0f172a; padding: 8px; border-radius: 8px; text-align: center; font-size: 12px; border: 1px solid #334155; }
     </style>
 </head>
 <body>
 
     <div class="nav">
         <b style="color:var(--primary); font-size: 18px;">⚡ ExamSpeed Math</b>
-        <div style="font-size:10px; font-weight:900; background:var(--gold); color:black; padding:2px 8px; border-radius:10px;">PRO</div>
+        <button onclick="alert('How to Use:\n1. Choose Basics for speed.\n2. Choose Advance for Exam prep.\n3. Check Revision Zone for Tables/Squares.\n4. Challenge friends to grow!')" style="background:none; border:1px solid #334155; color:#94a3b8; padding:4px 10px; border-radius:8px; font-size:10px; font-weight:800;">HOW TO USE?</button>
     </div>
 
     <div class="container" id="dashboard">
@@ -105,7 +99,7 @@
         </div>
     </div>
 
-    <button class="rev-fab" onclick="openRevision()">📚 REVISION ZONE (Shortcuts)</button>
+    <button class="rev-fab" onclick="openRevision()">📚 REVISION ZONE (Tables/Squares)</button>
 
     <div id="game-overlay">
         <div style="display:flex; justify-content:space-between; font-weight:900;">
@@ -125,11 +119,9 @@
                 <div><div id="speed-stat" style="font-weight:900; color:var(--success);">0s</div><div style="font-size:9px; color:#94a3b8;">AVG SPEED</div></div>
             </div>
         </div>
-
         <button onclick="shareChallenge()" style="background:#25d366; color:white; width:100%; max-width:260px; padding:16px; border:none; border-radius:50px; font-weight:900; margin-bottom:12px; display:flex; align-items:center; justify-content:center; gap:8px;">
             <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="18"> CHALLENGE FRIENDS
         </button>
-
         <button onclick="location.reload()" style="background:white; color:black; width:100%; max-width:260px; padding:16px; border:none; border-radius:50px; font-weight:900;">PLAY AGAIN</button>
     </div>
 
@@ -139,10 +131,18 @@
             <button onclick="closeRevision()" style="background:none; border:none; color:white; font-size:24px;">✕</button>
         </div>
         <div class="btn-grid" id="rev-menu">
+            <button class="mode-btn btn-blue" onclick="showTopic('tables')">Tables (1-25) <span>Math Base</span></button>
             <button class="mode-btn" onclick="showTopic('squares')">Squares (1-30)</button>
             <button class="mode-btn" onclick="showTopic('cubes')">Cubes (1-20)</button>
             <button class="mode-btn" onclick="showTopic('frac')">Fractions %</button>
         </div>
+
+        <div id="content-tables" class="data-card">
+            <button onclick="backToRev()" style="color:var(--primary); margin-bottom:15px; background:none; border:none; font-weight:800;">← BACK</button>
+            <h3 style="margin-bottom:15px;">Multiplication Tables</h3>
+            <div id="tables-list"></div>
+        </div>
+
         <div id="content-squares" class="data-card">
             <button onclick="backToRev()" style="color:var(--primary); margin-bottom:10px; background:none; border:none; font-weight:800;">← BACK</button>
             <table><tr><th>Num</th><th>Square</th></tr><script>for(let i=1;i<=30;i++) document.write(`<tr><td>${i}²</td><td><b>${i*i}</b></td></tr>`);</script></table>
@@ -163,10 +163,21 @@
         document.getElementById('main-xp').innerText = xp;
         document.getElementById('total-solved').innerText = totalSolved;
 
+        function initTables() {
+            let html = '';
+            for(let i=2; i<=25; i++) {
+                html += `<div style="margin-bottom:20px;"><h4 style="color:var(--gold)">Table of ${i}</h4><div class="table-grid">`;
+                for(let j=1; j<=10; j++) {
+                    html += `<div class="table-item">${i} × ${j} = <b>${i*j}</b></div>`;
+                }
+                html += `</div></div>`;
+            }
+            document.getElementById('tables-list').innerHTML = html;
+        }
+        initTables();
+
         let score = 0, target = 0, mode = '+', count = 0, startTime = 0;
-
         function track(action, label) { if(window.gtag) gtag('event', action, {'event_label': label}); }
-
         function openRevision() { document.getElementById('rev-overlay').style.display = 'flex'; track('rev_open', 'user'); }
         function closeRevision() { document.getElementById('rev-overlay').style.display = 'none'; backToRev(); }
         function showTopic(id) { document.getElementById('rev-menu').style.display = 'none'; document.getElementById('content-'+id).style.display = 'block'; }
@@ -186,7 +197,6 @@
         function newQ() {
             let a, b, text, type = mode;
             if(mode === 'mix') type = ['+', '-', 'x', 'sq', '%'][Math.floor(Math.random()*5)];
-            
             if(type === '+') { a = r(5,60); b = r(5,60); target = a+b; text = `${a}+${b}`; }
             else if(type === '-') { a = r(20,99); b = r(5,a); target = a-b; text = `${a}-${b}`; }
             else if(type === 'x') { a = r(2,15); b = r(2,12); target = a*b; text = `${a}×${b}`; }
@@ -194,7 +204,6 @@
             else if(type === 'sq') { target = r(2,25); a = target*target; text = `√${a}`; }
             else if(type === 'cb') { target = r(2,12); a = target*target*target; text = `∛${a}`; }
             else if(type === '%') { let p = [10,20,25,50][Math.floor(Math.random()*4)]; let base = r(2,20)*10; target = (p/100)*base; text = `${p}% of ${base}`; }
-
             document.getElementById('q-text').innerText = text;
             document.getElementById('ans-input').value = "";
             document.getElementById('ans-input').focus();
@@ -232,5 +241,4 @@
         }
     </script>
 </body>
-    </html>
-            
+</html>
