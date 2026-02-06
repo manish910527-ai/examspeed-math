@@ -11,188 +11,250 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExamSpeed Math - SSC & Banking Practice</title>
-    
+    <title>ExamSpeed Math - Pro</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#38bdf8">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
-        :root { --bg: #0f172a; --primary: #38bdf8; --card: #1e293b; --gold: #fbbf24; }
+        :root { --bg: #0f172a; --primary: #38bdf8; --card: #1e293b; --gold: #fbbf24; --success: #22c55e; }
         * { box-sizing: border-box; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Dashboard */
-        .nav { padding: 15px 20px; background: var(--card); border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
-        .container { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; }
+        /* Navbar */
+        .nav { padding: 15px 20px; background: var(--card); border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
         
-        .avatar-box { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); background: #1e293b; display: flex; align-items: center; justify-content: center; font-size: 40px; margin-bottom: 10px; }
-        .stats-box { background: rgba(30, 41, 59, 0.7); border-radius: 25px; padding: 20px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; }
-        .xp-val { font-size: 50px; font-weight: 900; color: white; }
+        /* Dashboard Container */
+        .container { flex: 1; padding: 20px; overflow-y: auto; padding-bottom: 80px; }
+        
+        /* Section Header */
+        .section-title { font-size: 14px; color: #94a3b8; font-weight: 800; letter-spacing: 1px; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 10px; }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: #334155; }
+        
+        /* Stats Header */
+        .header-stats { display: flex; gap: 10px; margin-bottom: 10px; }
+        .stat-card { flex: 1; background: #1e293b; padding: 15px; border-radius: 16px; border: 1px solid #334155; text-align: center; }
+        .stat-val { font-size: 24px; font-weight: 900; color: white; }
+        .stat-lbl { font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
 
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 400px; }
-        .mode-btn { background: white; color: #0f172a; padding: 18px; border-radius: 18px; font-weight: 900; border: none; font-size: 15px; cursor: pointer; box-shadow: 0 5px 0 #cbd5e1; }
+        /* Buttons Grid */
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .mode-btn { background: white; color: #0f172a; padding: 20px 15px; border-radius: 18px; font-weight: 800; border: none; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 #cbd5e1; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: transform 0.1s; }
         .mode-btn:active { transform: translateY(4px); box-shadow: none; }
-        .rev-btn { grid-column: span 2; background: var(--gold); color: #0f172a; }
-
-        /* Revision Overlay */
-        #rev-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1500; display: none; flex-direction: column; padding: 20px; }
-        .data-card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid #334155; max-height: 80vh; overflow-y: auto; display: none; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: left; font-size: 14px; }
-        th { color: var(--primary); font-weight: 900; }
+        .mode-btn span { font-size: 12px; color: #64748b; font-weight: 600; }
+        
+        /* Color Variants */
+        .btn-blue { color: #0284c7; }
+        .btn-purple { color: #7c3aed; }
+        .btn-pink { color: #db2777; }
+        
+        /* Revision Button */
+        .rev-fab { position: fixed; bottom: 20px; right: 20px; left: 20px; background: var(--gold); color: #0f172a; padding: 18px; border-radius: 50px; font-weight: 900; border: none; font-size: 16px; box-shadow: 0 10px 25px -10px rgba(251, 191, 36, 0.6); text-align: center; cursor: pointer; z-index: 50; }
 
         /* Game UI */
-        #game-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 30px; text-align: center; }
-        .q-display { font-size: 70px; font-weight: 900; margin: 40px 0; }
-        .ans-field { width: 100%; background: #1e293b; border: 4px solid var(--primary); padding: 18px; border-radius: 20px; color: white; font-size: 45px; text-align: center; }
+        #game-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 30px; }
+        .top-bar { display: flex; justify-content: space-between; font-weight: 900; font-size: 20px; margin-bottom: 40px; }
+        .q-display { font-size: 60px; font-weight: 900; text-align: center; margin: 20px 0; min-height: 100px; display: flex; align-items: center; justify-content: center; }
+        .ans-field { width: 100%; background: #1e293b; border: 3px solid var(--primary); padding: 20px; border-radius: 20px; color: white; font-size: 40px; text-align: center; }
+        
+        /* Result Screen */
+        #result-screen { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+        .result-box { background: #1e293b; padding: 30px; border-radius: 25px; border: 1px solid #334155; width: 100%; max-width: 350px; margin-bottom: 20px; }
+        .metric-row { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 1px solid #334155; }
+        
+        /* Revision Overlay */
+        #rev-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1500; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
+        .data-card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid #334155; display: none; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: left; }
+        th { color: var(--primary); }
 
-        #result-screen { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
     </style>
 </head>
 <body>
 
     <div class="nav">
-        <b style="color:var(--primary); font-size: 18px;">EXAM SPEED</b>
-        <div id="rank-name" style="font-weight: 900; color: var(--gold); font-size: 12px;">ASPIRANT</div>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:30px; height:30px; background:var(--primary); border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:900; color:white;">⚡</div>
+            <b style="font-size: 18px;">ExamSpeed</b>
+        </div>
+        <div style="font-size:12px; font-weight:700; color:var(--gold);">PRO VER.</div>
     </div>
 
     <div class="container" id="dashboard">
-        <div class="avatar-box" id="avatar">🧑‍🎓</div>
-        <div class="stats-box">
-            <p style="color: #94a3b8; font-size: 11px; letter-spacing: 2px; font-weight: 800;">TOTAL BRAIN XP</p>
-            <div class="xp-val" id="main-xp">0</div>
+        
+        <div class="header-stats">
+            <div class="stat-card">
+                <div class="stat-val" id="main-xp">0</div>
+                <div class="stat-lbl">XP Earned</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val" id="total-solved">0</div>
+                <div class="stat-lbl">Q Solved</div>
+            </div>
         </div>
 
+        <div class="section-title">BASICS</div>
         <div class="btn-grid">
-            <button class="mode-btn" onclick="initGame('+')">ADDITION</button>
-            <button class="mode-btn" onclick="initGame('-')">SUBTRACT</button>
-            <button class="mode-btn" onclick="initGame('x')">MULTIPLY</button>
-            <button class="mode-btn" onclick="initGame('/')">DIVISION</button>
-            <button class="mode-btn rev-btn" onclick="openRevision()">📚 REVISION ZONE (SSC/BANK)</button>
+            <button class="mode-btn btn-blue" onclick="initGame('+')">ADDITION <span>12 + 8 = ?</span></button>
+            <button class="mode-btn btn-blue" onclick="initGame('-')">SUBTRACT <span>45 - 12 = ?</span></button>
+            <button class="mode-btn btn-blue" onclick="initGame('x')">MULTIPLY <span>12 x 5 = ?</span></button>
+            <button class="mode-btn btn-blue" onclick="initGame('/')">DIVISION <span>144 ÷ 12 = ?</span></button>
         </div>
+
+        <div class="section-title">ADVANCE (SSC/BANK)</div>
+        <div class="btn-grid">
+            <button class="mode-btn btn-purple" onclick="initGame('sq')">SQUARE √ <span>√144 = 12</span></button>
+            <button class="mode-btn btn-purple" onclick="initGame('cb')">CUBE ∛ <span>∛1331 = 11</span></button>
+            <button class="mode-btn btn-pink" onclick="initGame('%')">PERCENT % <span>20% of 80</span></button>
+            <button class="mode-btn btn-pink" onclick="initGame('mix')">MIXED <span>Random 🔥</span></button>
+        </div>
+    </div>
+
+    <button class="rev-fab" onclick="openRevision()">📚 Open Revision Zone</button>
+
+    <div id="game-overlay">
+        <div class="top-bar">
+            <span id="game-mode-lbl">ADDITION</span>
+            <span style="color:var(--gold);">Score: <span id="live-score">0</span></span>
+        </div>
+        <div class="q-display" id="q-text">Ready?</div>
+        <input type="number" id="ans-input" class="ans-field" placeholder="?" inputmode="numeric">
+        <div style="text-align:center; color:#64748b; margin-top:20px; font-size:14px;">Answer fast for combos!</div>
+    </div>
+
+    <div id="result-screen">
+        <div class="result-box">
+            <div style="font-size:14px; color:#94a3b8; font-weight:700;">SESSION SCORE</div>
+            <div style="font-size:60px; font-weight:900; color:var(--primary); margin:10px 0;">+<span id="final-score">0</span></div>
+            
+            <div class="metric-row">
+                <div>
+                    <div style="font-size:20px; font-weight:800; color:white;" id="q-count">0</div>
+                    <div style="font-size:10px; color:#94a3b8;">SOLVED</div>
+                </div>
+                <div>
+                    <div style="font-size:20px; font-weight:800; color:var(--success);" id="speed-stat">0s</div>
+                    <div style="font-size:10px; color:#94a3b8;">AVG SPEED</div>
+                </div>
+            </div>
+        </div>
+        <button onclick="location.reload()" style="background:white; color:#0f172a; width:100%; max-width:200px; padding:15px; border:none; border-radius:50px; font-weight:900; font-size:16px;">HOME</button>
     </div>
 
     <div id="rev-overlay">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2>Study Zone</h2>
-            <button onclick="closeRevision()" style="background:none; border:none; color:white; font-size: 20px;">✕</button>
+            <h2 style="font-weight:900;">Study Zone</h2>
+            <button onclick="closeRevision()" style="background:none; border:none; color:white; font-size:24px;">✕</button>
         </div>
-        
         <div class="btn-grid" id="rev-menu">
             <button class="mode-btn" onclick="showTopic('squares')">Squares (1-30)</button>
             <button class="mode-btn" onclick="showTopic('cubes')">Cubes (1-20)</button>
             <button class="mode-btn" onclick="showTopic('frac')">Fractions %</button>
-            <button class="mode-btn" onclick="showTopic('shortcuts')" style="border: 2px solid var(--gold);">⚡ EXAM TRICKS</button>
         </div>
-
         <div id="content-squares" class="data-card">
             <button onclick="backToRev()" style="color:var(--primary); margin-bottom:10px; background:none; border:none; font-weight:800;">← BACK</button>
             <table><tr><th>Num</th><th>Square</th></tr><script>for(let i=1;i<=30;i++) document.write(`<tr><td>${i}²</td><td><b>${i*i}</b></td></tr>`);</script></table>
         </div>
-
         <div id="content-cubes" class="data-card">
             <button onclick="backToRev()" style="color:var(--primary); margin-bottom:10px; background:none; border:none; font-weight:800;">← BACK</button>
             <table><tr><th>Num</th><th>Cube</th></tr><script>for(let i=1;i<=20;i++) document.write(`<tr><td>${i}³</td><td><b>${i*i*i}</b></td></tr>`);</script></table>
         </div>
-
         <div id="content-frac" class="data-card">
             <button onclick="backToRev()" style="color:var(--primary); margin-bottom:10px; background:none; border:none; font-weight:800;">← BACK</button>
-            <table>
-                <tr><th>Fraction</th><th>Value</th></tr>
-                <tr><td>1/2</td><td>50%</td></tr><tr><td>1/3</td><td>33.3%</td></tr><tr><td>1/4</td><td>25%</td></tr><tr><td>1/8</td><td>12.5%</td></tr><tr><td>1/11</td><td>9.09%</td></tr>
-            </table>
+            <table><tr><th>Fraction</th><th>% Value</th></tr><tr><td>1/2</td><td>50%</td></tr><tr><td>1/3</td><td>33.33%</td></tr><tr><td>1/4</td><td>25%</td></tr><tr><td>1/5</td><td>20%</td></tr><tr><td>1/6</td><td>16.66%</td></tr><tr><td>1/7</td><td>14.28%</td></tr><tr><td>1/8</td><td>12.5%</td></tr><tr><td>1/9</td><td>11.11%</td></tr><tr><td>1/10</td><td>10%</td></tr><tr><td>1/11</td><td>9.09%</td></tr><tr><td>1/12</td><td>8.33%</td></tr></table>
         </div>
-
-        <div id="content-shortcuts" class="data-card">
-            <button onclick="backToRev()" style="color:var(--primary); margin-bottom:10px; background:none; border:none; font-weight:800;">← BACK</button>
-            <h3>⚡ SSC & Bank Shortcuts</h3>
-            <table>
-                <tr><th>Topic</th><th>Fast Trick</th></tr>
-                <tr><td>Square of 5</td><td>65² = (6x7) | 25 = 4225</td></tr>
-                <tr><td>Multiply by 11</td><td>12x11 = 1 (1+2) 2 = 132</td></tr>
-                <tr><td>CI (2 Yrs)</td><td>2r + (r²/100)</td></tr>
-            </table>
-        </div>
-    </div>
-
-    <div id="game-overlay">
-        <div style="font-weight:900; color:var(--primary); font-size:20px;">SCORE: <span id="live-score">0</span></div>
-        <div class="q-display" id="q-text">--</div>
-        <input type="number" id="ans-input" class="ans-field" placeholder="?" inputmode="numeric">
-    </div>
-
-    <div id="result-screen">
-        <h2 style="font-size:30px;">TIME'S UP!</h2>
-        <div style="font-size:70px; font-weight:900; color:var(--primary);">+<span id="final-score">0</span></div>
-        <p id="motivate-msg" style="margin: 20px 0; color: #94a3b8; font-weight: 700;"></p>
-        <button onclick="location.reload()" style="background:white; color:#0f172a; width:100%; max-width:280px; padding:18px; border:none; border-radius:18px; font-weight:900; font-size:16px; cursor:pointer;">HOME</button>
     </div>
 
     <script>
+        // Storage & Init
         let xp = parseInt(localStorage.getItem('math_xp')) || 0;
-        let score = 0, target = 0, mode = '+';
+        let totalSolved = parseInt(localStorage.getItem('math_solved')) || 0;
         document.getElementById('main-xp').innerText = xp;
+        document.getElementById('total-solved').innerText = totalSolved;
 
-        // Analytics Event Tracker
-        function trackEvent(action, label) {
-            if(window.gtag) gtag('event', action, {'event_category': 'Game', 'event_label': label});
-        }
+        let score = 0, target = 0, mode = '+', count = 0, timerObj;
+        let startTime = 0; // For tracking speed
+
+        function track(action, label) { if(window.gtag) gtag('event', action, {'event_category': 'Game', 'event_label': label}); }
 
         // Revision Logic
-        function openRevision() { 
-            document.getElementById('rev-overlay').style.display = 'flex'; 
-            trackEvent('open_revision', 'SSC_Zone');
-        }
+        function openRevision() { document.getElementById('rev-overlay').style.display = 'flex'; track('open_rev', 'menu'); }
         function closeRevision() { document.getElementById('rev-overlay').style.display = 'none'; backToRev(); }
-        function showTopic(id) { 
-            document.getElementById('rev-menu').style.display = 'none'; 
-            document.getElementById('content-'+id).style.display = 'block'; 
-            trackEvent('view_topic', id);
-        }
+        function showTopic(id) { document.getElementById('rev-menu').style.display = 'none'; document.getElementById('content-'+id).style.display = 'block'; }
         function backToRev() { document.querySelectorAll('.data-card').forEach(el => el.style.display = 'none'); document.getElementById('rev-menu').style.display = 'grid'; }
 
         // Game Logic
         function initGame(m) {
-            mode = m; score = 0;
+            mode = m; score = 0; count = 0;
+            document.getElementById('dashboard').style.display = 'none';
+            document.querySelector('.rev-fab').style.display = 'none';
+            document.querySelector('.nav').style.display = 'none';
             document.getElementById('game-overlay').style.display = 'flex';
-            trackEvent('start_game', mode);
+            document.getElementById('game-mode-lbl').innerText = m === 'sq' ? 'SQUARE ROOT' : m === 'cb' ? 'CUBE ROOT' : m === '%' ? 'PERCENTAGE' : m.toUpperCase();
+            
             newQ();
-            setTimeout(finish, 20000); 
+            startTime = Date.now();
+            track('start_game', mode);
+            setTimeout(finish, 30000); // 30 Seconds Game
         }
 
         function newQ() {
-            let a = Math.floor(Math.random() * 12) + 2;
-            let b = Math.floor(Math.random() * 12) + 2;
-            if(mode==='+') target = a+b;
-            if(mode==='-') { if(a<b) [a,b]=[b,a]; target = a-b; }
-            if(mode==='x') target = a*b;
-            if(mode==='/') { target = a; a = a*b; }
-            document.getElementById('q-text').innerText = a + (mode==='x'?'×':mode==='/'?'÷':mode) + b;
+            let a, b, text;
+            let type = mode;
+            if(mode === 'mix') {
+                const types = ['+', '-', 'x', 'sq', '%'];
+                type = types[Math.floor(Math.random() * types.length)];
+            }
+
+            if(type === '+') { a = r(2,50); b = r(2,50); target = a+b; text = `${a} + ${b}`; }
+            else if(type === '-') { a = r(15,99); b = r(5, a); target = a-b; text = `${a} - ${b}`; }
+            else if(type === 'x') { a = r(2,15); b = r(2,12); target = a*b; text = `${a} × ${b}`; }
+            else if(type === '/') { target = r(2,15); b = r(2,10); a = target*b; text = `${a} ÷ ${b}`; }
+            else if(type === 'sq') { target = r(2,30); a = target*target; text = `√${a}`; }
+            else if(type === 'cb') { target = r(2,15); a = target*target*target; text = `∛${a}`; }
+            else if(type === '%') { 
+                // Simple percents: 10%, 20%, 25%, 50%
+                let p = [10, 20, 25, 50][Math.floor(Math.random()*4)];
+                let base = r(2, 20) * (p===25?4:p===20?5:p===50?2:10); 
+                target = (p/100)*base; 
+                text = `${p}% of ${base}`; 
+            }
+
+            document.getElementById('q-text').innerText = text;
             document.getElementById('ans-input').value = "";
             document.getElementById('ans-input').focus();
         }
 
+        function r(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
         document.getElementById('ans-input').addEventListener('input', (e) => {
-            if(parseInt(e.target.value) === target) {
-                if(navigator.vibrate) navigator.vibrate(40);
-                score += 10;
+            let val = parseInt(e.target.value);
+            if(val === target) {
+                if(navigator.vibrate) navigator.vibrate(30);
+                score += 10; count++;
                 document.getElementById('live-score').innerText = score;
                 newQ();
             }
         });
 
         function finish() {
+            let timeTaken = (Date.now() - startTime) / 1000;
+            let avgSpeed = count > 0 ? (timeTaken / count).toFixed(1) : 0;
+
             document.getElementById('game-overlay').style.display = 'none';
             document.getElementById('result-screen').style.display = 'flex';
             document.getElementById('final-score').innerText = score;
-            let msg = score >= 100 ? "Excellent! SSC Level Speed! 🔥" : "Keep Practicing! 💪";
-            document.getElementById('motivate-msg').innerText = msg;
+            document.getElementById('q-count').innerText = count;
+            document.getElementById('speed-stat').innerText = avgSpeed + 's';
+
             localStorage.setItem('math_xp', xp + score);
-            trackEvent('finish_game', score);
-            if(score >= 100) confetti({ particleCount: 150 });
+            localStorage.setItem('math_solved', totalSolved + count);
+            track('finish', score);
+            if(score > 100) confetti({ particleCount: 150 });
         }
     </script>
 </body>
-</html>
+    </html>
+    
