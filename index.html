@@ -6,109 +6,59 @@
     <title>ExamSpeed Math - Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0f172a; --primary: #38bdf8; --card: #1e293b; --accent: #f472b6; }
-        * { box-sizing: border-box; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root { --bg: #0f172a; --primary: #38bdf8; --card: #1e293b; --accent: #f472b6; --neon: #22c55e; }
+        * { box-sizing: border-box; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; outline: none; }
+        body { background: var(--bg); color: white; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
         .header { padding: 15px 20px; background: var(--card); border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
-        .container { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; }
+        .container { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-        .xp-card { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 25px; padding: 30px; border: 1px solid #334155; width: 100%; max-width: 380px; text-align: center; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .xp-val { font-size: 55px; font-weight: 900; color: white; text-shadow: 0 0 15px rgba(56, 189, 248, 0.5); }
+        /* XP & Progress Card */
+        .status-card { background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 28px; padding: 30px; border: 1px solid #334155; width: 100%; max-width: 380px; text-align: center; margin-bottom: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); position: relative; }
+        .xp-display { font-size: 55px; font-weight: 900; color: white; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
+        .badge { background: var(--primary); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; display: inline-block; margin-top: 10px; }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 380px; }
-        .btn { background: white; color: #0f172a; padding: 22px 10px; border-radius: 18px; font-weight: 900; border: none; cursor: pointer; font-size: 16px; transition: 0.2s; box-shadow: 0 5px 0 #cbd5e1; }
-        .btn:active { transform: translateY(4px); box-shadow: none; }
+        /* Buttons Grid */
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 380px; }
+        .mode-btn { background: white; color: #0f172a; padding: 25px 10px; border-radius: 22px; font-weight: 900; border: none; font-size: 16px; cursor: pointer; transition: 0.2s; box-shadow: 0 6px 0 #cbd5e1; }
+        .mode-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #cbd5e1; }
 
-        /* Game UI */
-        #play-zone { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; padding: 30px; flex-direction: column; text-align: center; }
-        .q-text { font-size: 75px; font-weight: 900; margin: 50px 0; color: white; }
-        .ans-input { width: 100%; background: #1e293b; border: 3px solid var(--primary); padding: 20px; border-radius: 20px; color: white; font-size: 40px; text-align: center; outline: none; }
-        
-        #result-screen { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
+        /* Full Screen Game Overlay */
+        #game-view { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 30px; text-align: center; transition: 0.3s; }
+        .timer-line { height: 6px; background: #334155; border-radius: 10px; margin: 30px 0; overflow: hidden; }
+        #timer-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 100%; transition: 1s linear; }
+        .q-display { font-size: 75px; font-weight: 900; margin: 50px 0; letter-spacing: -2px; }
+        .ans-input { width: 100%; background: #1e293b; border: 3px solid var(--primary); padding: 22px; border-radius: 25px; color: white; font-size: 45px; text-align: center; transition: 0.2s; }
+        .ans-input:focus { border-color: white; box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+
+        /* Feedback Anims */
+        .correct-flash { background: #064e3b !important; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <b style="color:var(--primary); font-size: 20px;">🚀 EXAM SPEED</b>
-        <div id="streak-info" style="font-size: 14px; color: #fbbf24; font-weight: 800;">🔥 Streak: 1</div>
+        <div style="background:#334155; padding:5px 12px; border-radius:15px; font-size:13px; font-weight:800;">🔥 Streak: <span id="streak-val">0</span></div>
     </div>
 
     <div class="container">
-        <div class="xp-card">
-            <small style="color: #94a3b8; font-weight: 700; letter-spacing: 1px;">TOTAL XP</small>
-            <div class="xp-val" id="total-xp">0</div>
+        <div class="status-card">
+            <p style="color: #94a3b8; font-weight: 800; font-size: 13px; letter-spacing: 1px;">TOTAL BRAIN POWER</p>
+            <div class="xp-display" id="total-xp">0</div>
+            <div class="badge" id="rank-badge">NOVICE</div>
         </div>
 
-        <div class="grid">
-            <button class="btn" onclick="start('+')">➕ Addition</button>
-            <button class="btn" onclick="start('-')">➖ Subtract</button>
-            <button class="btn" onclick="start('x')">✖️ Multiply</button>
-            <button class="btn" onclick="start('/')">➗ Division</button>
+        <div class="btn-grid">
+            <button class="mode-btn" onclick="startGame('+')">➕ Addition</button>
+            <button class="mode-btn" onclick="startGame('-')">➖ Subtract</button>
+            <button class="mode-btn" onclick="startGame('x')">✖️ Multiply</button>
+            <button class="mode-btn" onclick="startGame('/')">➗ Division</button>
         </div>
     </div>
 
-    <div id="play-zone">
+    <div id="game-view">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <button onclick="location.reload()" style="background:none; border:none; color:#64748b; font-weight:900;">✕ EXIT</button>
-            <div id="timer" style="color:var(--accent); font-size: 24px; font-weight: 900;">20s</div>
-        </div>
-        <div class="q-text" id="q-text">0+0</div>
-        <input type="number" id="ans-box" class="ans-input" placeholder="?" inputmode="numeric">
-    </div>
-
-    <div id="result-screen">
-        <h1 style="font-size: 40px; margin-bottom: 10px;">TIME UP!</h1>
-        <p style="color: #94a3b8;">You earned</p>
-        <div style="font-size: 60px; font-weight: 900; color: var(--primary); margin: 20px 0;">+<span id="earned-xp">0</span> XP</div>
-        <button onclick="location.reload()" style="background:var(--primary); color:#0f172a; border:none; padding:18px 50px; border-radius:15px; font-weight:900; font-size: 18px; cursor:pointer;">CONTINUE</button>
-    </div>
-
-    <script>
-        let xp = parseInt(localStorage.getItem('math_xp')) || 0;
-        let score = 0, currentAns = 0, time = 20, activeMode = '+';
-        document.getElementById('total-xp').innerText = xp;
-
-        function start(m) {
-            activeMode = m; score = 0; time = 20;
-            document.getElementById('play-zone').style.display = 'flex';
-            nextQuestion();
-            let clock = setInterval(() => {
-                time--;
-                document.getElementById('timer').innerText = time + "s";
-                if(time <= 0) {
-                    clearInterval(clock);
-                    showResult();
-                }
-            }, 1000);
-        }
-
-        function nextQuestion() {
-            let a = Math.floor(Math.random() * 12) + 2;
-            let b = Math.floor(Math.random() * 12) + 2;
-            if(activeMode === '+') { currentAns = a + b; document.getElementById('q-text').innerText = a + "+" + b; }
-            if(activeMode === '-') { if(a < b) [a,b] = [b,a]; currentAns = a - b; document.getElementById('q-text').innerText = a + "-" + b; }
-            if(activeMode === 'x') { currentAns = a * b; document.getElementById('q-text').innerText = a + "×" + b; }
-            if(activeMode === '/') { currentAns = a; document.getElementById('q-text').innerText = (a * b) + "÷" + b; }
-            document.getElementById('ans-box').value = "";
-            document.getElementById('ans-box').focus();
-        }
-
-        document.getElementById('ans-box').addEventListener('input', (e) => {
-            if(parseInt(e.target.value) === currentAns) {
-                if(navigator.vibrate) navigator.vibrate(50);
-                score += 10;
-                nextQuestion();
-            }
-        });
-
-        function showResult() {
-            document.getElementById('play-zone').style.display = 'none';
-            document.getElementById('result-screen').style.display = 'flex';
-            document.getElementById('earned-xp').innerText = score;
-            localStorage.setItem('math_xp', xp + score);
-        }
-    </script>
-</body>
-</html>
+            <button onclick="location.reload()" style="background:rgba(255,255,255,0.1); border:none; color:white; padding:8px 15px; border-radius:12px; font-weight:900;">✕ EXIT</button>
+            <div style="font-weight:900; color:var(--primary);
+                
