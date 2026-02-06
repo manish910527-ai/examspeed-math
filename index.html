@@ -1,48 +1,143 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExamSpeed Math - Pro</title>
+    <title>ExamSpeed Math - Global</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/dist/confetti.browser.min.js"></script>
     <style>
-        :root { --bg: #0f172a; --primary: #38bdf8; --card: #1e293b; --accent: #f472b6; --neon: #22c55e; }
+        :root { --bg: #0f172a; --primary: #38bdf8; --card: #1e293b; --accent: #f472b6; --success: #22c55e; }
         * { box-sizing: border-box; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; outline: none; }
         body { background: var(--bg); color: white; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
+        /* Layout Components */
         .header { padding: 15px 20px; background: var(--card); border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
-        .container { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; }
+        .main-menu { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-        /* XP Card */
-        .status-card { background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 30px; padding: 35px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: center; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        .xp-val { font-size: 65px; font-weight: 900; color: white; text-shadow: 0 0 20px rgba(56, 189, 248, 0.5); line-height: 1; }
-        .rank-tag { display: inline-block; background: var(--primary); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: 900; font-size: 13px; margin-top: 15px; }
+        /* Stats Card */
+        .stats-card { background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 30px; padding: 35px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: center; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .xp-label { color: #94a3b8; font-weight: 800; font-size: 12px; letter-spacing: 2px; margin-bottom: 5px; }
+        .xp-val { font-size: 60px; font-weight: 900; color: white; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
 
-        /* Modes Grid */
+        /* Mode Selection */
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 400px; }
-        .mode-btn { background: white; color: #0f172a; padding: 25px 10px; border-radius: 22px; font-weight: 900; border: none; font-size: 16px; cursor: pointer; transition: 0.2s; box-shadow: 0 6px 0 #cbd5e1; }
-        .mode-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #cbd5e1; }
+        .mode-btn { background: white; color: #0f172a; padding: 22px; border-radius: 20px; font-weight: 900; border: none; font-size: 16px; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 0 #cbd5e1; }
+        .mode-btn:active { transform: translateY(4px); box-shadow: none; }
 
-        /* Game Overlay */
+        /* Active Game Screen */
         #game-view { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 30px; text-align: center; }
-        .timer-track { height: 10px; background: #1e293b; border-radius: 10px; margin: 30px 0; overflow: hidden; border: 1px solid #334155; }
+        .timer-bar-container { height: 8px; background: #1e293b; border-radius: 10px; margin: 30px 0; overflow: hidden; border: 1px solid #334155; }
         #timer-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 100%; transition: 1s linear; }
-        .q-text { font-size: 85px; font-weight: 900; margin: 40px 0; letter-spacing: -3px; }
-        .ans-in { width: 100%; background: #1e293b; border: 4px solid var(--primary); padding: 25px; border-radius: 25px; color: white; font-size: 50px; text-align: center; }
-        
-        /* Celebration Overlay */
+        .question-text { font-size: 80px; font-weight: 900; margin: 40px 0; letter-spacing: -3px; }
+        .input-field { width: 100%; background: #1e293b; border: 4px solid var(--primary); padding: 20px; border-radius: 22px; color: white; font-size: 50px; text-align: center; }
+
+        /* Result Popup */
         #result-popup { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <b style="color:var(--primary); font-size: 18px; letter-spacing: 1px;">🚀 EXAM SPEED</b>
-        <div style="font-weight: 900; font-size: 14px; color: var(--accent);">STREAK: 1</div>
+        <b style="color:var(--primary); font-size: 18px; letter-spacing: 1px;">EXAM SPEED MATH</b>
+        <div id="streak-counter" style="color: #fbbf24; font-weight: 900; font-size: 14px;">🔥 STREAK: 1</div>
     </div>
 
-    <div class="container">
-        <div class="status-card">
-            <p style="color: #94a3b8; font-weight: 800; font-size: 12px; letter-spacing: 2px;
-                
+    <div class="main-menu">
+        <div class="stats-card">
+            <p class="xp-label">TOTAL BRAIN XP</p>
+            <div class="xp-val" id="total-xp">0</div>
+            <div id="rank-name" style="color: var(--primary); font-weight: 900; margin-top: 10px; font-size: 14px;">LEVEL: NOVICE</div>
+        </div>
+
+        <div class="btn-grid">
+            <button class="mode-btn" onclick="startGame('+')">ADDITION</button>
+            <button class="mode-btn" onclick="startGame('-')">SUBTRACT</button>
+            <button class="mode-btn" onclick="startGame('x')">MULTIPLY</button>
+            <button class="mode-btn" onclick="startGame('/')">DIVISION</button>
+        </div>
+    </div>
+
+    <div id="game-view">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <button onclick="location.reload()" style="background:none; border:none; color:#64748b; font-weight:900;">✕ EXIT</button>
+            <div style="font-weight:900; font-size: 22px; color:var(--primary);">SCORE: <span id="current-score">0</span></div>
+        </div>
+        <div class="timer-bar-container"><div id="timer-bar"></div></div>
+        <div class="question-text" id="q-display">0+0</div>
+        <input type="number" id="ans-input" class="input-field" placeholder="?" inputmode="numeric">
+    </div>
+
+    <div id="result-popup">
+        <h1 style="font-size: 45px; margin-bottom: 10px;">TIME UP!</h1>
+        <p style="color:#94a3b8; font-weight: 700; margin-bottom: 20px;">Gained XP</p>
+        <div style="font-size: 70px; font-weight: 900; color: var(--primary); margin-bottom: 30px;">+<span id="final-score">0</span></div>
+        <button onclick="location.reload()" style="background:var(--primary); color:#0f172a; padding:18px 60px; border:none; border-radius:18px; font-weight:900; font-size: 18px; cursor:pointer;">CLAIM REWARDS</button>
+    </div>
+
+    <script>
+        let xp = parseInt(localStorage.getItem('math_xp')) || 0;
+        let sessionScore = 0, currentTarget = 0, timeLeft = 20, activeMode = '+';
+        
+        document.getElementById('total-xp').innerText = xp;
+        updateRank();
+
+        function updateRank() {
+            let rank = "NOVICE";
+            if(xp > 500) rank = "SCHOLAR";
+            if(xp > 1500) rank = "MATH WIZARD";
+            if(xp > 5000) rank = "GRANDMASTER";
+            document.getElementById('rank-name').innerText = "LEVEL: " + rank;
+        }
+
+        function startGame(m) {
+            activeMode = m; sessionScore = 0; timeLeft = 20;
+            document.getElementById('game-view').style.display = 'flex';
+            generateQuestion();
+            
+            let timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-bar').style.width = (timeLeft/20)*100 + "%";
+                if(timeLeft <= 0) {
+                    clearInterval(timer);
+                    showSummary();
+                }
+            }, 1000);
+        }
+
+        function generateQuestion() {
+            let a = Math.floor(Math.random() * 10) + 2;
+            let b = Math.floor(Math.random() * 10) + 2;
+            
+            if(activeMode === '+') { currentTarget = a+b; document.getElementById('q-display').innerText = a+"+"+b; }
+            if(activeMode === '-') { if(a<b) [a,b]=[b,a]; currentTarget = a-b; document.getElementById('q-display').innerText = a+"-"+b; }
+            if(activeMode === 'x') { currentTarget = a*b; document.getElementById('q-display').innerText = a+"×"+b; }
+            if(activeMode === '/') { currentTarget = a; document.getElementById('q-display').innerText = (a*b)+"÷"+b; }
+            
+            document.getElementById('ans-input').value = "";
+            document.getElementById('ans-input').focus();
+        }
+
+        document.getElementById('ans-input').addEventListener('input', (e) => {
+            if(parseInt(e.target.value) === currentTarget) {
+                if(navigator.vibrate) navigator.vibrate(50);
+                sessionScore += 10;
+                document.getElementById('current-score').innerText = sessionScore;
+                generateQuestion();
+            }
+        });
+
+        function showSummary() {
+            document.getElementById('game-view').style.display = 'none';
+            document.getElementById('result-popup').style.display = 'flex';
+            document.getElementById('final-score').innerText = sessionScore;
+            localStorage.setItem('math_xp', xp + sessionScore);
+            
+            // Celebration confetti (only if score > 0)
+            if(sessionScore > 0 && typeof confetti === 'function') {
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            }
+        }
+    </script>
+</body>
+</html>
