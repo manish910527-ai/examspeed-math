@@ -6,123 +6,23 @@
     <title>ExamSpeed Math - Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0f172a; --primary: #38bdf8; --card: #1e293b; --accent: #f472b6; }
+        :root { --bg: #0f172a; --primary: #38bdf8; --card: #1e293b; --accent: #f472b6; --streak: #fbbf24; }
         * { box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: white; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* Header */
-        .top-bar { padding: 20px; background: var(--card); border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .logo { font-weight: 900; font-size: 20px; color: var(--primary); letter-spacing: 1px; }
+        /* Header & Streak */
+        .top-bar { padding: 15px 20px; background: var(--card); border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+        .streak-tag { background: rgba(251, 191, 36, 0.1); color: var(--streak); padding: 5px 12px; border-radius: 20px; font-weight: 800; font-size: 14px; border: 1px solid var(--streak); }
 
-        /* Dashboard */
-        .content { flex: 1; padding: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
-        .xp-card { background: linear-gradient(135deg, #1e293b, #0f172a); width: 100%; max-width: 400px; padding: 35px 20px; border-radius: 30px; border: 1px solid #334155; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .xp-label { color: #94a3b8; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
-        .xp-value { font-size: 60px; font-weight: 900; margin-top: 10px; color: white; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
+        .content { flex: 1; padding: 20px; overflow-y: auto; text-align: center; }
 
-        /* Modes */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 400px; }
-        .m-btn { background: white; color: #0f172a; padding: 25px 10px; border-radius: 20px; font-weight: 900; border: none; font-size: 16px; cursor: pointer; transition: 0.2s; box-shadow: 0 6px 0 #cbd5e1; position: relative; }
-        .m-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #cbd5e1; }
+        /* XP Display */
+        .xp-card { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 30px; padding: 30px; border: 1px solid #334155; margin-bottom: 25px; position: relative; overflow: hidden; }
+        .xp-card::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%); }
+        .xp-value { font-size: 55px; font-weight: 900; color: white; margin: 10px 0; }
 
-        /* Game Screen */
-        #game { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; padding: 30px; flex-direction: column; text-align: center; }
-        .game-head { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .timer { font-size: 24px; font-weight: 900; color: var(--accent); }
-        .q-text { font-size: 80px; font-weight: 900; margin: 60px 0; color: white; letter-spacing: -3px; }
-        .ans-field { width: 100%; background: #1e293b; border: 4px solid var(--primary); padding: 25px; border-radius: 25px; color: white; font-size: 45px; text-align: center; outline: none; transition: 0.3s; }
-        .ans-field:focus { box-shadow: 0 0 30px rgba(56, 189, 248, 0.2); border-color: white; }
-
-        /* Success Flash */
-        @keyframes correct { 0% { background: var(--bg); } 50% { background: #064e3b; } 100% { background: var(--bg); } }
-        .flash-success { animation: correct 0.3s ease-out; }
-    </style>
-</head>
-<body>
-
-    <div class="top-bar">
-        <div class="logo">🚀 EXAM SPEED</div>
-        <div style="font-size: 20px;">🔥</div>
-    </div>
-
-    <div class="content">
-        <div class="xp-card">
-            <div class="xp-label">Brain Power (XP)</div>
-            <div class="xp-value" id="total-xp">0</div>
-        </div>
-
-        <div class="grid">
-            <button class="m-btn" onclick="play('+')">➕ Addition</button>
-            <button class="m-btn" onclick="play('-')">➖ Subtract</button>
-            <button class="m-btn" onclick="play('x')">✖️ Multiply</button>
-            <button class="m-btn" onclick="play('/')">➗ Division</button>
-        </div>
-    </div>
-
-    <div id="game">
-        <div class="game-head">
-            <button onclick="location.reload()" style="background:none; border:none; color:#64748b; font-weight:900; font-size: 16px;">✕ QUIT</button>
-            <div id="timer" class="timer">20s</div>
-            <div id="session-score" style="font-weight:900; color:var(--primary);">0</div>
-        </div>
-        <div class="q-text" id="q-text">0+0</div>
-        <input type="number" id="ans-in" class="ans-field" placeholder="?" inputmode="numeric">
-    </div>
-
-    <script>
-        let totalXp = parseInt(localStorage.getItem('math_xp')) || 0;
-        let score = 0, currentAns = 0, timeLeft = 20, mode = '+';
-        document.getElementById('total-xp').innerText = totalXp;
-
-        function play(m) {
-            mode = m; score = 0; timeLeft = 20;
-            document.getElementById('game').style.display = 'flex';
-            generate();
-            
-            let timerInterval = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').innerText = timeLeft + "s";
-                if(timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    finishGame();
-                }
-            }, 1000);
-        }
-
-        function generate() {
-            let a = Math.floor(Math.random() * 12) + 2;
-            let b = Math.floor(Math.random() * 12) + 2;
-            
-            if(mode === '+') { currentAns = a + b; document.getElementById('q-text').innerText = a + "+" + b; }
-            if(mode === '-') { if(a < b) [a,b] = [b,a]; currentAns = a - b; document.getElementById('q-text').innerText = a + "-" + b; }
-            if(mode === 'x') { currentAns = a * b; document.getElementById('q-text').innerText = a + "×" + b; }
-            if(mode === '/') { currentAns = a; document.getElementById('q-text').innerText = (a * b) + "÷" + b; }
-            
-            document.getElementById('ans-in').value = "";
-            document.getElementById('ans-in').focus();
-        }
-
-        document.getElementById('ans-in').addEventListener('input', (e) => {
-            if(parseInt(e.target.value) === currentAns) {
-                // Vibration (works on Android)
-                if(navigator.vibrate) navigator.vibrate(50);
-                
-                score += 10;
-                document.getElementById('session-score').innerText = score;
-                
-                // Feedback effect
-                document.body.classList.add('flash-success');
-                setTimeout(() => document.body.classList.remove('flash-success'), 300);
-                
-                generate();
-            }
-        });
-
-        function finishGame() {
-            localStorage.setItem('math_xp', totalXp + score);
-            alert("Great Job! You earned " + score + " XP.");
-            location.reload();
-        }
-    </script>
-</body>
-</html>
+        /* Leaderboard Preview */
+        .leaderboard-mini { background: var(--card); border-radius: 20px; padding: 15px; margin-bottom: 25px; text-align: left; border: 1px solid #334155; }
+        .rank-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #334155; font-size: 14px; }
+        .rank-item:last-child { border: none; }
+        
