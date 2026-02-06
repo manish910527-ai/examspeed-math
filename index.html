@@ -3,134 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExamSpeed Math - Pro</title>
+    <title>ExamSpeed Math - Level Up</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --bg: #0f172a; 
-            --card: #1e293b; 
-            --primary: #38bdf8; 
-            --accent: #f472b6; 
-            --neon: #22c55e; 
+            --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --accent: #f472b6; --neon: #22c55e; 
         }
-
         * { box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            background: var(--bg); 
-            color: white; 
-            margin: 0; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-        }
+        body { background: var(--bg); color: white; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Header Styling */
-        .header { 
-            padding: 20px; 
-            background: rgba(30, 41, 59, 0.8); 
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #334155; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
+        .header { padding: 20px; background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
         .container { flex: 1; padding: 20px; overflow-y: auto; text-align: center; }
 
-        /* Glowing Score Card */
-        .score-card { 
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
-            border-radius: 28px; 
-            padding: 30px; 
-            border: 1px solid #334155; 
-            margin-bottom: 25px; 
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 0 15px rgba(56, 189, 248, 0.1);
-        }
+        /* Badge Area */
+        .badge-tag { background: #334155; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; color: var(--primary); margin-top: 10px; display: inline-block; }
 
-        .score-val { 
-            font-size: 56px; 
-            font-weight: 900; 
-            color: var(--primary); 
-            text-shadow: 0 0 20px rgba(56, 189, 248, 0.5); 
-            margin: 5px 0;
-        }
+        .score-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 28px; padding: 25px; border: 1px solid #334155; margin-bottom: 25px; box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+        .score-val { font-size: 50px; font-weight: 900; color: var(--primary); text-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
 
-        /* Mode Buttons Grid */
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .mode-card { background: #ffffff; color: #0f172a; padding: 20px 10px; border-radius: 20px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; box-shadow: 0 4px 0 #cbd5e1; }
+        .mode-card:active { transform: translateY(3px); box-shadow: 0 0 0 transparent; }
+
+        /* Game Zone */
+        #play-zone { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; padding: 30px; text-align: center; }
+        .timer-bar { height: 6px; background: #334155; border-radius: 10px; margin: 25px 0; overflow: hidden; }
+        #timer-fill { height: 100%; background: linear-gradient(to right, var(--primary), var(--accent)); width: 100%; transition: 1s linear; }
+        .question { font-size: 65px; font-weight: 900; margin: 40px 0; letter-spacing: -2px; }
+        .ans-input { width: 100%; background: #1e293b; border: 3px solid var(--primary); padding: 18px; border-radius: 20px; color: white; font-size: 35px; text-align: center; outline: none; }
+
+        #result-screen { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
+        .result-card { background: var(--card); width: 100%; padding: 40px 20px; border-radius: 32px; border: 2px solid var(--primary); text-align: center; }
+
+        .bottom-nav { background: var(--card); display: flex; justify-content: space-around; padding: 12px 0 25px; border-top: 1px solid #334155; }
+        .nav-item { color: #64748b; font-size: 11px; font-weight: 700; text-align: center; }
+        .active { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+
         
-        .mode-card { 
-            background: #ffffff; 
-            color: #0f172a; 
-            padding: 25px 15px; 
-            border-radius: 22px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            border: none; 
-            font-size: 16px; 
-            transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 0px #cbd5e1;
-        }
-
-        .mode-card:active { 
-            transform: translateY(4px); 
-            box-shadow: 0 0px 0px transparent;
-            background: var(--primary);
-            color: white;
-        }
-
-        .mode-icon { font-size: 28px; }
-
-        /* Full Screen Play Zone */
-        #play-zone { 
-            position: fixed; 
-            inset: 0; 
-            background: var(--bg); 
-            z-index: 1000; 
-            display: none; 
-            padding: 30px; 
-            text-align: center; 
-        }
-
-        .timer-container { 
-            height: 8px; 
-            background: #334155; 
-            border-radius: 10px; 
-            margin: 30px 0; 
-            overflow: hidden; 
-        }
-        
-        #timer-fill { 
-            height: 100%; 
-            background: linear-gradient(to right, var(--primary), var(--neon)); 
-            width: 100%; 
-            transition: 1s linear; 
-        }
-
-        .question { 
-            font-size: 72px; 
-            font-weight: 900; 
-            margin: 60px 0; 
-            color: white; 
-            letter-spacing: -2px;
-        }
-
-        .answer-input { 
-            width: 100%; 
-            background: #1e293b; 
-            border: 3px solid var(--primary); 
-            padding: 22px; 
-            border-radius: 24px; 
-            color: white; 
-            font-size: 40px; 
-            text-align: center; 
-            outline:
-                
