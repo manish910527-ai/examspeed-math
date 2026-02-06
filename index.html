@@ -11,54 +11,10 @@
         body { background: var(--bg); color: white; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
         .header { padding: 15px 20px; background: var(--card); border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
-        .container { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .container { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; }
 
-        /* XP & Progress Card */
-        .status-card { background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 28px; padding: 30px; border: 1px solid #334155; width: 100%; max-width: 380px; text-align: center; margin-bottom: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); position: relative; }
-        .xp-display { font-size: 55px; font-weight: 900; color: white; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
-        .badge { background: var(--primary); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; display: inline-block; margin-top: 10px; }
-
-        /* Buttons Grid */
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 380px; }
-        .mode-btn { background: white; color: #0f172a; padding: 25px 10px; border-radius: 22px; font-weight: 900; border: none; font-size: 16px; cursor: pointer; transition: 0.2s; box-shadow: 0 6px 0 #cbd5e1; }
-        .mode-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #cbd5e1; }
-
-        /* Full Screen Game Overlay */
-        #game-view { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 30px; text-align: center; transition: 0.3s; }
-        .timer-line { height: 6px; background: #334155; border-radius: 10px; margin: 30px 0; overflow: hidden; }
-        #timer-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 100%; transition: 1s linear; }
-        .q-display { font-size: 75px; font-weight: 900; margin: 50px 0; letter-spacing: -2px; }
-        .ans-input { width: 100%; background: #1e293b; border: 3px solid var(--primary); padding: 22px; border-radius: 25px; color: white; font-size: 45px; text-align: center; transition: 0.2s; }
-        .ans-input:focus { border-color: white; box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
-
-        /* Feedback Anims */
-        .correct-flash { background: #064e3b !important; }
-    </style>
-</head>
-<body>
-
-    <div class="header">
-        <b style="color:var(--primary); font-size: 20px;">🚀 EXAM SPEED</b>
-        <div style="background:#334155; padding:5px 12px; border-radius:15px; font-size:13px; font-weight:800;">🔥 Streak: <span id="streak-val">0</span></div>
-    </div>
-
-    <div class="container">
-        <div class="status-card">
-            <p style="color: #94a3b8; font-weight: 800; font-size: 13px; letter-spacing: 1px;">TOTAL BRAIN POWER</p>
-            <div class="xp-display" id="total-xp">0</div>
-            <div class="badge" id="rank-badge">NOVICE</div>
-        </div>
-
-        <div class="btn-grid">
-            <button class="mode-btn" onclick="startGame('+')">➕ Addition</button>
-            <button class="mode-btn" onclick="startGame('-')">➖ Subtract</button>
-            <button class="mode-btn" onclick="startGame('x')">✖️ Multiply</button>
-            <button class="mode-btn" onclick="startGame('/')">➗ Division</button>
-        </div>
-    </div>
-
-    <div id="game-view">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <button onclick="location.reload()" style="background:rgba(255,255,255,0.1); border:none; color:white; padding:8px 15px; border-radius:12px; font-weight:900;">✕ EXIT</button>
-            <div style="font-weight:900; color:var(--primary);
-                
+        /* XP Card & Progress */
+        .status-card { background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 30px; padding: 35px; border: 1px solid #334155; width: 100%; max-width: 400px; text-align: center; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .xp-val { font-size: 65px; font-weight: 900; color: white; text-shadow: 0 0 20px rgba(56, 189, 248, 0.5); line-height: 1; }
+        .rank-tag { display: inline-block; background: var(--primary); color: #000; padding: 5px 15px; border-radius:
+            
