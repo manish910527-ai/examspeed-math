@@ -2,148 +2,135 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>ExamSpeed Math - Official</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ExamSpeed Math - Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0f172a; --primary: #38bdf8; --accent: #f472b6; --card: #1e293b; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Outfit', sans-serif; }
-        body { background: var(--bg); color: white; margin: 0; overflow: hidden; height: 100vh; }
+        :root { 
+            --bg: #0f172a; 
+            --card: #1e293b; 
+            --primary: #38bdf8; 
+            --accent: #f472b6; 
+            --neon: #22c55e; 
+        }
 
-        /* Splash Screen Effect */
-        #splash { position: fixed; inset: 0; background: var(--bg); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.5s; }
+        * { box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        .header { padding: 40px 20px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .container { padding: 0 20px; height: 75vh; overflow-y: auto; }
+        body { 
+            background: var(--bg); 
+            color: white; 
+            margin: 0; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
 
-        /* Modern Cards */
-        .stat-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 24px; padding: 25px; border: 1px solid #334155; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
-        .box { background: white; color: #0f172a; padding: 25px 15px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; font-weight: 900; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        /* Header Styling */
+        .header { 
+            padding: 20px; 
+            background: rgba(30, 41, 59, 0.8); 
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #334155; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-        /* Full Screen Game */
-        #game-view { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; padding: 30px; text-align: center; }
-        .q-circle { width: 220px; height: 220px; border: 10px solid var(--primary); border-radius: 50%; margin: 60px auto; display: flex; align-items: center; justify-content: center; font-size: 50px; font-weight: 900; color: var(--primary); text-shadow: 0 0 15px var(--primary); }
-        .ans-field { background: #1e293b; border: 3px solid var(--primary); border-radius: 20px; width: 100%; padding: 20px; color: white; font-size: 35px; text-align: center; outline: none; }
+        .container { flex: 1; padding: 20px; overflow-y: auto; text-align: center; }
 
-        /* Result */
-        #result-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 30px; }
-        .res-content { background: var(--card); border-radius: 30px; padding: 40px; text-align: center; border: 2px solid var(--primary); width: 100%; }
+        /* Glowing Score Card */
+        .score-card { 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
+            border-radius: 28px; 
+            padding: 30px; 
+            border: 1px solid #334155; 
+            margin-bottom: 25px; 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 0 15px rgba(56, 189, 248, 0.1);
+        }
 
-        .btn-main { background: var(--primary); color: #0f172a; border: none; padding: 18px; border-radius: 15px; font-weight: 900; width: 100%; font-size: 18px; margin-top: 20px; }
+        .score-val { 
+            font-size: 56px; 
+            font-weight: 900; 
+            color: var(--primary); 
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.5); 
+            margin: 5px 0;
+        }
+
+        /* Mode Buttons Grid */
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         
-        .nav { position: fixed; bottom: 0; width: 100%; background: #1e293b; display: flex; justify-content: space-around; padding: 15px 10px 25px; border-radius: 30px 30px 0 0; }
-        .nav-item { color: #94a3b8; text-align: center; font-size: 11px; font-weight: 700; }
-        .nav-item.active { color: var(--primary); }
-    </style>
-</head>
-<body>
-
-    <div id="splash">
-        <h1 style="font-size: 40px; color: var(--primary);">🚀</h1>
-        <h2 style="letter-spacing: 2px;">EXAM SPEED</h2>
-        <div style="width: 100px; height: 4px; background: #334155; border-radius: 2px; margin-top: 20px;">
-            <div id="load-bar" style="width: 0%; height: 100%; background: var(--primary); border-radius: 2px; transition: 1s;"></div>
-        </div>
-    </div>
-
-    <div id="app-body">
-        <div class="header">
-            <div><span style="font-weight: 900; font-size: 24px; color: var(--primary);">EXAM SPEED</span><br><small style="color:#94a3b8;">Welcome Back, Captain!</small></div>
-            <div style="font-size: 24px;">💎</div>
-        </div>
-
-        <div class="container">
-            <div class="stat-card">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div><small style="color:var(--primary); font-weight:700;">TOTAL BRAIN XP</small><h1 id="total-xp" style="margin:0; font-size:35px;">0</h1></div>
-                    <div style="font-size: 40px;">🔥</div>
-                </div>
-            </div>
-
-            <div class="grid">
-                <div class="box" onclick="launchGame('+')"><span>➕</span> ADDITION</div>
-                <div class="box" onclick="launchGame('-')"><span>➖</span> SUBTRACT</div>
-                <div class="box" onclick="launchGame('x')"><span>✖️</span> MULTIPLY</div>
-                <div class="box" onclick="launchGame('/')"><span>➗</span> DIVISION</div>
-            </div>
-        </div>
-
-        <nav class="nav">
-            <div class="nav-item active">🏠<br>Home</div>
-            <div class="nav-item">📊<br>Stats</div>
-            <div class="nav-item">🏆<br>Rank</div>
-            <div class="nav-item">⚙️<br>Settings</div>
-        </nav>
-    </div>
-
-    <div id="game-view">
-        <div style="display:flex; justify-content:space-between; align-items:center; font-weight:900;">
-            <div onclick="location.reload()" style="font-size: 25px;">✕</div>
-            <div id="timer" style="color:var(--accent);">20s</div>
-            <div id="live-score">0</div>
-        </div>
-        <div class="q-circle" id="q-box">--</div>
-        <input type="number" id="ans-input" class="ans-field" placeholder="?" inputmode="numeric">
-    </div>
-
-    <div id="result-popup">
-        <div class="res-content">
-            <h1 style="color:var(--primary);">TIME'S UP!</h1>
-            <p style="color:#94a3b8;">You earned</p>
-            <h2 style="font-size:50px; margin:10px 0;"><span id="final-xp">0</span> XP</h2>
-            <button class="btn-main" onclick="location.reload()">CLAIM REWARD</button>
-        </div>
-    </div>
-
-    <script>
-        // Loading Splash Screen
-        setTimeout(() => { 
-            document.getElementById('load-bar').style.width = '100%';
-            setTimeout(() => { document.getElementById('splash').style.opacity = '0'; 
-            setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 500);
-            }, 1000);
-        }, 500);
-
-        let xp = parseInt(localStorage.getItem('math_xp')) || 0;
-        let score = 0, target = 0, time = 20, mode = '+';
-        document.getElementById('total-xp').innerText = xp;
-
-        function launchGame(m) {
-            mode = m; score = 0; time = 20;
-            document.getElementById('game-view').style.display = 'block';
-            newQ();
-            let clock = setInterval(() => {
-                time--;
-                document.getElementById('timer').innerText = time + "s";
-                if(time <= 0) { clearInterval(clock); showResult(); }
-            }, 1000);
+        .mode-card { 
+            background: #ffffff; 
+            color: #0f172a; 
+            padding: 25px 15px; 
+            border-radius: 22px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            border: none; 
+            font-size: 16px; 
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 0px #cbd5e1;
         }
 
-        function newQ() {
-            let n1 = Math.floor(Math.random()*15)+2, n2 = Math.floor(Math.random()*15)+2;
-            if(mode==='+') { target = n1+n2; document.getElementById('q-box').innerText = n1+"+"+n2; }
-            if(mode==='-') { if(n1<n2) [n1,n2]=[n2,n1]; target = n1-n2; document.getElementById('q-box').innerText = n1+"-"+n2; }
-            if(mode==='x') { target = n1*n2; document.getElementById('q-box').innerText = n1+"x"+n2; }
-            document.getElementById('ans-input').value = "";
-            document.getElementById('ans-input').focus();
+        .mode-card:active { 
+            transform: translateY(4px); 
+            box-shadow: 0 0px 0px transparent;
+            background: var(--primary);
+            color: white;
         }
 
-        document.getElementById('ans-input').addEventListener('input', (e) => {
-            if(parseInt(e.target.value) === target) {
-                score += 10;
-                document.getElementById('live-score').innerText = score;
-                newQ();
-            }
-        });
+        .mode-icon { font-size: 28px; }
 
-        function showResult() {
-            document.getElementById('game-view').style.display = 'none';
-            document.getElementById('result-popup').style.display = 'flex';
-            document.getElementById('final-xp').innerText = score;
-            localStorage.setItem('math_xp', xp + score);
+        /* Full Screen Play Zone */
+        #play-zone { 
+            position: fixed; 
+            inset: 0; 
+            background: var(--bg); 
+            z-index: 1000; 
+            display: none; 
+            padding: 30px; 
+            text-align: center; 
         }
-    </script>
-</body>
-</html>
+
+        .timer-container { 
+            height: 8px; 
+            background: #334155; 
+            border-radius: 10px; 
+            margin: 30px 0; 
+            overflow: hidden; 
+        }
+        
+        #timer-fill { 
+            height: 100%; 
+            background: linear-gradient(to right, var(--primary), var(--neon)); 
+            width: 100%; 
+            transition: 1s linear; 
+        }
+
+        .question { 
+            font-size: 72px; 
+            font-weight: 900; 
+            margin: 60px 0; 
+            color: white; 
+            letter-spacing: -2px;
+        }
+
+        .answer-input { 
+            width: 100%; 
+            background: #1e293b; 
+            border: 3px solid var(--primary); 
+            padding: 22px; 
+            border-radius: 24px; 
+            color: white; 
+            font-size: 40px; 
+            text-align: center; 
+            outline:
+                
