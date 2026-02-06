@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P2P5FYHWSH"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-P2P5FYHWSH');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExamSpeed Math - SSC & Banking</title>
+    <title>ExamSpeed Math - SSC & Banking Practice</title>
     
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#38bdf8">
@@ -47,7 +55,7 @@
 
     <div class="nav">
         <b style="color:var(--primary); font-size: 18px;">EXAM SPEED</b>
-        <div id="rank-name" style="font-weight: 900; color: var(--gold); font-size: 12px;">STUDENT</div>
+        <div id="rank-name" style="font-weight: 900; color: var(--gold); font-size: 12px;">ASPIRANT</div>
     </div>
 
     <div class="container" id="dashboard">
@@ -104,7 +112,6 @@
                 <tr><th>Topic</th><th>Fast Trick</th></tr>
                 <tr><td>Square of 5</td><td>65² = (6x7) | 25 = 4225</td></tr>
                 <tr><td>Multiply by 11</td><td>12x11 = 1 (1+2) 2 = 132</td></tr>
-                <tr><td>Profit %</td><td>(Profit / CP) x 100</td></tr>
                 <tr><td>CI (2 Yrs)</td><td>2r + (r²/100)</td></tr>
             </table>
         </div>
@@ -128,23 +135,31 @@
         let score = 0, target = 0, mode = '+';
         document.getElementById('main-xp').innerText = xp;
 
-        // PWA Registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
+        // Analytics Event Tracker
+        function trackEvent(action, label) {
+            if(window.gtag) gtag('event', action, {'event_category': 'Game', 'event_label': label});
         }
 
         // Revision Logic
-        function openRevision() { document.getElementById('rev-overlay').style.display = 'flex'; }
+        function openRevision() { 
+            document.getElementById('rev-overlay').style.display = 'flex'; 
+            trackEvent('open_revision', 'SSC_Zone');
+        }
         function closeRevision() { document.getElementById('rev-overlay').style.display = 'none'; backToRev(); }
-        function showTopic(id) { document.getElementById('rev-menu').style.display = 'none'; document.getElementById('content-'+id).style.display = 'block'; }
+        function showTopic(id) { 
+            document.getElementById('rev-menu').style.display = 'none'; 
+            document.getElementById('content-'+id).style.display = 'block'; 
+            trackEvent('view_topic', id);
+        }
         function backToRev() { document.querySelectorAll('.data-card').forEach(el => el.style.display = 'none'); document.getElementById('rev-menu').style.display = 'grid'; }
 
         // Game Logic
         function initGame(m) {
             mode = m; score = 0;
             document.getElementById('game-overlay').style.display = 'flex';
+            trackEvent('start_game', mode);
             newQ();
-            setTimeout(finish, 20000); // 20 Seconds
+            setTimeout(finish, 20000); 
         }
 
         function newQ() {
@@ -172,9 +187,10 @@
             document.getElementById('game-overlay').style.display = 'none';
             document.getElementById('result-screen').style.display = 'flex';
             document.getElementById('final-score').innerText = score;
-            let msg = score >= 100 ? "Excellent! SSC Aspirant Level! 🔥" : "Keep Practicing! Accuracy is key. 💪";
+            let msg = score >= 100 ? "Excellent! SSC Level Speed! 🔥" : "Keep Practicing! 💪";
             document.getElementById('motivate-msg').innerText = msg;
             localStorage.setItem('math_xp', xp + score);
+            trackEvent('finish_game', score);
             if(score >= 100) confetti({ particleCount: 150 });
         }
     </script>
