@@ -19,7 +19,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
-        :root { --bg: #0f172a; --primary: #38bdf8; --card: #1e293b; --gold: #fbbf24; --success: #22c55e; }
+        :root { --bg: #0f172a; --primary: #38bdf8; --card: #1e293b; --gold: #fbbf24; --success: #22c55e; --danger: #ef4444; }
         * { box-sizing: border-box; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
@@ -45,9 +45,19 @@
 
         .rev-fab { position: fixed; bottom: 20px; left: 20px; right: 20px; background: var(--gold); color: #0f172a; padding: 16px; border-radius: 50px; font-weight: 900; border: none; font-size: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); z-index: 100; cursor: pointer; }
 
-        #game-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 30px; }
+        /* Game UI con Exit Button */
+        #game-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 20px; }
+        .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .exit-btn { background: #334155; color: white; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 800; font-size: 12px; cursor: pointer; }
         .q-display { font-size: 60px; font-weight: 900; text-align: center; margin: 40px 0; min-height: 80px; }
         .ans-field { width: 100%; background: #1e293b; border: 3px solid var(--primary); padding: 20px; border-radius: 20px; color: white; font-size: 40px; text-align: center; }
+
+        /* PDF Cards */
+        .pdf-card { background: var(--card); border: 1px solid #334155; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .pdf-info { display: flex; flex-direction: column; gap: 4px; }
+        .pdf-title { font-weight: 800; font-size: 14px; color: white; }
+        .pdf-sub { font-size: 11px; color: #94a3b8; }
+        .download-btn { background: var(--success); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 900; font-size: 12px; cursor: pointer; }
 
         #result-screen { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 25px; text-align: center; }
         .result-box { background: #1e293b; padding: 25px; border-radius: 25px; border: 1px solid #334155; width: 100%; max-width: 320px; margin-bottom: 20px; }
@@ -67,7 +77,7 @@
 
     <div class="nav">
         <b style="color:var(--primary); font-size: 18px;">⚡ ExamSpeed Math</b>
-        <button onclick="alert('How to Use:\n1. Choose Basics for speed.\n2. Choose Advance for Exam prep.\n3. Check Revision Zone for Tables/Squares.\n4. Challenge friends to grow!')" style="background:none; border:1px solid #334155; color:#94a3b8; padding:4px 10px; border-radius:8px; font-size:10px; font-weight:800;">HOW TO USE?</button>
+        <button onclick="alert('How to Use:\n1. Game se bahar aane ke liye EXIT button dabayein.\n2. PDF section niche add kiya gaya hai.\n3. Revision Zone se practice karein.')" style="background:none; border:1px solid #334155; color:#94a3b8; padding:4px 10px; border-radius:8px; font-size:10px; font-weight:800;">TIPS</button>
     </div>
 
     <div class="container" id="dashboard">
@@ -82,7 +92,23 @@
             </div>
         </div>
 
-        <div class="section-title">BASICS</div>
+        <div class="section-title">FREE STUDY MATERIAL (PDF)</div>
+        <div class="pdf-card">
+            <div class="pdf-info">
+                <div class="pdf-title">SSC Math Practice Set-01</div>
+                <div class="pdf-sub">25 Questions • Calculation Special</div>
+            </div>
+            <button class="download-btn" onclick="window.open('Aapka_Link_Yahan_Hoga', '_blank')">VIEW</button>
+        </div>
+        <div class="pdf-card">
+            <div class="pdf-info">
+                <div class="pdf-title">1-50 Squares & Cubes Chart</div>
+                <div class="pdf-sub">Must for Fast Calculation</div>
+            </div>
+            <button class="download-btn" onclick="window.open('Aapka_Link_Yahan_Hoga', '_blank')">VIEW</button>
+        </div>
+
+        <div class="section-title">PRACTICE MODES</div>
         <div class="btn-grid">
             <button class="mode-btn btn-blue" onclick="initGame('+')">ADDITION <span>12 + 8</span></button>
             <button class="mode-btn btn-blue" onclick="initGame('-')">SUBTRACT <span>45 - 12</span></button>
@@ -102,9 +128,12 @@
     <button class="rev-fab" onclick="openRevision()">📚 REVISION ZONE (Tables/Squares)</button>
 
     <div id="game-overlay">
-        <div style="display:flex; justify-content:space-between; font-weight:900;">
-            <span id="game-mode-lbl">GAME</span>
-            <span style="color:var(--gold);">Score: <span id="live-score">0</span></span>
+        <div class="game-header">
+            <button class="exit-btn" onclick="exitGame()">✕ EXIT</button>
+            <div style="text-align:right;">
+                <span id="game-mode-lbl" style="font-size:12px; font-weight:800; color:#94a3b8; display:block;">GAME</span>
+                <span style="color:var(--gold); font-weight:900;">Score: <span id="live-score">0</span></span>
+            </div>
         </div>
         <div class="q-display" id="q-text">--</div>
         <input type="number" id="ans-input" class="ans-field" placeholder="?" inputmode="numeric">
@@ -136,13 +165,10 @@
             <button class="mode-btn" onclick="showTopic('cubes')">Cubes (1-20)</button>
             <button class="mode-btn" onclick="showTopic('frac')">Fractions %</button>
         </div>
-
         <div id="content-tables" class="data-card">
             <button onclick="backToRev()" style="color:var(--primary); margin-bottom:15px; background:none; border:none; font-weight:800;">← BACK</button>
-            <h3 style="margin-bottom:15px;">Multiplication Tables</h3>
             <div id="tables-list"></div>
         </div>
-
         <div id="content-squares" class="data-card">
             <button onclick="backToRev()" style="color:var(--primary); margin-bottom:10px; background:none; border:none; font-weight:800;">← BACK</button>
             <table><tr><th>Num</th><th>Square</th></tr><script>for(let i=1;i<=30;i++) document.write(`<tr><td>${i}²</td><td><b>${i*i}</b></td></tr>`);</script></table>
@@ -150,10 +176,6 @@
         <div id="content-cubes" class="data-card">
             <button onclick="backToRev()" style="color:var(--primary); margin-bottom:10px; background:none; border:none; font-weight:800;">← BACK</button>
             <table><tr><th>Num</th><th>Cube</th></tr><script>for(let i=1;i<=20;i++) document.write(`<tr><td>${i}³</td><td><b>${i*i*i}</b></td></tr>`);</script></table>
-        </div>
-        <div id="content-frac" class="data-card">
-            <button onclick="backToRev()" style="color:var(--primary); margin-bottom:10px; background:none; border:none; font-weight:800;">← BACK</button>
-            <table><tr><th>Fraction</th><th>% Value</th></tr><tr><td>1/2</td><td>50%</td></tr><tr><td>1/3</td><td>33.33%</td></tr><tr><td>1/4</td><td>25%</td></tr><tr><td>1/8</td><td>12.5%</td></tr></table>
         </div>
     </div>
 
@@ -163,22 +185,25 @@
         document.getElementById('main-xp').innerText = xp;
         document.getElementById('total-solved').innerText = totalSolved;
 
+        let score = 0, target = 0, mode = '+', count = 0, startTime = 0, gameTimer;
+
+        function exitGame() {
+            clearTimeout(gameTimer);
+            location.reload(); // Seedha dashboard par wapas
+        }
+
         function initTables() {
             let html = '';
             for(let i=2; i<=25; i++) {
                 html += `<div style="margin-bottom:20px;"><h4 style="color:var(--gold)">Table of ${i}</h4><div class="table-grid">`;
-                for(let j=1; j<=10; j++) {
-                    html += `<div class="table-item">${i} × ${j} = <b>${i*j}</b></div>`;
-                }
+                for(let j=1; j<=10; j++) { html += `<div class="table-item">${i} × ${j} = <b>${i*j}</b></div>`; }
                 html += `</div></div>`;
             }
             document.getElementById('tables-list').innerHTML = html;
         }
         initTables();
 
-        let score = 0, target = 0, mode = '+', count = 0, startTime = 0;
-        function track(action, label) { if(window.gtag) gtag('event', action, {'event_label': label}); }
-        function openRevision() { document.getElementById('rev-overlay').style.display = 'flex'; track('rev_open', 'user'); }
+        function openRevision() { document.getElementById('rev-overlay').style.display = 'flex'; }
         function closeRevision() { document.getElementById('rev-overlay').style.display = 'none'; backToRev(); }
         function showTopic(id) { document.getElementById('rev-menu').style.display = 'none'; document.getElementById('content-'+id).style.display = 'block'; }
         function backToRev() { document.querySelectorAll('.data-card').forEach(el => el.style.display = 'none'); document.getElementById('rev-menu').style.display = 'grid'; }
@@ -191,7 +216,7 @@
             document.getElementById('game-mode-lbl').innerText = m.toUpperCase();
             newQ();
             startTime = Date.now();
-            setTimeout(finish, 30000); 
+            gameTimer = setTimeout(finish, 30000); 
         }
 
         function newQ() {
@@ -213,7 +238,6 @@
 
         document.getElementById('ans-input').addEventListener('input', (e) => {
             if(parseInt(e.target.value) === target) {
-                if(navigator.vibrate) navigator.vibrate(30);
                 score += 10; count++;
                 document.getElementById('live-score').innerText = score;
                 newQ();
@@ -235,10 +259,10 @@
 
         function shareChallenge() {
             let s = document.getElementById('final-score').innerText;
-            let sp = document.getElementById('speed-stat').innerText;
-            let text = `🔥 Maine *ExamSpeed Math* par *${s}* score kiya! speed: *${sp}* /question. \n\n दम है तो मुझे हरा के दिखाओ! \n\n यहाँ क्लिक करो: https://examspeed-math.vercel.app/`;
+            let text = `🔥 Maine *ExamSpeed Math* par *${s}* score kiya! \n\n दम है तो मुझे हरा के दिखाओ! \n\n यहाँ क्लिक करो: https://examspeed-math.vercel.app/`;
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
     </script>
 </body>
-</html>
+            </html>
+    
