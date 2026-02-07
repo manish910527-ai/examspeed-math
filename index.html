@@ -1,139 +1,261 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <title>ExamSpeed Math Quiz</title>
-  <style>
-    /* मौजूदा स्टाइल और लेआउट यथावत् रखने के लिए कोई नया स्टाइल नहीं जोड़ा गया */
-    .hidden { display: none; }
-    #result-container { /* परिणाम स्क्रीन के लिए किसी विशेष स्टाइल की आवश्यकता नहीं */ }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ExamSpeed Math - RAMA PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Hind:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root { 
+            --bg: #0b0f1a; --card: #161b2c; --primary: #38bdf8; 
+            --accent: #818cf8; --gold: #fbbf24; --success: #22c55e; --danger: #ef4444; 
+        }
+        * { box-sizing: border-box; font-family: 'Outfit', 'Hind', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: white; height: 100vh; overflow: hidden; }
+        
+        /* Glassmorphism Header */
+        .header { padding: 20px; background: rgba(22, 27, 44, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        
+        .main-container { height: calc(100vh - 140px); overflow-y: auto; padding: 20px; padding-bottom: 40px; }
+
+        /* Level Progress Card */
+        .level-card { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 24px; padding: 20px; margin-bottom: 25px; border: 1px solid rgba(56, 189, 248, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .lvl-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .lvl-badge { background: var(--gold); color: #000; padding: 4px 12px; border-radius: 20px; font-weight: 900; font-size: 12px; }
+        .progress-container { background: rgba(255,255,255,0.1); height: 10px; border-radius: 10px; overflow: hidden; }
+        .progress-bar { background: var(--primary); height: 100%; width: 45%; transition: 0.5s ease; box-shadow: 0 0 10px var(--primary); }
+
+        /* Navigation Bottom Bar */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #161b2c; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
+        .nav-item { color: #64748b; text-align: center; font-size: 11px; font-weight: 800; cursor: pointer; }
+        .nav-item.active { color: var(--primary); }
+
+        /* Topic Cards */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .topic-card { background: var(--card); border-radius: 20px; padding: 20px; border: 1px solid #232a3d; position: relative; overflow: hidden; transition: 0.3s; }
+        .topic-card:active { transform: scale(0.95); background: #1c243a; }
+        .topic-card h3 { font-size: 14px; margin-bottom: 5px; }
+        .topic-card span { font-size: 10px; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
+        .icon-circle { width: 35px; height: 35px; border-radius: 50%; background: rgba(56, 189, 248, 0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; color: var(--primary); }
+
+        /* Quiz UI Overhaul */
+        .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; }
+        .quiz-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .quiz-body { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: center; }
+        .question-card { background: var(--card); border-radius: 30px; padding: 30px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 40px rgba(0,0,0,0.4); margin-bottom: 20px; text-align: center; }
+        .question-card h2 { font-size: 24px; line-height: 1.4; }
+
+        .option-btn { background: #1c243a; color: white; padding: 18px; border-radius: 20px; border: 1px solid #2d364d; margin-bottom: 12px; width: 100%; text-align: left; font-size: 16px; font-weight: 600; transition: 0.2s; }
+        .correct { background: var(--success) !important; border-color: white !important; }
+        .wrong { background: var(--danger) !important; border-color: white !important; }
+
+        .solution-pane { background: rgba(56, 189, 248, 0.1); border-radius: 20px; padding: 20px; margin-top: 10px; display: none; border: 1px dashed var(--primary); }
+        
+        /* Stats Widget */
+        .stat-badge { font-size: 12px; font-weight: 800; color: var(--gold); background: rgba(251, 191, 36, 0.1); padding: 5px 12px; border-radius: 10px; }
+    </style>
 </head>
 <body>
-  <!-- प्रेरक संदेश और काउंटर -->
-  <div id="header">
-    <h1>ख़ुशी से सीखें और अभ्यास जारी रखें!</h1>
-    <div id="status">
-      <p>अनुभव बिंदु (XP): <span id="xpCount">0</span></p>
-      <p>समाधित प्रश्न: <span id="solvedCount">0</span></p>
+
+    <div class="header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:10px; height:10px; border-radius:50%; background:var(--success); box-shadow: 0 0 10px var(--success);"></div>
+            <b style="font-size:18px; letter-spacing: -0.5px;">ExamSpeed <span style="color:var(--primary)">Math</span></b>
+        </div>
+        <div class="stat-badge">RAMA PRO</div>
     </div>
-  </div>
-  
-  <!-- Revision zones (मूल संरचना बनी रही) -->
-  <div id="revision-zones">
-    <!-- तालिका, वर्ग, घन, सूत्र आदि के विभाग (मौजूदा HTML) -->
-  </div>
-  
-  <!-- Quiz विषय बटन -->
-  <div id="topics">
-    <button id="percentageBtn">प्रतिशत</button>
-    <button id="profitBtn">लाभ/हानि</button>
-    <!-- अन्य विषय बटन -->
-  </div>
-  
-  <!-- Quiz कंटेनर: प्रश्न और विकल्प -->
-  <div id="quiz-container">
-    <!-- प्रश्न और विकल्प को दिखाने वाला मूल कंटेंट -->
-    <!-- उदाहरण स्वरूप -->
-    <p id="question">प्रश्न यहाँ प्रदर्शित होगा</p>
-    <ul id="options">
-      <li class="option">विकल्प 1</li>
-      <li class="option">विकल्प 2</li>
-      <li class="option">विकल्प 3</li>
-    </ul>
-    <button id="next-btn">अगला</button>
-  </div>
-  
-  <!-- परिणाम स्क्रीन, प्रारंभ में छिपी हुई -->
-  <div id="result-container" class="hidden">
-    <h2>परिणाम</h2>
-    <p>कुल प्रश्न: <span id="total-questions">0</span></p>
-    <p>सही उत्तर: <span id="correct-answers">0</span></p>
-    <p>गलत उत्तर: <span id="wrong-answers">0</span></p>
-    <p>अंक: <span id="final-score">0</span>/50</p>
-    <p>सटीकता: <span id="accuracy">0</span>%</p>
-    <p>प्रदर्शन: <span id="performance">अभ्यास की आवश्यकता</span></p>
-  </div>
 
-  <script>
-    // मौजूदा डेटा और लॉजिक (50 प्रश्न/विषय) को बरकरार रखते हुए
-    let currentQuestion = 0;
-    const totalQuestions = 50;
-    let correctCount = 0;
-    let wrongCount = 0;
-    let xpCount = 0;
-    let solvedCount = 0;
+    <div class="main-container" id="dashboard">
+        <div class="level-card">
+            <div class="lvl-header">
+                <div>
+                    <span style="color:#94a3b8; font-size:12px; font-weight:800;">CURRENT PROGRESS</span>
+                    <h2 id="lvl-txt" style="font-size:20px;">Level 1: Beginner</h2>
+                </div>
+                <div class="lvl-badge">XP: <span id="main-xp">0</span></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="xp-bar"></div>
+            </div>
+            <p style="font-size:11px; color:#64748b; margin-top:10px;">Solve <span id="xp-needed">500</span> more XP to reach Level 2</p>
+        </div>
 
-    // उदाहरण: प्रश्न-डेटा (मूल कोड से लिया गया) 
-    // let quizData = [ /* 50 प्रश्नों का डेटा */ ];
+        <div class="section-title">CHALLENGE MODES</div>
+        <div class="grid-2">
+            <div class="topic-card" onclick="startQuiz('Percentage')">
+                <div class="icon-circle">%</div>
+                <h3>Percentage</h3>
+                <span>50 Questions</span>
+            </div>
+            <div class="topic-card" onclick="startQuiz('ProfitLoss')">
+                <div class="icon-circle">₹</div>
+                <h3>Profit & Loss</h3>
+                <span>50 Questions</span>
+            </div>
+        </div>
 
-    // प्रश्न दिखाने की सुविधा (मूल लॉजिक)
-    function showQuestion() {
-      // मौजूदा प्रश्न डेटा दिखाने के लिए कोड
-      // जैसे: document.getElementById("question").innerHTML = quizData[currentQuestion].question;
-      // विकल्प भरना आदि।
-    }
+        <div class="section-title">SPEED DRILLS</div>
+        <div class="grid-2">
+            <div class="topic-card" style="border-left: 4px solid var(--success);" onclick="openSpeedMenu('+')">
+                <h3>Addition</h3>
+                <span>Level: Easy</span>
+            </div>
+            <div class="topic-card" style="border-left: 4px solid var(--gold);" onclick="openSpeedMenu('sq')">
+                <h3>Squares</h3>
+                <span>Level: Medium</span>
+            </div>
+        </div>
 
-    // उत्तर की जाँच करना (मूल लॉजिक)
-    function checkAnswer(selectedIndex) {
-      // अगर सही हो:
-      if (selectedIndex === /* सही उत्तर का इंडेक्स */) {
-        correctCount += 1;  // सही उत्तरों की गिनती बढ़ाएं
-      } else {
-        wrongCount += 1;    // गलत उत्तरों की गिनती बढ़ाएं
-      }
-      // XP और solved का अपडेट (हर प्रश्न के बाद भी संभवतः होता है)
-      // xpCount += अंक; // यदि जरूरी हो तो
-      // solvedCount += 1;
-    }
+        <div class="motivation-card" style="background: rgba(129, 140, 248, 0.1); border-radius: 20px; padding: 20px; border: 1px solid var(--accent); margin-top: 10px;">
+            <h4 style="color:var(--accent); margin-bottom:5px;">💡 RAMA का संदेश</h4>
+            <p style="font-size:13px; line-height:1.5; color:#cbd5e1;">"अपनी रफ़्तार को ही अपनी पहचान बनाओ। हर एक सही जवाब आपको आपकी मंज़िल के करीब ले जा रहा है!"</p>
+        </div>
+    </div>
 
-    // अगले प्रश्न पर जाने का बटन
-    document.getElementById("next-btn").addEventListener("click", function() {
-      currentQuestion++;
-      if (currentQuestion >= totalQuestions) {
-        // Quiz समाप्त, परिणाम दिखाएं
-        showResults();
-      } else {
-        // अगला प्रश्न दिखाएँ
-        showQuestion();
-      }
-    });
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="location.reload()">
+            <div style="font-size:20px;">🏠</div>
+            Home
+        </div>
+        <div class="nav-item" onclick="openRev('formula')">
+            <div style="font-size:20px;">📚</div>
+            Revision
+        </div>
+        <div class="nav-item" onclick="window.open('https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p')">
+            <div style="font-size:20px;">💬</div>
+            Updates
+        </div>
+    </div>
 
-    // परिणाम स्क्रीन भरने और दिखाने वाला फ़ंक्शन
-    function showResults() {
-      // गलत उत्तरों की संख्या कुल से घटाकर निकाल सकते हैं (या अब तक इकट्ठे wrongCount देखें)
-      document.getElementById("total-questions").innerHTML = totalQuestions;
-      document.getElementById("correct-answers").innerHTML = correctCount;
-      // यदि गलत उत्तरों को ट्रैक किया गया है:
-      document.getElementById("wrong-answers").innerHTML = wrongCount;
-      // यदि wrongCount न रखता हो, तो इसे इस प्रकार भी कर सकते हैं:
-      // document.getElementById("wrong-answers").innerHTML = totalQuestions - correctCount;
-      
-      document.getElementById("final-score").innerHTML = correctCount;
-      let accuracy = Math.round((correctCount / totalQuestions) * 100);
-      document.getElementById("accuracy").innerHTML = accuracy;
+    <div id="quiz-overlay" class="overlay">
+        <div class="quiz-header">
+            <button onclick="location.reload()" style="background:none; border:none; color:#64748b; font-weight:800;">✕ CLOSE</button>
+            <div class="stat-badge" id="q-progress">Q 1/50</div>
+            <div id="quiz-score" style="font-weight:900; color:var(--primary);">0 XP</div>
+        </div>
+        <div class="quiz-body">
+            <div class="question-card">
+                <h2 id="quiz-question">Loading...</h2>
+            </div>
+            <div id="quiz-options"></div>
+            <div class="solution-pane" id="solution-text"></div>
+        </div>
+        <div style="padding: 20px;">
+            <button id="next-btn" onclick="nextQuestion()" style="display:none; width:100%; padding:20px; border-radius:20px; border:none; background:var(--primary); color:white; font-weight:900; font-size:16px; box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3);">NEXT QUESTION ➔</button>
+        </div>
+    </div>
 
-      // प्रदर्शन के लिए प्रतिक्रिया तय करें
-      let feedback = "";
-      if (accuracy >= 80) {
-        feedback = "उत्कृष्ट";
-      } else if (accuracy >= 50) {
-        feedback = "अच्छा";
-      } else {
-        feedback = "अभ्यास की आवश्यकता";
-      }
-      document.getElementById("performance").innerHTML = feedback;
+    <div id="speed-menu" class="overlay" style="justify-content:center; align-items:center; background:rgba(11,15,26,0.95);">
+        <div style="width:80%; max-width:300px;">
+            <h3 style="text-align:center; margin-bottom:20px;">SELECT DIFFICULTY</h3>
+            <button class="option-btn" style="text-align:center; background:var(--success);" onclick="initSpeed('basic')">BASIC</button>
+            <button class="option-btn" style="text-align:center; background:var(--gold);" onclick="initSpeed('medium')">MEDIUM</button>
+            <button class="option-btn" style="text-align:center; background:var(--danger);" onclick="initSpeed('hard')">TOUGH</button>
+            <p onclick="document.getElementById('speed-menu').style.display='none'" style="text-align:center; margin-top:20px; color:#64748b;">Cancel</p>
+        </div>
+    </div>
 
-      // XP और solved काउंटर अपडेट करें
-      xpCount += correctCount;            // उदाहरण: प्रत्येक सही उत्तर पर 1 XP
-      solvedCount += totalQuestions;     // पूरे क्विज के प्रश्नों की गिनती से जोड़ें
-      document.getElementById("xpCount").innerHTML = xpCount;
-      document.getElementById("solvedCount").innerHTML = solvedCount;
+    <div id="rev-overlay" class="overlay" style="padding:20px; display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 id="rev-title">Revision</h2>
+            <button onclick="document.getElementById('rev-overlay').style.display='none'" style="background:none; border:none; color:white; font-size:24px;">✕</button>
+        </div>
+        <div id="rev-content" style="overflow-y:auto;"></div>
+    </div>
 
-      // Quiz भाग को छिपाकर परिणाम भाग दिखाएँ
-      document.getElementById("quiz-container").style.display = "none";
-      document.getElementById("result-container").style.display = "block";
-    }
-  </script>
+    <script>
+        // State Management
+        let xp = parseInt(localStorage.getItem('math_xp_pro')) || 0;
+        let solved = parseInt(localStorage.getItem('math_solved_pro')) || 0;
+        let currentLevel = Math.floor(xp / 500) + 1;
+
+        // Sync Dashboard
+        function updateStats() {
+            document.getElementById('main-xp').innerText = xp;
+            document.getElementById('lvl-txt').innerText = `Level ${currentLevel}: ${currentLevel > 3 ? 'Scholar' : 'Beginner'}`;
+            let progress = ((xp % 500) / 500) * 100;
+            document.getElementById('xp-bar').style.width = progress + "%";
+            document.getElementById('xp-needed').innerText = 500 - (xp % 500);
+            localStorage.setItem('math_xp_pro', xp);
+            localStorage.setItem('math_solved_pro', solved);
+        }
+        updateStats();
+
+        // Topic Data (Hindi)
+        const quizData = {
+            'Percentage': Array.from({length: 50}, (_, i) => ({
+                q: `[प्रश्न ${i+1}] यदि एक छात्र 500 में से ${200+i*5} अंक प्राप्त करता है, तो उसका प्रतिशत क्या है?`,
+                opts: [`${((200+i*5)/5).toFixed(1)}%`, `${(20+i).toFixed(1)}%`, "45%", "60%"],
+                ans: `${((200+i*5)/5).toFixed(1)}%`,
+                sol: `Solution: (प्राप्तांक / कुल अंक) × 100 -> (${200+i*5} / 500) × 100 = ${((200+i*5)/5).toFixed(1)}%`
+            })),
+            'ProfitLoss': Array.from({length: 50}, (_, i) => ({
+                q: `[प्रश्न ${i+1}] एक वस्तु ₹${1000+i*20} में खरीदी गई और 10% लाभ पर बेची गई। विक्रय मूल्य ज्ञात करें?`,
+                opts: [`₹${(1000+i*20)*1.1}`, `₹${1000+i*20 + 50}`, `₹${1000+i*20 + 100}`, "None"],
+                ans: `₹${(1000+i*20)*1.1}`,
+                sol: `Solution: SP = CP × (110/100) -> ${1000+i*20} × 1.1 = ₹${(1000+i*20)*1.1}`
+            }))
+        };
+
+        let qIdx = 0, currentTopic = '', quizXP = 0;
+
+        function startQuiz(t) {
+            currentTopic = t; qIdx = 0; quizXP = 0;
+            document.getElementById('quiz-overlay').style.display = 'flex';
+            document.getElementById('quiz-title').innerText = t;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const data = quizData[currentTopic][qIdx];
+            document.getElementById('quiz-question').innerText = data.q;
+            document.getElementById('q-progress').innerText = `Q ${qIdx+1}/50`;
+            document.getElementById('solution-text').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            
+            let html = '';
+            data.opts.forEach(o => {
+                html += `<button class="option-btn" onclick="checkAnswer(this, '${o}', '${data.ans}', '${data.sol}')">${o}</button>`;
+            });
+            document.getElementById('quiz-options').innerHTML = html;
+        }
+
+        function checkAnswer(btn, sel, cor, sol) {
+            document.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'none');
+            if(sel === cor) {
+                btn.classList.add('correct');
+                quizXP += 20; xp += 20; solved++;
+                confetti({ particleCount: 40, origin: { y: 0.7 } });
+            } else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('.option-btn').forEach(b => { if(b.innerText === cor) b.classList.add('correct'); });
+            }
+            document.getElementById('solution-text').innerHTML = `<b>💡 Solution:</b><br>${sol}`;
+            document.getElementById('solution-text').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'block';
+            document.getElementById('quiz-score').innerText = quizXP + " XP";
+            updateStats();
+        }
+
+        function nextQuestion() {
+            qIdx++;
+            if(qIdx < 50) renderQuestion();
+            else { alert("Amazing! You finished 50 questions."); location.reload(); }
+        }
+
+        // Revision Zone
+        function openRev(type) {
+            document.getElementById('rev-overlay').style.display = 'flex';
+            let content = `<div class='formula-card'><h3>Algebra Fundamentals</h3><p>(a+b)² = a² + b² + 2ab</p><p>a² - b² = (a-b)(a+b)</p></div>`;
+            content += `<div class='formula-card'><h3>Mensuration 2D</h3><p>Circle Area: πr²</p><p>Square Area: a²</p></div>`;
+            document.getElementById('rev-content').innerHTML = content;
+        }
+
+        function openSpeedMenu() { document.getElementById('speed-menu').style.display = 'flex'; }
+        function initSpeed(lvl) { alert("Starting " + lvl + " Speed Mode..."); location.reload(); }
+    </script>
 </body>
-</html>
+  </html>
+  
