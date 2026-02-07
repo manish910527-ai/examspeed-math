@@ -20,31 +20,30 @@
 
         .level-card { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 24px; padding: 20px; margin-bottom: 25px; border: 1px solid rgba(56, 189, 248, 0.2); }
         .progress-container { background: rgba(255,255,255,0.05); height: 12px; border-radius: 20px; overflow: hidden; margin: 15px 0; }
-        .progress-bar { background: linear-gradient(90deg, var(--primary), var(--accent)); height: 100%; width: 0%; transition: 1s; }
+        .progress-bar { background: linear-gradient(90deg, var(--primary), var(--accent)); height: 100%; width: 10%; transition: 1s; }
 
         .section-title { font-size: 11px; color: #64748b; font-weight: 800; margin: 25px 0 12px 5px; letter-spacing: 1.5px; text-transform: uppercase; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         
         .topic-card { background: var(--card); border-radius: 20px; padding: 18px; border: 1px solid #232a3d; transition: 0.2s; cursor: pointer; text-align: center; }
         .topic-card:active { transform: scale(0.95); }
-        .topic-card h3 { font-size: 14px; margin-top: 8px; color: #f1f5f9; font-weight: 700; }
 
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #161b2c; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
         .nav-item { color: #64748b; text-align: center; font-size: 11px; font-weight: 700; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
 
-        /* Revision Overlay */
-        .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; overflow-y: auto; }
-        .rev-section-head { color: var(--gold); font-size: 18px; font-weight: 800; margin: 20px 0 10px 0; border-left: 4px solid var(--gold); padding-left: 10px; }
-        .rev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
-        .rev-item { background: #1e293b; padding: 12px; border-radius: 10px; font-size: 12px; text-align: center; color: #fff; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
-        .rev-item:active { background: var(--primary); }
+        .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; overflow-y: auto; padding: 20px; }
         
-        /* Table Detail Modal */
-        .table-view { background: #161b2c; border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 2px solid var(--primary); display: none; animation: fadeIn 0.3s; }
-        .table-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 18px; font-weight: 600; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Quiz Styling */
+        .q-box { background: var(--card); padding: 30px; border-radius: 25px; border: 1px solid var(--primary); margin: 20px 0; text-align: center; font-size: 32px; font-weight: 900; }
+        .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .opt-btn { background: #1e293b; border: 1px solid #2d364d; padding: 20px; border-radius: 15px; color: white; font-size: 20px; font-weight: bold; }
+        .opt-btn.correct { background: var(--success); border-color: white; }
+        .opt-btn.wrong { background: var(--danger); border-color: white; }
+
+        /* Rev Zone */
+        .rev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .rev-item { background: #1e293b; padding: 12px; border-radius: 10px; font-size: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
 <body>
@@ -54,112 +53,131 @@
         <div style="background: rgba(251, 191, 36, 0.1); color: var(--gold); padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 900;">BY RAMA</div>
     </div>
 
-    <div class="main-container">
+    <div class="main-container" id="main-dash">
         <div class="level-card">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h2 style="font-size:16px;">Level 1: Beginner</h2>
                 <div style="color:var(--gold); font-weight:900;">XP: <span id="main-xp">0</span></div>
             </div>
-            <div class="progress-container"><div class="progress-bar" id="xp-bar" style="width: 10%;"></div></div>
+            <div class="progress-container"><div class="progress-bar" id="xp-bar"></div></div>
         </div>
 
         <div class="section-title">CHALLENGE MODES</div>
         <div class="grid-2">
-            <div class="topic-card" onclick="alert('Starting Percentage Quiz...')">
-                <div style="font-size:24px; color:var(--primary);">%</div>
-                <h3>Percentage</h3>
-            </div>
-            <div class="topic-card" onclick="alert('Starting Profit & Loss Quiz...')">
-                <div style="font-size:24px; color:var(--success);">₹</div>
-                <h3>Profit & Loss</h3>
-            </div>
+            <div class="topic-card" onclick="startQuiz('Percentage')"><h3>Percentage</h3></div>
+            <div class="topic-card" onclick="startQuiz('ProfitLoss')"><h3>Profit & Loss</h3></div>
         </div>
 
         <div class="section-title">CALCULATION SPEED</div>
         <div class="grid-2">
-            <div class="topic-card" style="border-top: 3px solid var(--success);" onclick="alert('Addition Mode')"><h3>Addition</h3></div>
-            <div class="topic-card" style="border-top: 3px solid var(--danger);" onclick="alert('Subtraction Mode')"><h3>Subtraction</h3></div>
-            <div class="topic-card" style="border-top: 3px solid var(--gold);" onclick="alert('Multiplication Mode')"><h3>Multiplication</h3></div>
-            <div class="topic-card" style="border-top: 3px solid var(--accent);" onclick="alert('Division Mode')"><h3>Division</h3></div>
+            <div class="topic-card" style="border-top:3px solid var(--success)" onclick="startDrill('+')"><h3>Addition</h3></div>
+            <div class="topic-card" style="border-top:3px solid var(--danger)" onclick="startDrill('-')"><h3>Subtraction</h3></div>
+            <div class="topic-card" style="border-top:3px solid var(--gold)" onclick="startDrill('*')"><h3>Multiplication</h3></div>
+            <div class="topic-card" style="border-top:3px solid var(--accent)" onclick="startDrill('/')"><h3>Division</h3></div>
         </div>
+    </div>
 
-        <div style="background: rgba(129, 140, 248, 0.1); border-radius: 20px; padding: 20px; border: 1px solid var(--accent); margin-top: 25px;">
-            <h4 style="color:var(--accent); margin-bottom:5px;">💡 RAMA का संदेश</h4>
-            <p style="font-size:13px; color:#cbd5e1;">"मेहनत ऐसी करो कि सफलता शोर मचा दे। 1 से 50 तक के पहाड़े और वर्ग आपकी उंगलियों पर होने चाहिए।"</p>
+    <div id="quiz-overlay" class="overlay">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 id="quiz-title">Drill</h3>
+            <button onclick="location.reload()" style="background:none; border:none; color:white; font-size:25px;">✕</button>
         </div>
+        <div id="q-count" style="margin: 10px 0; color: var(--primary);">Question 1/20</div>
+        <div class="q-box" id="question-text">?</div>
+        <div class="opt-grid" id="options-grid"></div>
+    </div>
+
+    <div id="rev-overlay" class="overlay">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2>Revision Zone (1-50)</h2>
+            <button onclick="document.getElementById('rev-overlay').style.display='none'" style="background:none; border:none; color:white; font-size:25px;">✕</button>
+        </div>
+        <div id="rev-content"></div>
     </div>
 
     <div class="bottom-nav">
         <div class="nav-item active" onclick="location.reload()">🏠<br>Home</div>
         <div class="nav-item" onclick="openRev()">📚<br>Revision</div>
-        <div class="nav-item" onclick="window.open('https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p')">💬<br>Updates</div>
-    </div>
-
-    <div id="rev-overlay" class="overlay" style="padding:20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h2 style="font-size:22px;">Revision (1-50)</h2>
-            <button onclick="document.getElementById('rev-overlay').style.display='none'" style="background:none; border:none; color:white; font-size:30px;">✕</button>
-        </div>
-        
-        <div id="table-display" class="table-view"></div>
-
-        <div id="rev-scroll-area">
-            <div class="rev-section-head">Multiplication Tables (1-50)</div>
-            <div class="rev-grid" id="tables-grid"></div>
-
-            <div class="rev-section-head">Squares (1-50)</div>
-            <div class="rev-grid" id="squares-grid"></div>
-
-            <div class="rev-section-head">Cubes (1-50)</div>
-            <div class="rev-grid" id="cubes-grid"></div>
-        </div>
-        <div style="height: 100px;"></div>
     </div>
 
     <script>
+        let xp = parseInt(localStorage.getItem('rama_xp')) || 0;
+        let currentQ = 0;
+        let score = 0;
+        let drillType = '';
+
+        function updateXP(val) {
+            xp += val;
+            localStorage.setItem('rama_xp', xp);
+            document.getElementById('main-xp').innerText = xp;
+            document.getElementById('xp-bar').style.width = (xp % 500 / 5) + "%";
+        }
+        updateXP(0);
+
+        function startDrill(type) {
+            drillType = type;
+            currentQ = 1;
+            document.getElementById('quiz-overlay').style.display = 'flex';
+            document.getElementById('quiz-title').innerText = "Speed Drill";
+            nextDrillStep();
+        }
+
+        function nextDrillStep() {
+            if(currentQ > 20) {
+                alert("Drill Finished! You earned XP.");
+                location.reload();
+                return;
+            }
+            document.getElementById('q-count').innerText = `Question ${currentQ}/20`;
+            let n1 = Math.floor(Math.random() * 50) + 1;
+            let n2 = Math.floor(Math.random() * 50) + 1;
+            let ques = "", ans = 0;
+
+            if(drillType === '+') { ques = `${n1} + ${n2}`; ans = n1 + n2; }
+            else if(drillType === '-') { 
+                if(n1 < n2) [n1, n2] = [n2, n1];
+                ques = `${n1} - ${n2}`; ans = n1 - n2; 
+            }
+            else if(drillType === '*') { ques = `${n1} × ${n2}`; ans = n1 * n2; }
+            else { 
+                ans = Math.floor(Math.random() * 10) + 1;
+                let product = ans * n2;
+                ques = `${product} ÷ ${n2}`;
+            }
+
+            document.getElementById('question-text').innerText = ques;
+            let opts = [ans, ans + 2, ans - 1, ans + 5].sort(() => Math.random() - 0.5);
+            
+            let html = '';
+            opts.forEach(o => {
+                html += `<button class="opt-btn" onclick="checkDrill(this, ${o}, ${ans})">${o}</button>`;
+            });
+            document.getElementById('options-grid').innerHTML = html;
+        }
+
+        function checkDrill(btn, clicked, correct) {
+            if(clicked === correct) {
+                btn.classList.add('correct');
+                updateXP(10);
+                confetti({ particleCount: 30, spread: 50 });
+            } else {
+                btn.classList.add('wrong');
+            }
+            setTimeout(() => {
+                currentQ++;
+                nextDrillStep();
+            }, 600);
+        }
+
         function openRev() {
             document.getElementById('rev-overlay').style.display = 'flex';
-            
-            // 1-50 Tables Grid
-            let tHtml = '';
-            for(let i=1; i<=50; i++) {
-                tHtml += `<div class='rev-item' onclick="showTable(${i})">Table of ${i}</div>`;
-            }
-            document.getElementById('tables-grid').innerHTML = tHtml;
-
-            // 1-50 Squares Grid
-            let sHtml = '';
-            for(let i=1; i<=50; i++) {
-                sHtml += `<div class='rev-item'>${i}² = ${i*i}</div>`;
-            }
-            document.getElementById('squares-grid').innerHTML = sHtml;
-
-            // 1-50 Cubes Grid
-            let cHtml = '';
-            for(let i=1; i<=50; i++) {
-                cHtml += `<div class='rev-item'>${i}³ = ${i*i*i}</div>`;
-            }
-            document.getElementById('cubes-grid').innerHTML = cHtml;
+            let h = '<h3>Tables (1-50)</h3><div class="rev-grid">';
+            for(let i=1; i<=50; i++) h += `<div class="rev-item">Table ${i}</div>`;
+            h += '</div><h3 style="margin-top:20px">Squares (1-50)</h3><div class="rev-grid">';
+            for(let i=1; i<=50; i++) h += `<div class="rev-item">${i}²=${i*i}</div>`;
+            h += '</div>';
+            document.getElementById('rev-content').innerHTML = h;
         }
-
-        function showTable(n) {
-            let box = document.getElementById('table-display');
-            box.style.display = 'block';
-            let rows = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                            <h3 style='color:var(--gold);'>Table of ${n}</h3>
-                            <button onclick="document.getElementById('table-display').style.display='none'" style="background:var(--danger); border:none; color:white; padding:5px 10px; border-radius:5px; font-size:12px;">CLOSE</button>
-                        </div>`;
-            for(let i=1; i<=10; i++) {
-                rows += `<div class='table-row'><span>${n} × ${i}</span><span>=</span><span>${n*i}</span></div>`;
-            }
-            box.innerHTML = rows;
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top to see the table
-            document.getElementById('rev-overlay').scrollTop = 0;
-        }
-
-        // XP Update
-        let xp = parseInt(localStorage.getItem('rama_xp_pro')) || 0;
-        document.getElementById('main-xp').innerText = xp;
     </script>
 </body>
 </html>
