@@ -1,202 +1,166 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExamSpeed Math - RAMA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Hind:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExamSpeed Math</title>
 
-    <style>
-        :root { --bg: #0f172a; --primary: #38bdf8; --card: #1e293b; --gold: #fbbf24; --success: #22c55e; --danger: #ef4444; }
-        * { box-sizing: border-box; font-family: 'Outfit', 'Hind', sans-serif; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        .nav { padding: 15px 20px; background: var(--card); border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
-        .container { flex: 1; padding: 20px; overflow-y: auto; padding-bottom: 120px; }
-        
-        .motivation-card { background: linear-gradient(135deg, #1e293b, #0f172a); border: 2px solid var(--gold); padding: 20px; border-radius: 18px; margin: 15px 0; box-shadow: 0 0 20px rgba(251, 191, 36, 0.2); }
-        .motivation-card h4 { color: var(--gold); font-size: 18px; margin-bottom: 8px; }
-        .motivation-card p { font-size: 14px; line-height: 1.6; color: #f1f5f9; font-weight: 500; }
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Hind:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
-        .section-title { font-size: 13px; color: #94a3b8; font-weight: 800; margin: 25px 0 12px 0; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
-        .section-title::after { content: ''; flex: 1; height: 1px; background: #334155; }
+<style>
+:root{
+--bg:#0f172a;--card:#1e293b;--primary:#38bdf8;
+--gold:#fbbf24;--success:#22c55e;--danger:#ef4444;
+}
+*{box-sizing:border-box;font-family:'Outfit','Hind',sans-serif}
+body{margin:0;background:var(--bg);color:white;height:100vh;overflow:hidden}
 
-        .mode-btn { background: white; color: #0f172a; padding: 15px; border-radius: 18px; font-weight: 800; border: none; cursor: pointer; text-align: center; font-size: 14px; }
-        .topic-btn { background: #1e293b; color: white; padding: 18px; border-radius: 15px; border: 1px solid #334155; margin-bottom: 10px; display: flex; justify-content: space-between; width: 100%; cursor: pointer; font-weight: 700; }
+.nav{padding:15px 20px;background:var(--card);display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--primary)}
+.container{padding:20px;overflow-y:auto;height:calc(100vh - 120px)}
 
-        .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
-        
-        .quiz-q-box { background: #1e293b; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: 600; margin-bottom: 20px; border-left: 5px solid var(--primary); }
-        .opt-btn { background: #0f172a; color: white; padding: 16px; border-radius: 12px; border: 1px solid #334155; font-size: 16px; font-weight: 700; text-align: left; cursor: pointer; margin-bottom: 10px; width: 100%; }
-        .correct { background: var(--success) !important; border-color: white !important; }
-        .wrong { background: var(--danger) !important; border-color: white !important; }
-        .solution-box { background: rgba(56, 189, 248, 0.1); padding: 15px; border-radius: 12px; border: 1px dashed var(--primary); margin-top: 15px; display: none; font-size: 14px; color: #cbd5e1; line-height: 1.5; }
+.topic-btn{width:100%;background:#1e293b;color:white;padding:18px;border-radius:15px;border:1px solid #334155;
+margin-bottom:10px;font-weight:800;text-align:left;cursor:pointer}
 
-        .rev-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
-        .rev-item { background: #1e293b; padding: 10px; border-radius: 8px; font-size: 13px; border: 1px solid #334155; text-align: center; }
-        .formula-card { background: #1e293b; padding: 15px; border-radius: 15px; margin-bottom: 15px; border-top: 3px solid var(--gold); }
+.overlay{position:fixed;inset:0;background:var(--bg);z-index:1000;display:none;flex-direction:column;padding:20px;overflow-y:auto}
 
-        .footer-branding { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; padding: 12px; text-align: center; border-top: 1px solid #334155; }
-    </style>
+.quiz-q{background:#1e293b;padding:20px;border-radius:15px;font-size:18px;font-weight:700;border-left:5px solid var(--primary)}
+.opt{margin-top:12px;padding:15px;background:#0f172a;border:1px solid #334155;border-radius:12px;
+color:white;font-weight:700;cursor:pointer;width:100%;text-align:left}
+.correct{background:var(--success)!important}
+.wrong{background:var(--danger)!important}
+
+.result-card{background:#1e293b;padding:25px;border-radius:18px;text-align:center}
+.footer{position:fixed;bottom:0;width:100%;background:#1e293b;padding:12px;text-align:center;font-size:12px}
+</style>
 </head>
+
 <body>
 
-    <div class="nav">
-        <b style="color:var(--primary); font-size: 18px;">⚡ ExamSpeed Math</b>
-        <div style="font-size:10px; color:#94a3b8; font-weight:800;">BY RAMA</div>
-    </div>
+<div class="nav">
+<b style="color:var(--primary)">⚡ ExamSpeed Math</b>
+<span style="font-size:10px">BY RAMA</span>
+</div>
 
-    <div class="container" id="dashboard">
-        <div class="motivation-card">
-            <h4>📢 RAMA का विशेष संदेश</h4>
-            <p>"याद रखना, भीड़ हमेशा उस रास्ते पर चलती है जो रास्ता आसान लगता है, लेकिन इसका मतलब यह नहीं कि भीड़ हमेशा सही रास्ते पर चलती है। अपने रास्ते खुद चुनिए और इस App को अपनी **Daily Practice Habit** बनाइए। आज की मेहनत, कल की सफलता तय करेगी!"</p>
-        </div>
+<div class="container" id="dashboard">
 
-        <div style="display:flex; gap:10px; margin-bottom: 20px;">
-            <div style="background:#1e293b; padding:15px; border-radius:15px; flex:1; text-align:center;">
-                <div id="main-xp" style="font-size:20px; font-weight:900; color:var(--gold);">0</div>
-                <div style="font-size:10px;">MY XP</div>
-            </div>
-            <div style="background:#1e293b; padding:15px; border-radius:15px; flex:1; text-align:center;">
-                <div id="total-solved" style="font-size:20px; font-weight:900; color:var(--primary);">0</div>
-                <div style="font-size:10px;">SOLVED</div>
-            </div>
-        </div>
+<div style="background:#1e293b;padding:20px;border-radius:18px;border:2px solid var(--gold)">
+<h4 style="color:var(--gold)">📢 RAMA का संदेश</h4>
+<p>“Daily 50 Questions आपकी Selection तय कर सकते हैं।”</p>
+</div>
 
-        <a href="https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p" target="_blank" style="text-decoration:none;">
-            <div style="background:#25d366; color:white; padding:15px; border-radius:15px; text-align:center; font-weight:900; margin-bottom:20px;">JOIN WHATSAPP CHANNEL (NEW UPDATES)</div>
-        </a>
+<div style="display:flex;gap:10px;margin:20px 0">
+<div style="flex:1;background:#1e293b;padding:15px;border-radius:15px;text-align:center">
+<div id="xp" style="font-size:22px;color:var(--gold)">0</div>
+XP
+</div>
+<div style="flex:1;background:#1e293b;padding:15px;border-radius:15px;text-align:center">
+<div id="solved" style="font-size:22px;color:var(--primary)">0</div>
+Solved
+</div>
+</div>
 
-        <div class="section-title">Exam Quiz Zone (50 Questions Each)</div>
-        <button class="topic-btn" onclick="startQuiz('Percentage')">प्रतिशत (Percentage) ➔</button>
-        <button class="topic-btn" onclick="startQuiz('ProfitLoss')">लाभ और हानि (Profit & Loss) ➔</button>
+<h4>📘 Exam Quiz Zone (50 Questions)</h4>
+<button class="topic-btn" onclick="startQuiz('Percentage')">प्रतिशत (Percentage)</button>
+<button class="topic-btn" onclick="startQuiz('ProfitLoss')">लाभ और हानि (Profit & Loss)</button>
+<button class="topic-btn" onclick="startQuiz('Average')">औसत (Average)</button>
 
-        <div class="section-title">Revision Zone (1-50 Range)</div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <button class="mode-btn" style="background:#7c3aed; color:white;" onclick="openRev('tables')">Tables (1-50)</button>
-            <button class="mode-btn" style="background:#db2777; color:white;" onclick="openRev('squares')">Squares (1-50)</button>
-            <button class="mode-btn" style="background:#0284c7; color:white;" onclick="openRev('cubes')">Cubes (1-50)</button>
-            <button class="mode-btn" style="background:#f59e0b; color:white;" onclick="openRev('formula')">All Formulae</button>
-        </div>
-    </div>
+</div>
 
-    <div id="quiz-overlay" class="overlay">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <b id="quiz-title">Quiz</b>
-            <button onclick="location.reload()" style="background:#334155; color:white; border:none; padding:8px 12px; border-radius:8px;">EXIT</button>
-        </div>
-        <div class="quiz-q-box" id="quiz-question"></div>
-        <div id="quiz-options"></div>
-        <div class="solution-box" id="solution-text"></div>
-        <button id="next-btn" onclick="nextQuestion()" style="display:none; width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:12px; margin-top:15px; font-weight:900;">AGLA SAWAL ➔</button>
-    </div>
+<div id="quiz" class="overlay">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<b id="quizTitle"></b>
+<button onclick="location.reload()" style="background:none;color:white;border:none;font-size:18px">✕</button>
+</div>
 
-    <div id="rev-overlay" class="overlay">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 id="rev-title">Revision</h2>
-            <button onclick="document.getElementById('rev-overlay').style.display='none'" style="background:none; border:none; color:white; font-size:24px;">✕</button>
-        </div>
-        <div id="rev-content"></div>
-    </div>
+<div id="questionBox" class="quiz-q" style="margin-top:20px"></div>
+<div id="options"></div>
+<button id="nextBtn" onclick="nextQ()" style="display:none;margin-top:15px;
+padding:15px;background:var(--primary);border:none;border-radius:12px;color:white;font-weight:900">
+NEXT ➜
+</button>
+</div>
 
-    <div class="footer-branding">
-        <p>Powered by <span>RAMA</span></p>
-    </div>
+<script>
+const data={
+Percentage:Array.from({length:50},(_,i)=>({
+q:`यदि किसी संख्या का ${10+i}% = ${100+i*5}, संख्या क्या है?`,
+opts:[`${Math.round((100+i*5)/(10+i)*100)}`,`${200+i}`,`${300+i}`,`None`],
+ans:`${Math.round((100+i*5)/(10+i)*100)}`
+})),
+ProfitLoss:Array.from({length:50},(_,i)=>({
+q:`₹${500+i*10} पर ${10+i%5}% लाभ हुआ, CP क्या है?`,
+opts:[`${Math.round((500+i*10)/(1+(10+i%5)/100))}`,`400`,`600`,`550`],
+ans:`${Math.round((500+i*10)/(1+(10+i%5)/100))}`
+})),
+Average:Array.from({length:50},(_,i)=>({
+q:`5 संख्याओं का औसत ${10+i} है, योग क्या है?`,
+opts:[`${(10+i)*5}`,`${(10+i)*4}`,`${50+i}`,`${40+i}`],
+ans:`${(10+i)*5}`
+}))
+};
 
-    <script>
-        // Data containing 50 logic-based exam patterns
-        const quizData = {
-            'Percentage': Array.from({length: 50}, (_, i) => ({
-                q: `प्रतिशत प्रश्न संख्या ${i+1}: यदि किसी संख्या का ${10+i}% मूल्य ${100+i*5} है, तो वह संख्या क्या होगी?`,
-                opts: [`${Math.round((100+i*5)/(10+i)*100)}`, `${i*10+50}`, `${i*5+200}`, "None"],
-                ans: `${Math.round((100+i*5)/(10+i)*100)}`,
-                sol: `Solution: संख्या = (मान / प्रतिशत) × 100. यहाँ (${100+i*5} / ${10+i}) × 100 = ${Math.round((100+i*5)/(10+i)*100)}.`
-            })),
-            'ProfitLoss': Array.from({length: 50}, (_, i) => ({
-                q: `लाभ-हानि प्रश्न ${i+1}: एक वस्तु को ₹${500+i*10} में बेचने पर ${10+i%5}% का लाभ होता है। लागत मूल्य क्या है?`,
-                opts: [`${Math.round((500+i*10)/(1+(10+i%5)/100))}`, `${400+i}`, "550", "600"],
-                ans: `${Math.round((500+i*10)/(1+(10+i%5)/100))}`,
-                sol: `Solution: CP = SP / (1 + P%/100). यहाँ ₹${500+i*10} / (1 + ${10+i%5}/100) = ₹${Math.round((500+i*10)/(1+(10+i%5)/100))}.`
-            }))
-        };
+let topic="",i=0,correct=0,wrong=0;
+let xp=+localStorage.getItem("xp")||0;
+let solved=+localStorage.getItem("solved")||0;
+document.getElementById("xp").innerText=xp;
+document.getElementById("solved").innerText=solved;
 
-        // Static Real Samples for Accuracy
-        quizData['Percentage'][0] = { q: "यदि A की आय B से 25% अधिक है, तो B की आय A से कितने % कम है?", opts: ["20%", "25%", "30%", "15%"], ans: "20%", sol: "Solution: [25/(100+25)] × 100 = 20%." };
-        quizData['ProfitLoss'][0] = { q: "₹1200 की वस्तु को 20% हानि पर बेचने पर विक्रय मूल्य क्या होगा?", opts: ["₹960", "₹1000", "₹840", "₹1100"], ans: "₹960", sol: "Solution: 1200 का 80% = 960." };
+function startQuiz(t){
+topic=t;i=0;correct=0;wrong=0;
+document.getElementById("quiz").style.display="flex";
+document.getElementById("quizTitle").innerText=t+" (50 Questions)";
+loadQ();
+}
 
-        let xp = parseInt(localStorage.getItem('math_xp')) || 0;
-        let solved = parseInt(localStorage.getItem('math_solved')) || 0;
-        document.getElementById('main-xp').innerText = xp;
-        document.getElementById('total-solved').innerText = solved;
+function loadQ(){
+let q=data[topic][i];
+document.getElementById("questionBox").innerText=`Q${i+1}. ${q.q}`;
+let h="";
+q.opts.forEach(o=>{
+h+=`<button class="opt" onclick="check(this,'${o}','${q.ans}')">${o}</button>`;
+});
+document.getElementById("options").innerHTML=h;
+document.getElementById("nextBtn").style.display="none";
+}
 
-        let currentTopic = '', qIdx = 0;
+function check(btn,sel,ans){
+document.querySelectorAll(".opt").forEach(b=>b.disabled=true);
+if(sel===ans){btn.classList.add("correct");correct++;xp+=20;solved++;confetti();}
+else{btn.classList.add("wrong");wrong++;
+document.querySelectorAll(".opt").forEach(b=>{if(b.innerText===ans)b.classList.add("correct")});
+}
+localStorage.setItem("xp",xp);
+localStorage.setItem("solved",solved);
+document.getElementById("nextBtn").style.display="block";
+}
 
-        function startQuiz(topic) {
-            currentTopic = topic; qIdx = 0;
-            document.getElementById('quiz-overlay').style.display = 'flex';
-            document.getElementById('quiz-title').innerText = topic + " (50 Questions)";
-            showQuestion();
-        }
+function nextQ(){
+i++;
+if(i<50)loadQ();
+else showResult();
+}
 
-        function showQuestion() {
-            const data = quizData[currentTopic][qIdx];
-            document.getElementById('quiz-question').innerText = `Q${qIdx+1}. ${data.q}`;
-            document.getElementById('solution-text').style.display = 'none';
-            document.getElementById('next-btn').style.display = 'none';
-            let html = '';
-            data.opts.forEach(opt => {
-                html += `<button class="opt-btn" onclick="checkQuizAns(this, '${opt}', '${data.ans}', '${data.sol}')">${opt}</button>`;
-            });
-            document.getElementById('quiz-options').innerHTML = html;
-        }
+function showResult(){
+let acc=((correct/50)*100).toFixed(2);
+document.getElementById("quiz").innerHTML=
+`<div class="result-card">
+<h2 style="color:var(--gold)">🏆 Test Completed</h2>
+<p>Total: 50</p>
+<p style="color:var(--success)">Correct: ${correct}</p>
+<p style="color:var(--danger)">Wrong: ${wrong}</p>
+<h3>Accuracy: ${acc}%</h3>
+<h2>${acc>=80?"🔥 Excellent":acc>=60?"👍 Good":"⚠ Practice More"}</h2>
+<button onclick="location.reload()" style="margin-top:20px;
+padding:15px;width:100%;background:var(--primary);border:none;
+border-radius:12px;color:white;font-weight:900">
+Back to Dashboard
+</button>
+</div>`;
+}
+</script>
 
-        function checkQuizAns(btn, selected, correct, sol) {
-            const allBtns = document.querySelectorAll('.opt-btn');
-            allBtns.forEach(b => b.style.pointerEvents = 'none');
-            if(selected === correct) {
-                btn.classList.add('correct');
-                xp += 20; solved++;
-                localStorage.setItem('math_xp', xp); localStorage.setItem('math_solved', solved);
-                confetti({ particleCount: 50 });
-            } else {
-                btn.classList.add('wrong');
-                allBtns.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
-            }
-            document.getElementById('solution-text').innerHTML = `<b>💡 Solution:</b><br>${sol}`;
-            document.getElementById('solution-text').style.display = 'block';
-            document.getElementById('next-btn').style.display = 'block';
-        }
+<div class="footer">Powered by RAMA</div>
 
-        function nextQuestion() {
-            qIdx++;
-            if(qIdx < 50) showQuestion();
-            else { alert("Congratulations! 50 Questions Completed."); location.reload(); }
-        }
-
-        function openRev(type) {
-            document.getElementById('rev-overlay').style.display = 'flex';
-            let content = '';
-            if(type === 'tables') {
-                for(let i=1; i<=50; i++) {
-                    content += `<div style='margin-bottom:15px;'><b style='color:var(--gold)'>Table of ${i}</b><div class='rev-grid'>`;
-                    for(let j=1; j<=10; j++) content += `<div class='rev-item'>${i}×${j}=${i*j}</div>`;
-                    content += `</div></div>`;
-                }
-            } else if(type === 'squares') {
-                content = "<div class='rev-grid'>";
-                for(let i=1; i<=50; i++) content += `<div class='rev-item'>${i}² = <b>${i*i}</b></div>`;
-                content += "</div>";
-            } else if(type === 'cubes') {
-                content = "<div class='rev-grid'>";
-                for(let i=1; i<=50; i++) content += `<div class='rev-item'>${i}³ = <b>${i*i*i}</b></div>`;
-                content += "</div>";
-            } else if(type === 'formula') {
-                content = `<div class='formula-card'><h3>Algebra</h3><p>(a+b)² = a²+b²+2ab</p><p>a²-b² = (a-b)(a+b)</p></div>
-                           <div class='formula-card'><h3>Mensuration</h3><p>Circle: πr²</p><p>Square: a²</p></div>`;
-            }
-            document.getElementById('rev-content').innerHTML = content;
-        }
-    </script>
 </body>
 </html>
