@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ExamSpeed Math - RAMA PRO</title>
+    <title>ExamSpeed Math - Powered by RAMA</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
@@ -15,229 +15,213 @@
         .header { padding: 15px 20px; background: rgba(22, 27, 44, 0.95); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
         .main-container { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
 
-        /* Sections Styles */
-        .hub-section { margin-bottom: 30px; }
-        .hub-title { font-size: 12px; color: var(--primary); font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 15px; display: flex; align-items: center; }
-        .hub-title::after { content: ""; flex: 1; height: 1px; background: rgba(56, 189, 248, 0.2); margin-left: 10px; }
+        .hub-section { margin-bottom: 25px; }
+        .hub-title { font-size: 11px; color: var(--primary); font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; }
+        .hub-title::after { content: ""; flex: 1; height: 1px; background: rgba(56, 189, 248, 0.1); margin-left: 10px; }
 
-        .grid-card { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .card { background: var(--card); border-radius: 20px; padding: 20px; border: 1px solid #232a3d; text-align: center; cursor: pointer; transition: 0.2s; }
-        .card:active { transform: scale(0.95); background: #1e253a; }
-        .card h3 { font-size: 14px; color: #f1f5f9; margin-top: 5px; }
-        .card span { font-size: 24px; }
+        .grid-card { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .card { background: var(--card); border-radius: 18px; padding: 18px; border: 1px solid #232a3d; text-align: center; cursor: pointer; }
+        .card h3 { font-size: 13px; color: #f1f5f9; margin-top: 5px; }
+        .card span { font-size: 22px; }
 
-        /* Overlay */
         .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; overflow-y: auto; padding: 20px; }
-        .close-btn { background: var(--danger); border: none; color: white; padding: 8px 15px; border-radius: 10px; font-weight: 800; cursor: pointer; }
+        .close-btn { background: var(--danger); border: none; color: white; padding: 8px 15px; border-radius: 10px; font-weight: 800; }
 
-        /* Quiz UI */
         .q-box { background: var(--card); padding: 30px; border-radius: 25px; border: 2px solid var(--primary); text-align: center; margin: 20px 0; }
-        .q-text { font-size: 38px; font-weight: 900; color: white; }
-        .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .opt-btn { background: #1e293b; border: 1px solid #2d364d; padding: 20px; border-radius: 15px; color: white; font-size: 20px; font-weight: bold; }
+        .q-text { font-size: 35px; font-weight: 900; }
+        .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .opt-btn { background: #1e293b; border: 1px solid #2d364d; padding: 18px; border-radius: 12px; color: white; font-size: 18px; font-weight: bold; }
         
-        /* Stats */
-        .stat-bar { display: flex; justify-content: space-between; background: #161b2c; padding: 10px 20px; border-radius: 15px; margin-bottom: 10px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05); }
-
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #161b2c; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .nav-item { text-align: center; font-size: 11px; font-weight: bold; color: #64748b; }
-        .nav-item.active { color: var(--primary); }
+        select, input { width: 100%; padding: 15px; border-radius: 12px; background: #1e293b; color: white; border: 1px solid #2d364d; font-size: 16px; margin-bottom: 15px; }
+        .btn-main { width: 100%; padding: 18px; background: var(--primary); border: none; color: white; border-radius: 15px; font-weight: 900; }
+        
+        .formula-item { background: #1e293b; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <b style="font-size:20px;">RAMA <span style="color:var(--primary)">Math PRO</span></b>
-        <button onclick="window.open('https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p')" style="background:var(--success); border:none; color:white; padding:6px 12px; border-radius:8px; font-size:10px; font-weight:900;">WHATSAPP UPDATES</button>
+        <div>
+            <b style="font-size:18px; display:block;">ExamSpeed Math</b>
+            <small style="font-size:10px; color:var(--gold); font-weight:bold;">Powered by RAMA</small>
+        </div>
+        <button onclick="window.open('https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p')" style="background:#25d366; border:none; color:white; padding:6px 12px; border-radius:8px; font-size:10px; font-weight:900;">WA CHANNEL</button>
     </div>
 
     <div class="main-container">
         <div class="hub-section">
-            <div class="hub-title">LEARNING HUB (1-50)</div>
+            <div class="hub-title">Learning Hub (1-50 & Formulas)</div>
             <div class="grid-card">
-                <div class="card" onclick="openLearn('Tables')"><span>📚</span><h3>Tables</h3></div>
+                <div class="card" onclick="openLearn('Tables')"><span>📖</span><h3>Tables</h3></div>
                 <div class="card" onclick="openLearn('Squares')"><span>🔢</span><h3>Squares</h3></div>
                 <div class="card" onclick="openLearn('Cubes')"><span>🧊</span><h3>Cubes</h3></div>
-                <div class="card" onclick="openLearn('Formulas')"><span>📐</span><h3>Formulas</h3></div>
+                <div class="card" onclick="openLearn('Cube Roots')"><span>📐</span><h3>Cube Roots</h3></div>
+                <div class="card" onclick="openLearn('Formulas')"><span>📜</span><h3>150+ Formulas</h3></div>
             </div>
         </div>
 
         <div class="hub-section">
-            <div class="hub-title">PRACTICE MODES (UNLIMITED)</div>
+            <div class="hub-title">Practice (Unlimited)</div>
             <div class="grid-card">
-                <div class="card" onclick="setupQuiz('+')"><span>➕</span><h3>Addition</h3></div>
-                <div class="card" onclick="setupQuiz('-')"><span>➖</span><h3>Subtraction</h3></div>
-                <div class="card" onclick="setupQuiz('*')"><span>✖️</span><h3>Multiplication</h3></div>
-                <div class="card" onclick="setupQuiz('/')"><span>➗</span><h3>Division</h3></div>
-                <div class="card" onclick="setupQuiz('sq')"><span>📊</span><h3>Squares</h3></div>
-                <div class="card" onclick="setupQuiz('cb')"><span>📊</span><h3>Cubes</h3></div>
+                <div class="card" onclick="setupQuiz('Addition')"><span>➕</span><h3>Addition</h3></div>
+                <div class="card" onclick="setupQuiz('Subtraction')"><span>➖</span><h3>Subtraction</h3></div>
+                <div class="card" onclick="setupQuiz('Multiplication')"><span>✖️</span><h3>Multiplication</h3></div>
+                <div class="card" onclick="setupQuiz('Division')"><span>➗</span><h3>Division</h3></div>
+                <div class="card" onclick="setupQuiz('Percentage')"><span>%</span><h3>Percentage</h3></div>
+                <div class="card" onclick="setupQuiz('Squares')"><span>📊</span><h3>Squares</h3></div>
             </div>
         </div>
 
         <div class="hub-section">
-            <div class="hub-title">PERFORMANCE TEST</div>
-            <div class="card" style="width:100%; border: 2px solid var(--gold);" onclick="setupQuiz('mix')">
-                <span style="font-size:30px;">⚡</span>
-                <h3 style="color:var(--gold); font-size:18px;">Test Your Calculation Speed</h3>
-                <p style="font-size:11px; color:#94a3b8; margin-top:5px;">Mix Questions • Global Challenge</p>
+            <div class="hub-title">Performance Test</div>
+            <div class="card" style="width:100%; border:2px solid var(--gold);" onclick="setupQuiz('Mix Speed Test')">
+                <span style="font-size:28px;">⚡</span>
+                <h3 style="color:var(--gold)">Test Calculation Speed (Mix)</h3>
             </div>
         </div>
     </div>
 
     <div id="quiz-overlay" class="overlay">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2 id="quiz-name">Practice</h2>
+            <h2 id="quiz-mode-title">Mode</h2>
             <button class="close-btn" onclick="location.reload()">EXIT</button>
         </div>
         
-        <div id="quiz-setup" style="margin-top:50px; text-align:center;">
-            <h3>Select Number of Questions</h3>
-            <select id="q-limit" style="width:100%; padding:15px; border-radius:10px; margin:20px 0; background:#1e293b; color:white; border:1px solid var(--primary);">
-                <option value="10">10 Questions</option>
-                <option value="20">20 Questions</option>
-                <option value="50">50 Questions</option>
-                <option value="999">Unlimited (Practice)</option>
-            </select>
-            <button onclick="startQuizEngine()" style="width:100%; padding:20px; background:var(--primary); border:none; color:white; border-radius:15px; font-weight:900;">START NOW ➔</button>
+        <div id="quiz-setup">
+            <div style="margin-top:30px;">
+                <label style="font-size:12px; color:#94a3b8;">Questions Count</label>
+                <select id="q-count-sel">
+                    <option value="10">10 Questions</option>
+                    <option value="20">20 Questions</option>
+                    <option value="50">50 Questions</option>
+                    <option value="100000">Unlimited Practice</option>
+                </select>
+                <label style="font-size:12px; color:#94a3b8;">Level</label>
+                <select id="q-level">
+                    <option value="basic">Basic (1-10)</option>
+                    <option value="medium">Medium (1-50)</option>
+                    <option value="adv">Advanced (Hard)</option>
+                </select>
+                <button class="btn-main" onclick="startQuiz()">START ➔</button>
+            </div>
         </div>
 
         <div id="quiz-engine" style="display:none; margin-top:20px;">
-            <div class="stat-bar">
-                <span id="timer">Time: 0s</span>
-                <span id="score">Score: 0</span>
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold; color:var(--primary);">
+                <span id="timer-box">Time: 0s</span>
+                <span id="q-progress">Q: 1</span>
             </div>
             <div class="q-box"><div class="q-text" id="q-txt">?</div></div>
-            <div class="opt-grid" id="opt-container"></div>
+            <div class="opt-grid" id="opt-grid"></div>
         </div>
 
-        <div id="result-screen" style="display:none; text-align:center; margin-top:50px;">
-            <h1 style="color:var(--gold); font-size:40px;">Brave Effort!</h1>
-            <p id="final-stats" style="font-size:18px; margin:20px 0;"></p>
-            <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:15px; margin-bottom:20px;">
-                <p id="motivation-txt" style="font-style:italic; color:var(--primary);"></p>
+        <div id="result-screen" style="display:none; text-align:center; margin-top:40px;">
+            <h1 id="result-title" style="color:var(--gold);">Awesome!</h1>
+            <div style="background:#161b2c; padding:25px; border-radius:20px; margin:20px 0; border:1px solid #232a3d;">
+                <p>Score: <span id="final-score" style="color:var(--primary); font-weight:900;">0</span></p>
+                <p>Time: <span id="final-time" style="color:var(--gold); font-weight:900;">0s</span></p>
             </div>
-            <button onclick="sharePerformance()" style="width:100%; padding:18px; background:var(--success); border:none; color:white; border-radius:12px; font-weight:900; margin-bottom:10px;">SHARE ON WHATSAPP ➔</button>
-            <button onclick="location.reload()" style="width:100%; background:none; border:1px solid #64748b; color:white; padding:15px; border-radius:12px;">BACK TO HOME</button>
+            <p id="motivation-msg" style="font-style:italic; margin-bottom:20px;"></p>
+            <button class="btn-main" style="background:#25d366;" onclick="shareToWA()">CHALLENGE ON WHATSAPP</button>
+            <button class="btn-main" style="background:#1e293b; margin-top:10px;" onclick="location.reload()">TRY AGAIN</button>
         </div>
     </div>
 
     <div id="learn-overlay" class="overlay">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 id="learn-title">Learning</h2>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 id="learn-head">Learning</h2>
             <button class="close-btn" onclick="document.getElementById('learn-overlay').style.display='none'">CLOSE</button>
         </div>
-        <div id="learn-content"></div>
+        <div id="learn-body" style="margin-top:20px;"></div>
     </div>
 
     <script>
         let currentMode = '';
-        let score = 0;
-        let qCount = 0;
-        let limit = 0;
-        let startTime, timerInterval;
-        let correctAns = 0;
-
-        const quotes = [
-            "हारना तब तक नहीं होता जब तक आप कोशिश करना नहीं छोड़ते!",
-            "मेहनत का फल और समस्या का हल, थोड़ी देर से ही सही पर मिलता ज़रूर है।",
-            "Speed is a skill, practice is the key. Give it your best next time!",
-            "एक फौजी और एक छात्र कभी गिव-अप नहीं करते। लगे रहो!"
-        ];
+        let score = 0, qNum = 1, totalQ = 0, timer = 0, timerInt;
+        let cAns = 0;
 
         function setupQuiz(mode) {
             currentMode = mode;
+            document.getElementById('quiz-mode-title').innerText = mode;
             document.getElementById('quiz-overlay').style.display = 'flex';
-            document.getElementById('quiz-setup').style.display = 'block';
-            document.getElementById('quiz-engine').style.display = 'none';
-            document.getElementById('result-screen').style.display = 'none';
         }
 
-        function startQuizEngine() {
-            limit = parseInt(document.getElementById('q-limit').value);
+        function startQuiz() {
+            totalQ = parseInt(document.getElementById('q-count-sel').value);
             document.getElementById('quiz-setup').style.display = 'none';
             document.getElementById('quiz-engine').style.display = 'block';
-            score = 0; qCount = 0;
-            startTime = Date.now();
-            timerInterval = setInterval(() => {
-                document.getElementById('timer').innerText = `Time: ${Math.floor((Date.now() - startTime)/1000)}s`;
-            }, 1000);
-            nextQuestion();
+            timer = 0;
+            timerInt = setInterval(() => { timer++; document.getElementById('timer-box').innerText = `Time: ${timer}s`; }, 1000);
+            generateQ();
         }
 
-        function nextQuestion() {
-            if(qCount >= limit) { finishQuiz(); return; }
-            qCount++;
+        function generateQ() {
+            if(qNum > totalQ) { finishQuiz(); return; }
+            document.getElementById('q-progress').innerText = `Q: ${qNum}/${totalQ > 500 ? '∞' : totalQ}`;
             
-            let n1 = Math.floor(Math.random() * 50) + 1;
-            let n2 = Math.floor(Math.random() * 50) + 1;
+            let level = document.getElementById('q-level').value;
+            let range = level === 'basic' ? 10 : (level === 'medium' ? 50 : 100);
+            let n1 = Math.floor(Math.random() * range) + 1;
+            let n2 = Math.floor(Math.random() * range) + 1;
             let q = "", ans = 0;
 
-            let mode = currentMode === 'mix' ? ['+','-','*','/','sq'][Math.floor(Math.random()*5)] : currentMode;
+            let mode = currentMode === 'Mix Speed Test' ? ['Addition','Subtraction','Multiplication','Squares'][Math.floor(Math.random()*4)] : currentMode;
 
-            if(mode === '+') { q = `${n1} + ${n2}`; ans = n1 + n2; }
-            else if(mode === '-') { if(n1 < n2) [n1, n2] = [n2, n1]; q = `${n1} - ${n2}`; ans = n1 - n2; }
-            else if(mode === '*') { n1 = Math.floor(Math.random()*20)+1; q = `${n1} × ${n2}`; ans = n1 * n2; }
-            else if(mode === '/') { ans = Math.floor(Math.random()*15)+1; let p = ans * n2; q = `${p} ÷ ${n2}`; }
-            else if(mode === 'sq') { n1 = Math.floor(Math.random()*50)+1; q = `${n1}²`; ans = n1 * n1; }
-            else if(mode === 'cb') { n1 = Math.floor(Math.random()*30)+1; q = `${n1}³`; ans = n1 * n1 * n1; }
+            if(mode === 'Addition') { q = `${n1} + ${n2}`; ans = n1 + n2; }
+            else if(mode === 'Subtraction') { if(n1<n2) [n1,n2]=[n2,n1]; q = `${n1} - ${n2}`; ans = n1 - n2; }
+            else if(mode === 'Multiplication') { n1 = Math.floor(Math.random()*20)+1; q = `${n1} × ${n2}`; ans = n1 * n2; }
+            else if(mode === 'Squares') { n1 = Math.floor(Math.random()*50)+1; q = `${n1}²`; ans = n1 * n1; }
+            else if(mode === 'Percentage') { let p = [10,20,25,50][Math.floor(Math.random()*4)]; q = `${p}% of ${n1*10}`; ans = (p/100)*(n1*10); }
 
-            correctAns = ans;
+            cAns = ans;
             document.getElementById('q-txt').innerText = q;
-            let opts = [ans, ans + Math.floor(Math.random()*10)+1, ans - Math.floor(Math.random()*10)-1, ans + 20].sort(() => Math.random() - 0.5);
-            
+            let opts = [ans, ans+2, ans-1, ans+10].sort(()=>Math.random()-0.5);
             let h = '';
-            opts.forEach(o => h += `<button class="opt-btn" onclick="checkAnswer(${o}, this)">${o}</button>`);
-            document.getElementById('opt-container').innerHTML = h;
+            opts.forEach(o => h += `<button class="opt-btn" onclick="checkAns(this, ${o})">${o}</button>`);
+            document.getElementById('opt-grid').innerHTML = h;
         }
 
-        function checkAnswer(sel, btn) {
-            if(sel === correctAns) {
-                btn.style.background = 'var(--success)';
-                score++;
-                document.getElementById('score').innerText = `Score: ${score}`;
+        function checkAns(btn, sel) {
+            if(sel === cAns) {
+                btn.style.background = 'var(--success)'; score++;
                 confetti({ particleCount: 20, spread: 50, origin: { y: 0.8 } });
-            } else {
-                btn.style.background = 'var(--danger)';
-            }
-            setTimeout(nextQuestion, 400);
+            } else { btn.style.background = 'var(--danger)'; }
+            setTimeout(() => { qNum++; generateQ(); }, 400);
         }
 
         function finishQuiz() {
-            clearInterval(timerInterval);
-            let totalTime = Math.floor((Date.now() - startTime)/1000);
+            clearInterval(timerInt);
             document.getElementById('quiz-engine').style.display = 'none';
             document.getElementById('result-screen').style.display = 'block';
-            document.getElementById('final-stats').innerText = `Score: ${score}/${limit} | Time: ${totalTime}s`;
-            document.getElementById('motivation-txt').innerText = quotes[Math.floor(Math.random()*quotes.length)];
+            document.getElementById('final-score').innerText = `${score}/${totalQ > 500 ? qNum-1 : totalQ}`;
+            document.getElementById('final-time').innerText = `${timer}s`;
+            document.getElementById('motivation-msg').innerText = "Never give up! Your speed is your power.";
         }
 
-        function sharePerformance() {
-            let stats = document.getElementById('final-stats').innerText;
-            let text = `🔥 *ExamSpeed Math Challenge* 🔥\nMaine RAMA Math App par *${currentMode}* mode mein ye score kiya:\n\n📊 *${stats}*\n\nKya tum mujhe hara sakte ho? Link check karo!`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+        function shareToWA() {
+            let msg = `🔥 *ExamSpeed Math Challenge* 🔥\n\nमैंने *${currentMode}* में *${score}* स्कोर किया सिर्फ *${timer}s* में!\n\nक्या तुम मुझे हरा सकते हो? यहाँ प्रैक्टिस करो: https://examspeed-math.vercel.app/`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
         }
 
         function openLearn(type) {
             document.getElementById('learn-overlay').style.display = 'flex';
-            document.getElementById('learn-title').innerText = type;
-            let h = '<div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:10px;">';
-            
-            if(type === 'Tables') {
-                for(let i=1; i<=50; i++) h += `<div class="card" style="padding:10px" onclick="alert('Table of ${i} loaded')">Table ${i}</div>`;
-            } else if(type === 'Squares') {
-                for(let i=1; i<=50; i++) h += `<div class="card" style="padding:10px">${i}² = ${i*i}</div>`;
-            } else if(type === 'Cubes') {
-                for(let i=1; i<=50; i++) h += `<div class="card" style="padding:10px">${i}³ = ${i*i*i}</div>`;
-            } else if(type === 'Formulas') {
-                h = `<div style="padding:10px">
-                    <h4 style="color:var(--gold)">Geometry (Sample)</h4>
-                    <p>• Area of Circle = πr²</p><br>
-                    <h4 style="color:var(--gold)">Algebra</h4>
-                    <p>• (a+b)² = a² + b² + 2ab</p>
-                </div>`;
-            }
+            document.getElementById('learn-head').innerText = type;
+            let h = '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">';
+            if(type === 'Formulas') {
+                h = '<div style="grid-column: span 2;">';
+                h += '<h4 style="color:var(--gold); margin:10px 0;">Geometry & Mensuration (50)</h4>';
+                h += '<div class="formula-item">1. Area of Circle = πr²</div><div class="formula-item">2. Perimeter of Circle = 2πr</div><div class="formula-item">3. Area of Square = a²</div><div class="formula-item">4. Vol. of Cylinder = πr²h</div>';
+                h += '<h4 style="color:var(--gold); margin:10px 0;">Algebra (50)</h4>';
+                h += '<div class="formula-item">1. (a+b)² = a²+b²+2ab</div><div class="formula-item">2. (a-b)² = a²+b²-2ab</div><div class="formula-item">3. a²-b² = (a-b)(a+b)</div>';
+                h += '<h4 style="color:var(--gold); margin:10px 0;">Trigonometry (50)</h4>';
+                h += '<div class="formula-item">1. sin²θ + cos²θ = 1</div><div class="formula-item">2. tanθ = sinθ / cosθ</div><div class="formula-item">3. 1 + tan²θ = sec²θ</div>';
+                h += '</div>';
+            } else if(type === 'Tables') { for(let i=1; i<=50; i++) h += `<div class="card">Table ${i}</div>`; }
+            else if(type === 'Squares') { for(let i=1; i<=50; i++) h += `<div class="card">${i}² = ${i*i}</div>`; }
+            else if(type === 'Cubes') { for(let i=1; i<=50; i++) h += `<div class="card">${i}³ = ${i*i*i}</div>`; }
+            else if(type === 'Cube Roots') { for(let i=1; i<=50; i++) h += `<div class="card">∛${i*i*i} = ${i}</div>`; }
             h += '</div>';
-            document.getElementById('learn-content').innerHTML = h;
+            document.getElementById('learn-body').innerHTML = h;
         }
     </script>
 </body>
