@@ -1,20 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P2P5FYHWSH"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-P2P5FYHWSH');
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ExamSpeed Math - RAMA</title>
-    
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#38bdf8">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
@@ -23,210 +12,198 @@
         * { box-sizing: border-box; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        .nav { padding: 15px 20px; background: var(--card); border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        .nav { padding: 15px 20px; background: var(--card); border-bottom: 2px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .container { flex: 1; padding: 20px; overflow-y: auto; padding-bottom: 120px; }
         
-        /* Stats & Cards */
-        .header-stats { display: flex; gap: 10px; margin-bottom: 10px; }
-        .stat-card { flex: 1; background: #1e293b; padding: 15px; border-radius: 16px; border: 1px solid #334155; text-align: center; }
-        .stat-val { font-size: 24px; font-weight: 900; color: white; }
-        .stat-lbl { font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
+        .stat-card { background: #1e293b; padding: 15px; border-radius: 16px; border: 1px solid #334155; text-align: center; flex: 1; }
+        .motivation-card { background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--primary); padding: 15px; border-radius: 18px; margin: 15px 0; }
+        
+        .btn-channel { background: #25d366; color: white; padding: 15px; border-radius: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; text-decoration: none; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(37,211,102,0.3); }
 
-        .motivation-card { background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--primary); padding: 15px; border-radius: 18px; margin-top: 15px; }
-        .motivation-card h4 { color: var(--gold); font-size: 14px; margin-bottom: 5px; }
-        .motivation-card p { font-size: 12px; line-height: 1.5; color: #cbd5e1; font-style: italic; }
-
-        /* WhatsApp Button - Highlighted */
-        .btn-channel { background: #25d366; color: white; padding: 16px; border-radius: 18px; display: flex !important; align-items: center; justify-content: center; gap: 10px; font-weight: 900; font-size: 14px; text-decoration: none; margin: 20px 0; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); border: 2px solid rgba(255,255,255,0.2); }
-
-        .section-title { font-size: 13px; color: #94a3b8; font-weight: 800; letter-spacing: 1px; margin: 25px 0 12px 0; display: flex; align-items: center; gap: 10px; }
+        .section-title { font-size: 13px; color: #94a3b8; font-weight: 800; letter-spacing: 1px; margin: 25px 0 12px 0; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         .section-title::after { content: ''; flex: 1; height: 1px; background: #334155; }
 
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .mode-btn { background: white; color: #0f172a; padding: 18px 12px; border-radius: 18px; font-weight: 800; border: none; font-size: 15px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .mode-btn { background: white; color: #0f172a; padding: 15px; border-radius: 18px; font-weight: 800; border: none; cursor: pointer; text-align: center; }
         
-        .footer-branding { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; padding: 12px; text-align: center; border-top: 1px solid #334155; z-index: 99; }
-        .footer-branding p { font-size: 12px; color: #94a3b8; font-weight: 600; }
-        .footer-branding span { color: var(--primary); font-weight: 900; }
+        .topic-btn { background: #1e293b; color: white; padding: 15px; border-radius: 15px; border: 1px solid #334155; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; width: 100%; cursor: pointer; }
 
         /* Overlays */
-        #setup-overlay, #game-overlay, #result-screen, #rev-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
-        #setup-overlay { background: rgba(15, 23, 42, 0.95); align-items: center; justify-content: center; }
-        .setup-card { background: var(--card); width: 100%; max-width: 320px; padding: 25px; border-radius: 25px; border: 2px solid var(--primary); }
-        .setup-group { margin-bottom: 20px; }
-        .setup-group label { font-size: 12px; font-weight: 800; color: var(--primary); display: block; margin-bottom: 8px; }
-        .setup-group select, .setup-group input { width: 100%; background: #0f172a; border: 1px solid #334155; color: white; padding: 12px; border-radius: 10px; font-weight: 700; }
+        .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
+        .q-display { font-size: 50px; font-weight: 900; text-align: center; margin: 40px 0; }
+        .opt-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .opt-btn { background: #1e293b; color: white; padding: 18px; border-radius: 15px; border: 2px solid #334155; font-size: 18px; font-weight: 700; cursor: pointer; }
+        .opt-btn.correct { background: var(--success); border-color: white; }
+        .opt-btn.wrong { background: #ef4444; border-color: white; }
 
-        .q-display { font-size: 60px; font-weight: 900; text-align: center; margin: 40px 0; }
-        .ans-field { width: 100%; background: #1e293b; border: 3px solid var(--primary); padding: 20px; border-radius: 20px; color: white; font-size: 40px; text-align: center; }
-        .rev-fab { position: fixed; bottom: 65px; left: 20px; right: 20px; background: var(--gold); color: #0f172a; padding: 16px; border-radius: 50px; font-weight: 900; border: none; z-index: 100; }
+        .footer-branding { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; padding: 12px; text-align: center; border-top: 1px solid #334155; }
     </style>
 </head>
 <body>
 
     <div class="nav">
-        <b style="color:var(--primary); font-size: 18px;">⚡ ExamSpeed Math</b>
-        <div style="font-size:10px; color:#94a3b8; font-weight:800; border-left: 2px solid #334155; padding-left: 10px;">By RAMA</div>
+        <b style="color:var(--primary); font-size: 18px;">⚡ RAMA ExamSpeed</b>
+        <div style="font-size:10px; color:#94a3b8; font-weight:800;">BY RAMA</div>
     </div>
 
     <div class="container" id="dashboard">
-        <div class="header-stats">
+        <div style="display:flex; gap:10px;">
             <div class="stat-card">
-                <div class="stat-val" id="main-xp">0</div>
-                <div class="stat-lbl">Total XP</div>
+                <div style="font-size:20px; font-weight:900;" id="main-xp">0</div>
+                <div style="font-size:10px; color:#94a3b8;">TOTAL XP</div>
             </div>
             <div class="stat-card">
-                <div class="stat-val" id="total-solved">0</div>
-                <div class="stat-lbl">Solved</div>
+                <div style="font-size:20px; font-weight:900;" id="total-solved">0</div>
+                <div style="font-size:10px; color:#94a3b8;">SOLVED</div>
             </div>
         </div>
 
         <div class="motivation-card">
-            <h4>💡 Manish Sir का संदेश</h4>
-            <p>"Govt Exam में सफलता के लिए मेहनत के साथ **Consistency** बहुत ज़रूरी है। रोज़ाना प्रैक्टिस करें और अपनी रफ़्तार बढ़ाएं।"</p>
+            <h4>💡 RAMA का संदेश</h4>
+            <p>"सरकारी नौकरी का रास्ता कठिन है, पर नामुमकिन नहीं। **Basic** से शुरू करें, **Hard** तक लड़ें। हम हर कदम पर आपके साथ हैं।"</p>
         </div>
 
-        <a href="https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p" target="_blank" class="btn-channel" id="wa-link">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="22" style="filter: brightness(0) invert(1);">
-            JOIN OFFICIAL CHANNEL (UPDATES)
+        <a href="https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p" target="_blank" class="btn-channel">
+            JOIN OFFICIAL WHATSAPP CHANNEL
         </a>
 
-        <div class="section-title">PRACTICE MODES</div>
+        <div class="section-title">Speed Practice (Levels)</div>
         <div class="btn-grid">
-            <button class="mode-btn" style="color: #0284c7;" onclick="showSetup('+')">ADDITION <span>12 + 8</span></button>
-            <button class="mode-btn" style="color: #0284c7;" onclick="showSetup('-')">SUBTRACT <span>45 - 12</span></button>
-            <button class="mode-btn" style="color: #7c3aed;" onclick="showSetup('sq')">SQUARE √ <span>√144 = 12</span></button>
-            <button class="mode-btn" style="color: #db2777;" onclick="showSetup('%')">PERCENT % <span>20% of 80</span></button>
+            <button class="mode-btn" style="color:#0284c7" onclick="openLevelSelect('+')">ADDITION ➕</button>
+            <button class="mode-btn" style="color:#0284c7" onclick="openLevelSelect('-')">SUBTRACT ➖</button>
+            <button class="mode-btn" style="color:#7c3aed" onclick="openLevelSelect('sq')">SQUARES ²</button>
+            <button class="mode-btn" style="color:#db2777" onclick="openLevelSelect('%')">PERCENT %</button>
+        </div>
+
+        <div class="section-title">Exam Quiz Zone (Topic Wise)</div>
+        <div id="topics-list">
+            <button class="topic-btn" onclick="startQuiz('Percentage')"><span>Percentage (50 Qs)</span> ➔</button>
+            <button class="topic-btn" onclick="startQuiz('Profit & Loss')"><span>Profit & Loss (50 Qs)</span> ➔</button>
+            <button class="topic-btn" onclick="startQuiz('Ratio & Prop.')"><span>Ratio & Proportion</span> ➔</button>
+            <button class="topic-btn" onclick="startQuiz('Time & Work')"><span>Time & Work</span> ➔</button>
+            <button class="topic-btn" onclick="startQuiz('Simple Interest')"><span>Simple Interest</span> ➔</button>
         </div>
     </div>
 
-    <div id="setup-overlay">
-        <div class="setup-card">
-            <h3 style="margin-bottom:15px; font-weight:900;">⚡ Challenge Setup</h3>
-            <div class="setup-group">
-                <label>NO. OF QUESTIONS</label>
-                <select id="setup-count">
-                    <option value="10">10 Questions</option>
-                    <option value="20" selected>20 Questions</option>
-                    <option value="50">50 Questions</option>
-                </select>
-            </div>
-            <div class="setup-group">
-                <label>TIME LIMIT (SECONDS)</label>
-                <input type="number" id="setup-time" value="30">
-            </div>
-            <button onclick="confirmStart()" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:12px; font-weight:900;">START NOW</button>
-            <button onclick="document.getElementById('setup-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; width:100%; margin-top:10px; font-weight:800; font-size:12px;">CANCEL</button>
-        </div>
+    <div id="level-overlay" class="overlay" style="justify-content: center; align-items: center; background: rgba(15,23,42,0.98);">
+        <h3 style="margin-bottom:20px;">CHOOSE DIFFICULTY</h3>
+        <button class="mode-btn" style="width:250px; margin-bottom:10px; background:var(--success); color:white;" onclick="initSpeedGame('basic')">BASIC (Easy)</button>
+        <button class="mode-btn" style="width:250px; margin-bottom:10px; background:var(--gold); color:white;" onclick="initSpeedGame('medium')">MEDIATE (Average)</button>
+        <button class="mode-btn" style="width:250px; margin-bottom:20px; background:#ef4444; color:white;" onclick="initSpeedGame('hard')">TOUGH (Hard)</button>
+        <button onclick="document.getElementById('level-overlay').style.display='none'" style="color:#94a3b8; background:none; border:none;">Cancel</button>
     </div>
 
-    <button class="rev-fab" onclick="openRevision()">📚 REVISION ZONE</button>
+    <div id="game-overlay" class="overlay">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <button onclick="location.reload()" style="background:#334155; color:white; border:none; padding:8px 15px; border-radius:10px;">✕ EXIT</button>
+            <span id="game-timer" style="color:var(--gold); font-weight:900;">30s</span>
+        </div>
+        <div class="q-display" id="q-text">--</div>
+        <input type="number" id="ans-input" style="width:100%; background:#1e293b; border:3px solid var(--primary); padding:20px; border-radius:20px; color:white; font-size:40px; text-align:center;" placeholder="?" inputmode="numeric">
+    </div>
+
+    <div id="quiz-overlay" class="overlay">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <b id="quiz-title">Quiz</b>
+            <button onclick="location.reload()" style="background:#334155; color:white; border:none; padding:8px 12px; border-radius:8px;">EXIT</button>
+        </div>
+        <div style="background:#1e293b; padding:20px; border-radius:15px; font-size:20px; min-height:100px; margin-bottom:20px;" id="quiz-question">Loading question...</div>
+        <div class="opt-grid" id="quiz-options"></div>
+        <div style="margin-top:20px; text-align:center; color:#94a3b8;" id="quiz-progress">Question 1/50</div>
+    </div>
 
     <div class="footer-branding">
         <p>Powered by <span>RAMA</span></p>
     </div>
 
-    <div id="game-overlay">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <button onclick="location.reload()" style="background:#334155; color:white; border:none; padding:8px 15px; border-radius:10px; font-weight:800;">✕ EXIT</button>
-            <div style="text-align:right;">
-                <span style="color:var(--gold); font-weight:900;"><span id="live-timer">0</span>s | Score: <span id="live-score">0</span></span>
-            </div>
-        </div>
-        <div class="q-display" id="q-text">--</div>
-        <input type="number" id="ans-input" class="ans-field" placeholder="?" inputmode="numeric">
-    </div>
-
-    <div id="result-screen" style="align-items:center; justify-content:center; text-align:center;">
-        <h2 style="color:var(--primary); font-size:40px; font-weight:900;">+<span id="final-score">0</span> XP</h2>
-        <p style="margin-bottom:30px;">Great Session!</p>
-        <button onclick="location.reload()" style="background:white; color:black; width:100%; max-width:260px; padding:16px; border:none; border-radius:50px; font-weight:900; margin-bottom:10px;">PLAY AGAIN</button>
-        <button onclick="shareChallenge()" style="background:#25d366; color:white; width:100%; max-width:260px; padding:16px; border:none; border-radius:50px; font-weight:900;">CHALLENGE FRIENDS</button>
-    </div>
-
-    <div id="rev-overlay">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 style="font-weight:900;">Study Zone</h2>
-            <button onclick="document.getElementById('rev-overlay').style.display='none'" style="background:none; border:none; color:white; font-size:24px;">✕</button>
-        </div>
-        <div id="tables-container"></div>
-    </div>
-
     <script>
-        // Cache Buster Version 3.0
-        const V = "3.0";
-        if(localStorage.getItem('app_version') !== V) {
-            localStorage.clear();
-            localStorage.setItem('app_version', V);
-            window.location.reload(true);
-        }
-
         let xp = parseInt(localStorage.getItem('math_xp')) || 0;
-        let totalSolved = parseInt(localStorage.getItem('math_solved')) || 0;
+        let solved = parseInt(localStorage.getItem('math_solved')) || 0;
         document.getElementById('main-xp').innerText = xp;
-        document.getElementById('total-solved').innerText = totalSolved;
+        document.getElementById('total-solved').innerText = solved;
 
-        let score = 0, target = 0, mode = '+', count = 0, timeLeft = 30, qTarget = 20, timer;
+        let currentMode, currentLevel, targetAns, timer, timeLeft, score = 0;
 
-        function showSetup(m) { mode = m; document.getElementById('setup-overlay').style.display = 'flex'; }
+        // Speed Game Logic
+        function openLevelSelect(m) { currentMode = m; document.getElementById('level-overlay').style.display = 'flex'; }
         
-        function confirmStart() {
-            qTarget = parseInt(document.getElementById('setup-count').value);
-            timeLeft = parseInt(document.getElementById('setup-time').value);
-            document.getElementById('setup-overlay').style.display = 'none';
+        function initSpeedGame(lvl) {
+            currentLevel = lvl;
+            document.getElementById('level-overlay').style.display = 'none';
             document.getElementById('game-overlay').style.display = 'flex';
-            newQ();
+            timeLeft = 30; score = 0;
+            newSpeedQ();
             timer = setInterval(() => {
                 timeLeft--;
-                document.getElementById('live-timer').innerText = timeLeft;
-                if(timeLeft <= 0) finish();
+                document.getElementById('game-timer').innerText = timeLeft + 's';
+                if(timeLeft <= 0) finishGame();
             }, 1000);
         }
 
-        function newQ() {
+        function newSpeedQ() {
             let a, b;
-            if(mode === '+') { a = r(5,60); b = r(5,60); target = a+b; document.getElementById('q-text').innerText = `${a}+${b}`; }
-            else if(mode === '-') { a = r(20,99); b = r(5,a); target = a-b; document.getElementById('q-text').innerText = `${a}-${b}`; }
-            else if(mode === 'sq') { target = r(2,25); document.getElementById('q-text').innerText = `√${target*target}`; }
-            else if(mode === '%') { let p = [10,20,25,50][Math.floor(Math.random()*4)]; let base = r(2,20)*10; target = (p/100)*base; document.getElementById('q-text').innerText = `${p}% of ${base}`; }
+            if(currentLevel === 'basic') { a = r(2,15); b = r(2,15); }
+            else if(currentLevel === 'medium') { a = r(15,50); b = r(15,50); }
+            else { a = r(50,150); b = r(50,150); }
+
+            if(currentMode === '+') { targetAns = a + b; document.getElementById('q-text').innerText = `${a}+${b}`; }
+            else if(currentMode === '-') { if(a<b)[a,b]=[b,a]; targetAns = a - b; document.getElementById('q-text').innerText = `${a}-${b}`; }
+            else if(currentMode === 'sq') { targetAns = r(2,25); document.getElementById('q-text').innerText = `${targetAns}²`; targetAns *= targetAns; }
+            else { let p = 10*r(1,9); let base = 10*r(1,20); targetAns = (p/100)*base; document.getElementById('q-text').innerText = `${p}% of ${base}`; }
+            
             document.getElementById('ans-input').value = ""; document.getElementById('ans-input').focus();
         }
 
-        function r(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
-
         document.getElementById('ans-input').addEventListener('input', (e) => {
-            if(parseInt(e.target.value) === target) {
-                score += 10; count++;
-                document.getElementById('live-score').innerText = score;
-                if(count >= qTarget) finish(); else newQ();
+            if(parseFloat(e.target.value) === targetAns) {
+                score += 10;
+                localStorage.setItem('math_xp', xp + score);
+                localStorage.setItem('math_solved', ++solved);
+                newSpeedQ();
             }
         });
 
-        function finish() {
-            clearInterval(timer);
-            document.getElementById('game-overlay').style.display = 'none';
-            document.getElementById('result-screen').style.display = 'flex';
-            document.getElementById('final-score').innerText = score;
-            localStorage.setItem('math_xp', xp + score);
-            localStorage.setItem('math_solved', totalSolved + count);
-            confetti({ particleCount: 150 });
+        function finishGame() { clearInterval(timer); alert("Time Up! XP Earned: " + score); location.reload(); }
+        function r(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
+
+        // Quiz Logic
+        let quizQIndex = 0;
+        function startQuiz(topic) {
+            document.getElementById('quiz-overlay').style.display = 'flex';
+            document.getElementById('quiz-title').innerText = topic;
+            quizQIndex = 1;
+            loadQuizQuestion();
         }
 
-        function openRevision() {
-            let h = '';
-            for(let i=2; i<=20; i++) {
-                h += `<div style="margin-bottom:15px;"><b style="color:var(--gold)">Table of ${i}</b><div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:5px;">`;
-                for(let j=1; j<=10; j++) h += `<div style="background:#0f172a; padding:5px; border-radius:5px; font-size:12px;">${i}x${j}=${i*j}</div>`;
-                h += '</div></div>';
+        function loadQuizQuestion() {
+            document.getElementById('quiz-progress').innerText = `Question ${quizQIndex}/50`;
+            let a = r(10,100), b = r(5,50);
+            let qText = `If a value increases by ${a}% and then decreases by ${b}%, what is the net effect?`;
+            let correct = ( ((1 + a/100) * (1 - b/100)) - 1 ) * 100;
+            
+            document.getElementById('quiz-question').innerText = `[${document.getElementById('quiz-title').innerText}] Question: Solve for level check. (Randomized)`;
+            
+            let opts = [ (correct).toFixed(1), (correct+5).toFixed(1), (correct-3).toFixed(1), (correct*1.2).toFixed(1) ];
+            opts.sort(() => Math.random() - 0.5);
+
+            let html = '';
+            opts.forEach(o => {
+                html += `<button class="opt-btn" onclick="checkQuizAns(this, ${o == correct.toFixed(1)})">${o}%</button>`;
+            });
+            document.getElementById('quiz-options').innerHTML = html;
+        }
+
+        function checkQuizAns(btn, isCorrect) {
+            if(isCorrect) {
+                btn.classList.add('correct');
+                confetti({ particleCount: 50 });
+                setTimeout(() => { quizQIndex++; loadQuizQuestion(); }, 1000);
+            } else {
+                btn.classList.add('wrong');
+                alert("Incorrect! Try again.");
             }
-            document.getElementById('tables-container').innerHTML = h;
-            document.getElementById('rev-overlay').style.display = 'flex';
-        }
-
-        function shareChallenge() {
-            let t = `🔥 Maine *RAMA* ki App par ${score} XP banaye! दम है तो हरा के दिखाओ! \n\nLink: https://examspeed-math.vercel.app/`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, '_blank');
         }
     </script>
 </body>
-</html>
+    </html>
+    
