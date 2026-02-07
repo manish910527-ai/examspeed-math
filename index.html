@@ -41,8 +41,7 @@
         .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .opt-btn { background: #1e293b; border: 1px solid #2d364d; padding: 18px; border-radius: 12px; color: white; font-size: 18px; font-weight: bold; }
 
-        #result-screen { text-align: center; margin-top: 20px; }
-        .motivation-card { background: rgba(56, 189, 248, 0.1); border: 1px dashed var(--primary); padding: 15px; border-radius: 15px; margin: 15px 0; font-style: italic; color: #cbd5e1; }
+        .motivation-card { background: rgba(56, 189, 248, 0.1); border: 1px dashed var(--primary); padding: 15px; border-radius: 15px; margin: 15px 0; font-style: italic; color: #cbd5e1; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -104,18 +103,18 @@
         </div>
 
         <div id="quiz-setup" style="margin-top:30px;">
-            <p style="margin-bottom:10px; color:#94a3b8; font-size:14px;">How many questions?</p>
+            <p style="margin-bottom:10px; color:#94a3b8; font-size:14px;">Select Questions Count:</p>
             <select id="q-count-sel">
                 <option value="10">10 Questions</option>
                 <option value="20">20 Questions</option>
                 <option value="30">30 Questions</option>
                 <option value="99999">Unlimited Practice</option>
             </select>
-            <p style="margin-bottom:10px; color:#94a3b8; font-size:14px;">Difficulty Level</p>
+            <p style="margin-bottom:10px; color:#94a3b8; font-size:14px;">Level:</p>
             <select id="q-level">
-                <option value="basic">Basic (Easy)</option>
-                <option value="medium">Medium (Moderate)</option>
-                <option value="adv">Advanced (Hard)</option>
+                <option value="basic">Basic</option>
+                <option value="medium">Medium</option>
+                <option value="adv">Advanced</option>
             </select>
             <button class="btn-main" onclick="startQuiz()">START TEST ➔</button>
         </div>
@@ -129,29 +128,27 @@
             <div class="opt-grid" id="opt-grid"></div>
         </div>
 
-        <div id="result-screen" style="display:none;">
-            <h1 style="color:var(--gold); font-size:32px; margin-bottom:10px;">Test Finished!</h1>
-            <div style="background:#161b2c; padding:20px; border-radius:20px; border:1px solid #232a3d;">
+        <div id="result-screen" style="display:none; text-align:center;">
+            <h1 style="color:var(--gold); font-size:32px; margin: 20px 0;">Test Finished!</h1>
+            <div style="background:#161b2c; padding:20px; border-radius:20px; border:1px solid #232a3d; margin-bottom:20px;">
                 <p style="font-size:20px;">Score: <span id="res-score" style="color:var(--success); font-weight:900;">0</span></p>
-                <p style="font-size:16px; color:#94a3b8; margin-top:5px;">Time Taken: <span id="res-time" style="color:white;">0</span>s</p>
+                <p style="font-size:16px; color:#94a3b8; margin-top:5px;">Time: <span id="res-time" style="color:white;">0</span>s</p>
             </div>
-            
             <div class="motivation-card" id="motivation-msg"></div>
-
             <button class="btn-main" style="background:#25d366; margin-bottom:12px;" onclick="shareChallenge()">SHARE CHALLENGE ON WHATSAPP ➔</button>
-            <button class="btn-main" style="background:#1e293b;" onclick="location.reload()">TRY AGAIN</button>
+            <button class="btn-main" style="background:#1e293b;" onclick="location.reload()">BACK TO HOME</button>
         </div>
     </div>
 
     <script>
         let score = 0, qNum = 1, totalQ = 0, timer = 0, timerInt, cAns = 0, currentMode = '';
 
-        const quotes = [
-            "हारना तब तक बुरा नहीं है, जब तक आप फिर से कोशिश करने का साहस रखते हैं!",
-            "मेहनत का फल और समस्या का हल, थोड़ी देर से ही सही पर मिलता ज़रूर है।",
-            "एक फौजी और एक छात्र कभी गिव-अप नहीं करते। फिर से वार करो!",
-            "Speed is a skill, practice is the key. अगला टेस्ट इससे भी बेहतर होगा!",
-            "मंजिल उन्हीं को मिलती है, जिनके सपनों में जान होती है!"
+        const ramaQuotes = [
+            "Mehnat ka phal aur samasya ka hal, thodi der se hi sahi par milta zaroor hai!",
+            "Haarna tab tak bura nahi hai, jab tak aap phir se koshish karne ka sahas rakhte hain.",
+            "Ek fauji aur ek chhatra kabhi give-up nahi karte. Phir se koshish karo!",
+            "Speed hi aapki pehchan hai. Agla test isse bhi behtar hona chahiye!",
+            "Manzil unhi ko milti hai, jinke sapno mein jaan hoti hai. Practice jaari rakhein!"
         ];
 
         function closeOverlay() { 
@@ -172,23 +169,25 @@
                 content.innerHTML = h + '</div>';
             } else if(type === 'Formulas') {
                 content.innerHTML = `
-                    <div class="formula-group"><div class="formula-head">📐 GEOMETRY</div>
-                    <div class="formula-item">Area of Triangle = ½ × b × h</div>
-                    <div class="formula-item">Semi-perimeter (s) = (a + b + c)/2</div>
-                    <div class="formula-item">Area of Circle = πr² | Circumference = 2πr</div>
-                    <div class="formula-item">Rhombus Area = ½ × d₁ × d₂</div></div>
-                    <div class="formula-group"><div class="formula-head">📐 TRIGONOMETRY</div>
-                    <div class="formula-item">sin²θ + cos²θ = 1</div>
-                    <div class="formula-item">sin30° = 1/2 | cos30° = √3/2</div></div>
-                    <div class="formula-group"><div class="formula-head">✖️ ALGEBRA</div>
-                    <div class="formula-item">(a + b)² = a² + b² + 2ab</div>
-                    <div class="formula-item">AP nth term: aₙ = a + (n−1)d</div></div>`;
-            } else if(type === 'Squares') {
+                <div class="formula-group"><div class="formula-head">📐 GEOMETRY</div>
+                <div class="formula-item">Area of triangle = ½ × b × h</div>
+                <div class="formula-item">Semi-perimeter (s) = (a + b + c)/2</div>
+                <div class="formula-item">Heron's Formula = √[s(s−a)(s−b)(s−c)]</div>
+                <div class="formula-item">Area of circle = πr² | Circumference = 2πr</div></div>
+                <div class="formula-group"><div class="formula-head">📐 TRIGONOMETRY</div>
+                <div class="formula-item">sinθ = P/H | cosθ = B/H | tanθ = P/B</div>
+                <div class="formula-item">sin²θ + cos²θ = 1 | 1 + tan²θ = sec²θ</div></div>
+                <div class="formula-group"><div class="formula-head">✖️ ALGEBRA</div>
+                <div class="formula-item">(a + b)² = a² + b² + 2ab</div>
+                <div class="formula-item">Quadratic: x = (−b ± √(b²-4ac))/2a</div></div>`;
+            } else if(type === 'Squares' || type === 'Cubes' || type === 'Cube Roots') {
                 let h = '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">';
-                for(let i=1; i<=50; i++) h += `<div class="formula-item" style="text-align:center">${i}² = ${i*i}</div>`;
+                for(let i=1; i<=50; i++) {
+                    let val = (type==='Squares') ? i*i : (type==='Cubes' ? i*i*i : i);
+                    let label = (type==='Squares') ? `${i}² = ${val}` : (type==='Cubes' ? `${i}³ = ${val}` : `∛${i*i*i} = ${i}`);
+                    h += `<div class="formula-item" style="text-align:center">${label}</div>`;
+                }
                 content.innerHTML = h + '</div>';
-            } else {
-                content.innerHTML = '<p style="text-align:center; color:#94a3b8;">Coming Soon...</p>';
             }
         }
 
@@ -218,20 +217,24 @@
 
         function generateQ() {
             if(qNum > totalQ) { finishQuiz(); return; }
-            document.getElementById('q-progress').innerText = `Q: ${qNum}/${totalQ > 500 ? '∞' : totalQ}`;
+            document.getElementById('q-progress').innerText = `Q: ${qNum}/${totalQ > 100 ? '∞' : totalQ}`;
             let level = document.getElementById('q-level').value;
-            let range = level === 'basic' ? 10 : (level === 'medium' ? 50 : 100);
+            let range = (level === 'basic') ? 10 : ((level === 'medium') ? 50 : 100);
             let n1 = Math.floor(Math.random() * range) + 1, n2 = Math.floor(Math.random() * range) + 1;
             let q = "", ans = 0;
 
-            if(currentMode === 'Addition') { q = `${n1} + ${n2}`; ans = n1 + n2; }
-            else if(currentMode === 'Subtraction') { if(n1<n2) [n1,n2]=[n2,n1]; q = `${n1} - ${n2}`; ans = n1 - n2; }
-            else if(currentMode === 'Multiplication') { n1 = Math.floor(Math.random()*20)+1; q = `${n1} × ${n2}`; ans = n1 * n2; }
-            else { q = `${n1} + ${n2}`; ans = n1 + n2; } // Default
+            let mode = (currentMode === 'Mix Speed Test') ? ['Addition','Subtraction','Multiplication','Squares'][Math.floor(Math.random()*4)] : currentMode;
+
+            if(mode === 'Addition') { q = `${n1} + ${n2}`; ans = n1 + n2; }
+            else if(mode === 'Subtraction') { if(n1<n2) [n1,n2]=[n2,n1]; q = `${n1} - ${n2}`; ans = n1 - n2; }
+            else if(mode === 'Multiplication') { n1 = Math.floor(Math.random()*20)+1; q = `${n1} × ${n2}`; ans = n1 * n2; }
+            else if(mode === 'Division') { ans = Math.floor(Math.random()*15)+1; let p = ans * n2; q = `${p} ÷ ${n2}`; }
+            else if(mode === 'Percentage') { let p = [10,20,25,50][Math.floor(Math.random()*4)]; q = `${p}% of ${n1*10}`; ans = (p/100)*(n1*10); }
+            else if(mode === 'Squares') { n1 = Math.floor(Math.random()*50)+1; q = `${n1}²`; ans = n1 * n1; }
 
             cAns = ans;
             document.getElementById('q-txt').innerText = q;
-            let opts = [ans, ans+Math.floor(Math.random()*5)+1, ans-Math.floor(Math.random()*5)-1, ans+10].sort(()=>Math.random()-0.5);
+            let opts = [ans, ans + (Math.floor(Math.random()*5)+1), ans - (Math.floor(Math.random()*5)+1), ans + 10].sort(()=>Math.random()-0.5);
             document.getElementById('opt-grid').innerHTML = opts.map(o => `<button class="opt-btn" onclick="checkAns(this, ${o})">${o}</button>`).join('');
         }
 
@@ -247,14 +250,14 @@
             clearInterval(timerInt);
             document.getElementById('quiz-engine').style.display = 'none';
             document.getElementById('result-screen').style.display = 'block';
-            document.getElementById('res-score').innerText = score;
+            document.getElementById('res-score').innerText = `${score}/${totalQ > 100 ? qNum-1 : totalQ}`;
             document.getElementById('res-time').innerText = timer;
-            document.getElementById('motivation-msg').innerText = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('motivation-msg').innerText = ramaQuotes[Math.floor(Math.random()*ramaQuotes.length)];
         }
 
         function shareChallenge() {
-            const text = `🔥 *CHALLENGE ACCEPTED?* 🔥\n\nमैंने *ExamSpeed Math* पर *${currentMode}* टेस्ट दिया और *${timer} सेकंड* में *${score}* अंक प्राप्त किए! 😎\n\nक्या तुम में मुझे हराने का दम है? अपनी स्पीड चेक करो यहाँ:\n👉 https://examspeed-math.vercel.app/\n\n_Powered by RAMA_`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
+            const waMsg = `🔥 *DAM HAI TO HARA KAR DIKHAO!* 🔥\n\nMaine *ExamSpeed Math* par *${currentMode}* test diya aur *${timer}s* mein *${score}* score kiya! 😎\n\nKya tum mera ye record tod sakte ho? Challenge accept karo yahan:\n👉 https://examspeed-math.vercel.app/\n\n_Powered by RAMA_`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(waMsg)}`);
         }
     </script>
 </body>
