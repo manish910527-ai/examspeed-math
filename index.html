@@ -19,31 +19,32 @@
         .main-container { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 110px; }
 
         .level-card { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 24px; padding: 20px; margin-bottom: 25px; border: 1px solid rgba(56, 189, 248, 0.2); }
-        .progress-container { background: rgba(255,255,255,0.05); height: 12px; border-radius: 20px; overflow: hidden; margin: 15px 0; border: 1px solid rgba(255,255,255,0.1); }
-        .progress-bar { background: linear-gradient(90deg, var(--primary), var(--accent)); height: 100%; width: 0%; transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .progress-container { background: rgba(255,255,255,0.05); height: 12px; border-radius: 20px; overflow: hidden; margin: 15px 0; }
+        .progress-bar { background: linear-gradient(90deg, var(--primary), var(--accent)); height: 100%; width: 0%; transition: 1s; }
 
         .section-title { font-size: 11px; color: #64748b; font-weight: 800; margin: 25px 0 12px 5px; letter-spacing: 1.5px; text-transform: uppercase; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         
-        .topic-card { background: var(--card); border-radius: 20px; padding: 18px; border: 1px solid #232a3d; transition: 0.2s; cursor: pointer; }
+        .topic-card { background: var(--card); border-radius: 20px; padding: 18px; border: 1px solid #232a3d; transition: 0.2s; cursor: pointer; text-align: center; }
         .topic-card:active { transform: scale(0.95); }
-        .topic-card h3 { font-size: 14px; margin-top: 8px; color: #f1f5f9; }
+        .topic-card h3 { font-size: 14px; margin-top: 8px; color: #f1f5f9; font-weight: 700; }
 
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #161b2c; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
-        .nav-item { color: #64748b; text-align: center; font-size: 11px; font-weight: 700; }
+        .nav-item { color: #64748b; text-align: center; font-size: 11px; font-weight: 700; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
 
-        /* Quiz Overlay */
+        /* Revision Overlay */
         .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; overflow-y: auto; }
-        .question-card { background: var(--card); border-radius: 25px; padding: 25px; border: 1px solid rgba(255,255,255,0.05); margin: 20px; font-size: 19px; line-height: 1.6; font-weight: 600; border-left: 6px solid var(--primary); }
-        .option-btn { background: #1c243a; color: #cbd5e1; padding: 16px; border-radius: 15px; border: 1px solid #2d364d; margin: 0 20px 10px 20px; text-align: left; font-size: 16px; font-weight: 700; }
-        .correct { background: var(--success) !important; color: white !important; }
-        .wrong { background: var(--danger) !important; color: white !important; }
-        .sol-box { background: rgba(56, 189, 248, 0.08); margin: 5px 20px 20px 20px; padding: 15px; border-radius: 15px; border: 1px dashed var(--primary); display: none; font-size: 14px; color: #e2e8f0; }
-
-        /* Revision Zone Grid */
+        .rev-section-head { color: var(--gold); font-size: 18px; font-weight: 800; margin: 20px 0 10px 0; border-left: 4px solid var(--gold); padding-left: 10px; }
         .rev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
-        .rev-item { background: #1e293b; padding: 10px; border-radius: 10px; font-size: 12px; text-align: center; color: var(--gold); border: 1px solid rgba(251, 191, 36, 0.1); }
+        .rev-item { background: #1e293b; padding: 12px; border-radius: 10px; font-size: 12px; text-align: center; color: #fff; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        .rev-item:active { background: var(--primary); }
+        
+        /* Table Detail Modal */
+        .table-view { background: #161b2c; border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 2px solid var(--primary); display: none; animation: fadeIn 0.3s; }
+        .table-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 18px; font-weight: 600; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -53,47 +54,38 @@
         <div style="background: rgba(251, 191, 36, 0.1); color: var(--gold); padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 900;">BY RAMA</div>
     </div>
 
-    <div class="main-container" id="dashboard">
+    <div class="main-container">
         <div class="level-card">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h2 id="lvl-name" style="font-size:16px;">Level 1: Beginner</h2>
+                <h2 style="font-size:16px;">Level 1: Beginner</h2>
                 <div style="color:var(--gold); font-weight:900;">XP: <span id="main-xp">0</span></div>
             </div>
-            <div class="progress-container"><div class="progress-bar" id="xp-bar"></div></div>
-            <p style="font-size:10px; color:#94a3b8;">Level 2 के लिए <span id="xp-need">500</span> XP और चाहिए</p>
+            <div class="progress-container"><div class="progress-bar" id="xp-bar" style="width: 10%;"></div></div>
         </div>
 
-        <div class="section-title">CHALLENGE MODES (50 Ques)</div>
+        <div class="section-title">CHALLENGE MODES</div>
         <div class="grid-2">
-            <div class="topic-card" onclick="startQuiz('Percentage')">
+            <div class="topic-card" onclick="alert('Starting Percentage Quiz...')">
                 <div style="font-size:24px; color:var(--primary);">%</div>
-                <h3>प्रतिशत</h3>
+                <h3>Percentage</h3>
             </div>
-            <div class="topic-card" onclick="startQuiz('ProfitLoss')">
+            <div class="topic-card" onclick="alert('Starting Profit & Loss Quiz...')">
                 <div style="font-size:24px; color:var(--success);">₹</div>
-                <h3>लाभ-हानि</h3>
+                <h3>Profit & Loss</h3>
             </div>
         </div>
 
         <div class="section-title">CALCULATION SPEED</div>
         <div class="grid-2">
-            <div class="topic-card" style="border-left:4px solid var(--success);" onclick="alert('Addition Quiz Loading...')">
-                <h3 style="margin:0;">जोड़ (+)</h3>
-            </div>
-            <div class="topic-card" style="border-left:4px solid var(--danger);" onclick="alert('Subtraction Quiz Loading...')">
-                <h3 style="margin:0;">घटाव (-)</h3>
-            </div>
-            <div class="topic-card" style="border-left:4px solid var(--gold);" onclick="alert('Multiplication Quiz Loading...')">
-                <h3 style="margin:0;">गुणा (×)</h3>
-            </div>
-            <div class="topic-card" style="border-left:4px solid var(--accent);" onclick="alert('Division Quiz Loading...')">
-                <h3 style="margin:0;">भाग (÷)</h3>
-            </div>
+            <div class="topic-card" style="border-top: 3px solid var(--success);" onclick="alert('Addition Mode')"><h3>Addition</h3></div>
+            <div class="topic-card" style="border-top: 3px solid var(--danger);" onclick="alert('Subtraction Mode')"><h3>Subtraction</h3></div>
+            <div class="topic-card" style="border-top: 3px solid var(--gold);" onclick="alert('Multiplication Mode')"><h3>Multiplication</h3></div>
+            <div class="topic-card" style="border-top: 3px solid var(--accent);" onclick="alert('Division Mode')"><h3>Division</h3></div>
         </div>
 
         <div style="background: rgba(129, 140, 248, 0.1); border-radius: 20px; padding: 20px; border: 1px solid var(--accent); margin-top: 25px;">
             <h4 style="color:var(--accent); margin-bottom:5px;">💡 RAMA का संदेश</h4>
-            <p style="font-size:13px; color:#cbd5e1;">"मेहनत ऐसी करो कि किस्मत भी बोल उठे—ले ले बेटा, यह तो तेरा हक है। रोज 50 सवाल हल करने की आदत डालें!"</p>
+            <p style="font-size:13px; color:#cbd5e1;">"मेहनत ऐसी करो कि सफलता शोर मचा दे। 1 से 50 तक के पहाड़े और वर्ग आपकी उंगलियों पर होने चाहिए।"</p>
         </div>
     </div>
 
@@ -103,119 +95,71 @@
         <div class="nav-item" onclick="window.open('https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p')">💬<br>Updates</div>
     </div>
 
-    <div id="quiz-overlay" class="overlay">
-        <div style="padding:15px 20px; display:flex; justify-content:space-between; align-items:center;">
-            <button onclick="location.reload()" style="background:none; border:none; color:#64748b; font-weight:800;">✕ EXIT</button>
-            <b id="q-counter" style="color:var(--primary)">Q 1/50</b>
-        </div>
-        <div class="question-card" id="q-txt"></div>
-        <div id="opt-container" style="display:flex; flex-direction:column;"></div>
-        <div class="sol-box" id="sol-txt"></div>
-        <button id="nxt-btn" onclick="nextQ()" style="display:none; margin:10px 20px; padding:18px; background:var(--primary); color:white; border:none; border-radius:15px; font-weight:900;">NEXT QUESTION ➔</button>
-    </div>
-
     <div id="rev-overlay" class="overlay" style="padding:20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2 style="font-size:22px;">Revision Zone</h2>
-            <button onclick="document.getElementById('rev-overlay').style.display='none'" style="background:none; border:none; color:white; font-size:28px;">✕</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h2 style="font-size:22px;">Revision (1-50)</h2>
+            <button onclick="document.getElementById('rev-overlay').style.display='none'" style="background:none; border:none; color:white; font-size:30px;">✕</button>
         </div>
-        <div id="rev-data" style="padding-bottom:100px;"></div>
+        
+        <div id="table-display" class="table-view"></div>
+
+        <div id="rev-scroll-area">
+            <div class="rev-section-head">Multiplication Tables (1-50)</div>
+            <div class="rev-grid" id="tables-grid"></div>
+
+            <div class="rev-section-head">Squares (1-50)</div>
+            <div class="rev-grid" id="squares-grid"></div>
+
+            <div class="rev-section-head">Cubes (1-50)</div>
+            <div class="rev-grid" id="cubes-grid"></div>
+        </div>
+        <div style="height: 100px;"></div>
     </div>
 
     <script>
-        let xp = parseInt(localStorage.getItem('rama_xp_pro')) || 0;
-        function updateXP() {
-            document.getElementById('main-xp').innerText = xp;
-            let lvl = Math.floor(xp/500) + 1;
-            document.getElementById('lvl-name').innerText = `Level ${lvl}: ${lvl > 3 ? 'Scholar' : 'Beginner'}`;
-            let prog = ((xp % 500) / 500) * 100;
-            document.getElementById('xp-bar').style.width = prog + "%";
-            document.getElementById('xp-need').innerText = 500 - (xp % 500);
-            localStorage.setItem('rama_xp_pro', xp);
-        }
-        updateXP();
-
-        const quizData = {
-            'Percentage': Array.from({length: 50}, (_, i) => {
-                let val = (i + 1) * 12;
-                let ans = 500;
-                return {
-                    q: `[Q${i+1}] यदि किसी संख्या का ${val}% मूल्य ${val * 5} है, तो उस संख्या का 100% मान क्या होगा?`,
-                    opts: [ans, ans + 50, ans - 100, "450"],
-                    ans: String(ans),
-                    sol: `हल: माना संख्या X है।<br>X का ${val}% = ${val * 5}<br>X = (${val * 5} / ${val}) × 100 = ${ans}.`
-                }
-            }),
-            'ProfitLoss': Array.from({length: 50}, (_, i) => {
-                let cp = 400 + (i * 10);
-                let sp = cp * 1.1;
-                return {
-                    q: `[Q${i+1}] एक वस्तु ₹${cp} में खरीदी गई और उसे 10% लाभ पर बेचा गया। विक्रय मूल्य (SP) क्या होगा?`,
-                    opts: [`₹${sp}`, `₹${cp + 20}`, `₹${sp + 50}`, `₹${cp}`],
-                    ans: `₹${sp}`,
-                    sol: `हल: SP = CP + लाभ<br>SP = ${cp} + (${cp} का 10%) = ₹${sp}.`
-                }
-            })
-        };
-
-        let qIdx = 0, currentTopic = '';
-
-        function startQuiz(t) {
-            currentTopic = t; qIdx = 0;
-            document.getElementById('quiz-overlay').style.display = 'flex';
-            renderQ();
-        }
-
-        function renderQ() {
-            let data = quizData[currentTopic][qIdx];
-            document.getElementById('q-txt').innerText = data.q;
-            document.getElementById('q-counter').innerText = `Q ${qIdx+1}/50`;
-            document.getElementById('sol-txt').style.display = 'none';
-            document.getElementById('nxt-btn').style.display = 'none';
-            let h = '';
-            data.opts.forEach(o => {
-                h += `<button class="option-btn" onclick="check(this, '${o}', '${data.ans}', '${data.sol}')">${o}</button>`;
-            });
-            document.getElementById('opt-container').innerHTML = h;
-        }
-
-        function check(btn, sel, cor, sol) {
-            document.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'none');
-            if(sel === cor) {
-                btn.classList.add('correct');
-                xp += 20; updateXP();
-                confetti({ particleCount: 40 });
-            } else {
-                btn.classList.add('wrong');
-                document.querySelectorAll('.option-btn').forEach(b => { if(b.innerText === cor) b.classList.add('correct'); });
-            }
-            document.getElementById('sol-txt').innerHTML = `<b>💡 Solution:</b><br>${sol}`;
-            document.getElementById('sol-txt').style.display = 'block';
-            document.getElementById('nxt-btn').style.display = 'block';
-        }
-
-        function nextQ() {
-            qIdx++;
-            if(qIdx < 50) renderQ();
-            else { alert("Bravo! 50 Questions Done."); location.reload(); }
-        }
-
         function openRev() {
             document.getElementById('rev-overlay').style.display = 'flex';
-            let html = `
-                <div style='background:#161b2c; padding:15px; border-radius:15px; border-top:3px solid var(--gold); margin-bottom:20px;'>
-                    <h3 style='color:var(--gold); margin-bottom:10px;'>Algebra Formulas</h3>
-                    1. (a+b)² = a² + b² + 2ab<br>2. (a-b)² = a² + b² - 2ab<br>3. a²-b² = (a-b)(a+b)
-                </div>
-                <h3>Tables (1-50)</h3><div class='rev-grid'>`;
-            for(let i=1; i<=50; i++) html += `<div class='rev-item' onclick="alert('Table of ${i} loaded!')">Table ${i}</div>`;
-            html += `</div><h3>Squares (1-50)</h3><div class='rev-grid'>`;
-            for(let i=1; i<=50; i++) html += `<div class='rev-item'>${i}² = ${i*i}</div>`;
-            html += `</div><h3>Cubes (1-50)</h3><div class='rev-grid'>`;
-            for(let i=1; i<=50; i++) html += `<div class='rev-item'>${i}³ = ${i*i*i}</div>`;
-            html += `</div>`;
-            document.getElementById('rev-data').innerHTML = html;
+            
+            // 1-50 Tables Grid
+            let tHtml = '';
+            for(let i=1; i<=50; i++) {
+                tHtml += `<div class='rev-item' onclick="showTable(${i})">Table of ${i}</div>`;
+            }
+            document.getElementById('tables-grid').innerHTML = tHtml;
+
+            // 1-50 Squares Grid
+            let sHtml = '';
+            for(let i=1; i<=50; i++) {
+                sHtml += `<div class='rev-item'>${i}² = ${i*i}</div>`;
+            }
+            document.getElementById('squares-grid').innerHTML = sHtml;
+
+            // 1-50 Cubes Grid
+            let cHtml = '';
+            for(let i=1; i<=50; i++) {
+                cHtml += `<div class='rev-item'>${i}³ = ${i*i*i}</div>`;
+            }
+            document.getElementById('cubes-grid').innerHTML = cHtml;
         }
+
+        function showTable(n) {
+            let box = document.getElementById('table-display');
+            box.style.display = 'block';
+            let rows = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                            <h3 style='color:var(--gold);'>Table of ${n}</h3>
+                            <button onclick="document.getElementById('table-display').style.display='none'" style="background:var(--danger); border:none; color:white; padding:5px 10px; border-radius:5px; font-size:12px;">CLOSE</button>
+                        </div>`;
+            for(let i=1; i<=10; i++) {
+                rows += `<div class='table-row'><span>${n} × ${i}</span><span>=</span><span>${n*i}</span></div>`;
+            }
+            box.innerHTML = rows;
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top to see the table
+            document.getElementById('rev-overlay').scrollTop = 0;
+        }
+
+        // XP Update
+        let xp = parseInt(localStorage.getItem('rama_xp_pro')) || 0;
+        document.getElementById('main-xp').innerText = xp;
     </script>
 </body>
 </html>
