@@ -28,13 +28,16 @@
         
         .topic-btn { background: #1e293b; color: white; padding: 15px; border-radius: 15px; border: 1px solid #334155; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; width: 100%; cursor: pointer; }
 
-        /* Overlays */
         .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
         .q-display { font-size: 50px; font-weight: 900; text-align: center; margin: 40px 0; }
-        .opt-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .opt-btn { background: #1e293b; color: white; padding: 18px; border-radius: 15px; border: 2px solid #334155; font-size: 18px; font-weight: 700; cursor: pointer; }
-        .opt-btn.correct { background: var(--success); border-color: white; }
-        .opt-btn.wrong { background: #ef4444; border-color: white; }
+        
+        /* Quiz Styles */
+        .quiz-q-box { background: #1e293b; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: 600; line-height: 1.5; margin-bottom: 20px; border-left: 5px solid var(--primary); }
+        .opt-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .opt-btn { background: #0f172a; color: white; padding: 16px; border-radius: 12px; border: 1px solid #334155; font-size: 16px; font-weight: 700; text-align: left; cursor: pointer; transition: 0.2s; }
+        .opt-btn:active { background: #1e293b; }
+        .correct { background: var(--success) !important; border-color: white !important; }
+        .wrong { background: #ef4444 !important; border-color: white !important; }
 
         .footer-branding { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; padding: 12px; text-align: center; border-top: 1px solid #334155; }
     </style>
@@ -75,13 +78,11 @@
             <button class="mode-btn" style="color:#db2777" onclick="openLevelSelect('%')">PERCENT %</button>
         </div>
 
-        <div class="section-title">Exam Quiz Zone (Topic Wise)</div>
+        <div class="section-title">Exam Quiz Zone (TOPICS)</div>
         <div id="topics-list">
-            <button class="topic-btn" onclick="startQuiz('Percentage')"><span>Percentage (50 Qs)</span> ➔</button>
-            <button class="topic-btn" onclick="startQuiz('Profit & Loss')"><span>Profit & Loss (50 Qs)</span> ➔</button>
-            <button class="topic-btn" onclick="startQuiz('Ratio & Prop.')"><span>Ratio & Proportion</span> ➔</button>
-            <button class="topic-btn" onclick="startQuiz('Time & Work')"><span>Time & Work</span> ➔</button>
-            <button class="topic-btn" onclick="startQuiz('Simple Interest')"><span>Simple Interest</span> ➔</button>
+            <button class="topic-btn" onclick="startQuiz('Percentage')"><span>Percentage</span> ➔</button>
+            <button class="topic-btn" onclick="startQuiz('Profit & Loss')"><span>Profit & Loss</span> ➔</button>
+            <button class="topic-btn" onclick="startQuiz('Ratio')"><span>Ratio & Proportion</span> ➔</button>
         </div>
     </div>
 
@@ -107,9 +108,9 @@
             <b id="quiz-title">Quiz</b>
             <button onclick="location.reload()" style="background:#334155; color:white; border:none; padding:8px 12px; border-radius:8px;">EXIT</button>
         </div>
-        <div style="background:#1e293b; padding:20px; border-radius:15px; font-size:20px; min-height:100px; margin-bottom:20px;" id="quiz-question">Loading question...</div>
+        <div class="quiz-q-box" id="quiz-question">Question will appear here...</div>
         <div class="opt-grid" id="quiz-options"></div>
-        <div style="margin-top:20px; text-align:center; color:#94a3b8;" id="quiz-progress">Question 1/50</div>
+        <div id="quiz-feedback" style="margin-top:20px; text-align:center; font-weight:800; min-height:24px;"></div>
     </div>
 
     <div class="footer-branding">
@@ -117,6 +118,23 @@
     </div>
 
     <script>
+        // --- REAL EXAM QUESTIONS DATA ---
+        const quizData = {
+            'Percentage': [
+                { q: "If A's income is 25% more than B's, by how much % is B's income less than A's?", opts: ["20%", "25%", "30%", "15%"], ans: "20%" },
+                { q: "What is 20% of 50% of 300?", opts: ["30", "60", "45", "15"], ans: "30" },
+                { q: "A student has to secure 40% marks to pass. He gets 178 marks and fails by 22 marks. Maximum marks are?", opts: ["500", "600", "800", "400"], ans: "500" }
+            ],
+            'Profit & Loss': [
+                { q: "A man buys an item for ₹1200 and sells it at a loss of 20%. Selling price is?", opts: ["₹960", "₹1000", "₹840", "₹1100"], ans: "₹960" },
+                { q: "If the cost price of 10 articles is equal to the selling price of 9 articles, gain % is?", opts: ["11(1/9)%", "10%", "9%", "1(1/9)%"], ans: "11(1/9)%" }
+            ],
+            'Ratio': [
+                { q: "If A:B = 2:3 and B:C = 4:5, then A:B:C is?", opts: ["8:12:15", "2:3:5", "8:10:15", "4:6:10"], ans: "8:12:15" },
+                { q: "Two numbers are in ratio 3:5. If 9 is subtracted from each, they are in ratio 12:23. The smaller number is?", opts: ["33", "27", "49", "55"], ans: "33" }
+            ]
+        };
+
         let xp = parseInt(localStorage.getItem('math_xp')) || 0;
         let solved = parseInt(localStorage.getItem('math_solved')) || 0;
         document.getElementById('main-xp').innerText = xp;
@@ -124,86 +142,90 @@
 
         let currentMode, currentLevel, targetAns, timer, timeLeft, score = 0;
 
-        // Speed Game Logic
+        // Speed Game
         function openLevelSelect(m) { currentMode = m; document.getElementById('level-overlay').style.display = 'flex'; }
-        
         function initSpeedGame(lvl) {
             currentLevel = lvl;
             document.getElementById('level-overlay').style.display = 'none';
             document.getElementById('game-overlay').style.display = 'flex';
-            timeLeft = 30; score = 0;
-            newSpeedQ();
+            timeLeft = 30; score = 0; newSpeedQ();
             timer = setInterval(() => {
                 timeLeft--;
                 document.getElementById('game-timer').innerText = timeLeft + 's';
-                if(timeLeft <= 0) finishGame();
+                if(timeLeft <= 0) { clearInterval(timer); alert("Session End! Score: "+score); location.reload(); }
             }, 1000);
         }
-
         function newSpeedQ() {
             let a, b;
             if(currentLevel === 'basic') { a = r(2,15); b = r(2,15); }
-            else if(currentLevel === 'medium') { a = r(15,50); b = r(15,50); }
-            else { a = r(50,150); b = r(50,150); }
-
+            else if(currentLevel === 'medium') { a = r(15,60); b = r(15,60); }
+            else { a = r(60,200); b = r(60,200); }
             if(currentMode === '+') { targetAns = a + b; document.getElementById('q-text').innerText = `${a}+${b}`; }
             else if(currentMode === '-') { if(a<b)[a,b]=[b,a]; targetAns = a - b; document.getElementById('q-text').innerText = `${a}-${b}`; }
             else if(currentMode === 'sq') { targetAns = r(2,25); document.getElementById('q-text').innerText = `${targetAns}²`; targetAns *= targetAns; }
             else { let p = 10*r(1,9); let base = 10*r(1,20); targetAns = (p/100)*base; document.getElementById('q-text').innerText = `${p}% of ${base}`; }
-            
             document.getElementById('ans-input').value = ""; document.getElementById('ans-input').focus();
         }
-
         document.getElementById('ans-input').addEventListener('input', (e) => {
             if(parseFloat(e.target.value) === targetAns) {
-                score += 10;
-                localStorage.setItem('math_xp', xp + score);
-                localStorage.setItem('math_solved', ++solved);
+                score += 10; xp += 10; solved++;
+                localStorage.setItem('math_xp', xp);
+                localStorage.setItem('math_solved', solved);
                 newSpeedQ();
             }
         });
 
-        function finishGame() { clearInterval(timer); alert("Time Up! XP Earned: " + score); location.reload(); }
-        function r(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
-
         // Quiz Logic
-        let quizQIndex = 0;
+        let currentTopic = '';
+        let qIdx = 0;
         function startQuiz(topic) {
+            currentTopic = topic;
+            qIdx = 0;
             document.getElementById('quiz-overlay').style.display = 'flex';
             document.getElementById('quiz-title').innerText = topic;
-            quizQIndex = 1;
-            loadQuizQuestion();
+            showQuestion();
         }
 
-        function loadQuizQuestion() {
-            document.getElementById('quiz-progress').innerText = `Question ${quizQIndex}/50`;
-            let a = r(10,100), b = r(5,50);
-            let qText = `If a value increases by ${a}% and then decreases by ${b}%, what is the net effect?`;
-            let correct = ( ((1 + a/100) * (1 - b/100)) - 1 ) * 100;
-            
-            document.getElementById('quiz-question').innerText = `[${document.getElementById('quiz-title').innerText}] Question: Solve for level check. (Randomized)`;
-            
-            let opts = [ (correct).toFixed(1), (correct+5).toFixed(1), (correct-3).toFixed(1), (correct*1.2).toFixed(1) ];
-            opts.sort(() => Math.random() - 0.5);
-
+        function showQuestion() {
+            const data = quizData[currentTopic][qIdx];
+            document.getElementById('quiz-question').innerText = `Q${qIdx+1}. ${data.q}`;
+            document.getElementById('quiz-feedback').innerText = "";
             let html = '';
-            opts.forEach(o => {
-                html += `<button class="opt-btn" onclick="checkQuizAns(this, ${o == correct.toFixed(1)})">${o}%</button>`;
+            data.opts.forEach(opt => {
+                html += `<button class="opt-btn" onclick="checkQuizAns(this, '${opt}', '${data.ans}')">${opt}</button>`;
             });
             document.getElementById('quiz-options').innerHTML = html;
         }
 
-        function checkQuizAns(btn, isCorrect) {
-            if(isCorrect) {
+        function checkQuizAns(btn, selected, correct) {
+            const allBtns = document.querySelectorAll('.opt-btn');
+            allBtns.forEach(b => b.style.pointerEvents = 'none');
+
+            if(selected === correct) {
                 btn.classList.add('correct');
-                confetti({ particleCount: 50 });
-                setTimeout(() => { quizQIndex++; loadQuizQuestion(); }, 1000);
+                document.getElementById('quiz-feedback').innerHTML = "<span style='color:var(--success)'>Correct! +20 XP</span>";
+                xp += 20; solved++;
+                localStorage.setItem('math_xp', xp);
+                localStorage.setItem('math_solved', solved);
+                confetti({ particleCount: 50, origin: { y: 0.8 } });
             } else {
                 btn.classList.add('wrong');
-                alert("Incorrect! Try again.");
+                document.getElementById('quiz-feedback').innerHTML = `<span style='color:#ef4444'>Wrong! Correct is ${correct}</span>`;
             }
+
+            setTimeout(() => {
+                qIdx++;
+                if(qIdx < quizData[currentTopic].length) {
+                    showQuestion();
+                } else {
+                    alert("Quiz Completed! You are a Rockstar.");
+                    location.reload();
+                }
+            }, 2000);
         }
+
+        function r(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
     </script>
 </body>
-    </html>
-    
+                          </html>
+                          
