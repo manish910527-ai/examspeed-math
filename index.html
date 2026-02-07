@@ -31,10 +31,12 @@
         .stat-val { font-size: 24px; font-weight: 900; color: white; }
         .stat-lbl { font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
 
-        /* Motivation Card */
-        .motivation-card { background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--primary); padding: 15px; border-radius: 18px; margin-top: 15px; position: relative; overflow: hidden; }
+        /* Motivation & Channel Card */
+        .motivation-card { background: linear-gradient(135deg, #1e293b, #0f172a); border: 1px solid var(--primary); padding: 15px; border-radius: 18px; margin-top: 15px; }
         .motivation-card h4 { color: var(--gold); font-size: 14px; margin-bottom: 5px; }
         .motivation-card p { font-size: 12px; line-height: 1.5; color: #cbd5e1; font-style: italic; }
+
+        .btn-channel { background: #25d366; color: white; padding: 15px; border-radius: 18px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 900; font-size: 14px; text-decoration: none; margin: 15px 0; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
 
         .section-title { font-size: 13px; color: #94a3b8; font-weight: 800; letter-spacing: 1px; margin: 25px 0 12px 0; display: flex; align-items: center; gap: 10px; }
         .section-title::after { content: ''; flex: 1; height: 1px; background: #334155; }
@@ -49,7 +51,7 @@
         .footer-branding p { font-size: 12px; color: #94a3b8; font-weight: 600; }
         .footer-branding span { color: var(--primary); font-weight: 900; }
 
-        /* Custom Setup Overlay */
+        /* Setup Overlay */
         #setup-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 1200; display: none; align-items: center; justify-content: center; padding: 20px; }
         .setup-card { background: var(--card); width: 100%; max-width: 320px; padding: 25px; border-radius: 25px; border: 2px solid var(--primary); }
         .setup-group { margin-bottom: 20px; text-align: left; }
@@ -92,17 +94,13 @@
 
         <div class="motivation-card">
             <h4>💡 Manish Sir का संदेश</h4>
-            <p>"Govt Exam के लिए सिर्फ मेहनत नहीं, **Dhairya (Patience)** और **Consistency** चाहिए। रोज़ाना छोटे-छोटे कदम ही आपको मंज़िल तक ले जाएँगे। यह ऐप आपकी रफ़्तार बढ़ाएगी, पर रुकना मना है!"</p>
+            <p>"Govt Exam में सफलता के लिए मेहनत के साथ **Consistency** बहुत ज़रूरी है। रोज़ाना प्रैक्टिस करें और अपनी रफ़्तार बढ़ाएं।"</p>
         </div>
 
-        <div class="section-title">FREE STUDY MATERIAL</div>
-        <div class="pdf-card" style="background:var(--card); border:1px solid #334155; padding:15px; border-radius:15px; display:flex; justify-content:space-between; align-items:center;">
-            <div class="pdf-info">
-                <div class="pdf-title" style="font-weight:800; font-size:14px;">SSC Math Practice Set-01</div>
-                <div style="font-size:11px; color:#94a3b8;">Selected by Manish Sir</div>
-            </div>
-            <button class="wait-btn" style="background: #334155; color: #94a3b8; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 900; font-size: 10px; cursor: pointer;" onclick="alert('Manish Sir is preparing this set for you! Kal subah 10 baje check karein. 🔥')">COMING SOON</button>
-        </div>
+        <a href="https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p" target="_blank" class="btn-channel">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="20" style="filter: brightness(0) invert(1);">
+            JOIN OFFICIAL CHANNEL (UPDATES)
+        </a>
 
         <div class="section-title">PRACTICE MODES</div>
         <div class="btn-grid">
@@ -111,8 +109,6 @@
             <button class="mode-btn" style="color: #7c3aed;" onclick="showSetup('sq')">SQUARE √ <span>√144 = 12</span></button>
             <button class="mode-btn" style="color: #db2777;" onclick="showSetup('%')">PERCENT % <span>20% of 80</span></button>
         </div>
-        
-        <p style="text-align:center; font-size:12px; color:#64748b; margin-top:30px;">Practice daily to increase your speed 🚀</p>
     </div>
 
     <div id="setup-overlay">
@@ -184,13 +180,19 @@
         <div id="content-squares" class="data-card">
             <button onclick="backToRev()" style="color:var(--primary); margin-bottom:15px; background:none; border:none; font-weight:800;">← BACK</button>
             <table style="width:100%; border-collapse:collapse;">
-                <tr><th style="text-align:left; padding:8px;">Num</th><th style="text-align:right; padding:8px;">Square</th></tr>
                 <script>for(let i=1;i<=30;i++) document.write(`<tr style="border-bottom:1px solid #334155;"><td style="padding:8px;">${i}²</td><td style="text-align:right; padding:8px; color:var(--gold);"><b>${i*i}</b></td></tr>`);</script>
             </table>
         </div>
     </div>
 
     <script>
+        // Version Check to Force Fresh Load
+        const APP_VERSION = "2.5";
+        if(localStorage.getItem('app_v') !== APP_VERSION) {
+            localStorage.setItem('app_v', APP_VERSION);
+            window.location.reload(true);
+        }
+
         let xp = parseInt(localStorage.getItem('math_xp')) || 0;
         let totalSolved = parseInt(localStorage.getItem('math_solved')) || 0;
         document.getElementById('main-xp').innerText = xp;
@@ -198,11 +200,7 @@
 
         let score = 0, target = 0, mode = '+', count = 0, startTime = 0, gameTimer, timeLeft = 30, qTarget = 20;
 
-        function showSetup(m) {
-            mode = m;
-            document.getElementById('setup-overlay').style.display = 'flex';
-        }
-
+        function showSetup(m) { mode = m; document.getElementById('setup-overlay').style.display = 'flex'; }
         function confirmStart() {
             qTarget = parseInt(document.getElementById('setup-count').value);
             timeLeft = parseInt(document.getElementById('setup-time').value);
@@ -216,7 +214,6 @@
             document.querySelector('.rev-fab').style.display = 'none';
             document.getElementById('game-overlay').style.display = 'flex';
             document.getElementById('game-mode-lbl').innerText = m.toUpperCase();
-            document.getElementById('live-score').innerText = "0";
             newQ();
             startTime = Date.now();
             runTimer();
@@ -231,12 +228,7 @@
             }, 1000);
         }
 
-        function exitGame() {
-            if(confirm("Game band karke dashboard par wapas jayein?")) {
-                clearInterval(gameTimer);
-                location.reload();
-            }
-        }
+        function exitGame() { if(confirm("Exit game?")) location.reload(); }
 
         function initTables() {
             let html = '';
@@ -261,8 +253,7 @@
             else if(mode === 'sq') { target = r(2,25); a = target*target; text = `√${a}`; }
             else if(mode === '%') { let p = [10,20,25,50][Math.floor(Math.random()*4)]; let base = r(2,20)*10; target = (p/100)*base; text = `${p}% of ${base}`; }
             document.getElementById('q-text').innerText = text;
-            document.getElementById('ans-input').value = "";
-            document.getElementById('ans-input').focus();
+            document.getElementById('ans-input').value = ""; document.getElementById('ans-input').focus();
         }
 
         function r(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
@@ -271,8 +262,7 @@
             if(parseInt(e.target.value) === target) {
                 score += 10; count++;
                 document.getElementById('live-score').innerText = score;
-                if(count >= qTarget) finish();
-                else newQ();
+                if(count >= qTarget) finish(); else newQ();
             }
         });
 
@@ -285,22 +275,17 @@
             document.getElementById('final-score').innerText = score;
             document.getElementById('q-count').innerText = count;
             document.getElementById('speed-stat').innerText = avgSpeed + 's';
-            
-            // Save Progress
-            let newXp = xp + score;
-            let newSolved = totalSolved + count;
-            localStorage.setItem('math_xp', newXp);
-            localStorage.setItem('math_solved', newSolved);
-            
+            localStorage.setItem('math_xp', xp + score);
+            localStorage.setItem('math_solved', totalSolved + count);
             if(score > 50) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         }
 
         function shareChallenge() {
             let s = document.getElementById('final-score').innerText;
-            let text = `🔥 Maine *Manish Sir* ki ExamSpeed App par *${s}* score kiya! \n\nदम है तो मेरा रिकॉर्ड तोड़ के दिखाओ! \n\nयहाँ प्रैक्टिस करो: https://examspeed-math.vercel.app/`;
+            let text = `🔥 Maine *Manish Sir* ki ExamSpeed App par *${s}* score kiya! \n\nदम है तो हरा के दिखाओ! \n\nयहाँ प्रैक्टिस करो: https://examspeed-math.vercel.app/`;
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
     </script>
 </body>
-            </html>
+    </html>
     
