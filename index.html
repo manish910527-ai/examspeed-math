@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RAMA ExamSpeed - Official</title>
+    <title>ExamSpeed Math - RAMA</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Hind:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
@@ -22,20 +22,17 @@
         .section-title { font-size: 13px; color: #94a3b8; font-weight: 800; margin: 25px 0 12px 0; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         .section-title::after { content: ''; flex: 1; height: 1px; background: #334155; }
 
-        .mode-btn { background: white; color: #0f172a; padding: 15px; border-radius: 18px; font-weight: 800; border: none; cursor: pointer; text-align: center; font-size: 14px; box-shadow: 0 4px 0 #cbd5e1; }
+        .mode-btn { background: white; color: #0f172a; padding: 15px; border-radius: 18px; font-weight: 800; border: none; cursor: pointer; text-align: center; font-size: 14px; }
         .topic-btn { background: #1e293b; color: white; padding: 18px; border-radius: 15px; border: 1px solid #334155; margin-bottom: 10px; display: flex; justify-content: space-between; width: 100%; cursor: pointer; font-weight: 700; }
 
-        /* Overlays */
         .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
         
-        /* Quiz Styles */
         .quiz-q-box { background: #1e293b; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: 600; margin-bottom: 20px; border-left: 5px solid var(--primary); }
         .opt-btn { background: #0f172a; color: white; padding: 16px; border-radius: 12px; border: 1px solid #334155; font-size: 16px; font-weight: 700; text-align: left; cursor: pointer; margin-bottom: 10px; width: 100%; }
         .correct { background: var(--success) !important; border-color: white !important; }
         .wrong { background: var(--danger) !important; border-color: white !important; }
         .solution-box { background: rgba(56, 189, 248, 0.1); padding: 15px; border-radius: 12px; border: 1px dashed var(--primary); margin-top: 15px; display: none; font-size: 14px; color: #cbd5e1; line-height: 1.5; }
 
-        /* Revision Zone */
         .rev-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
         .rev-item { background: #1e293b; padding: 10px; border-radius: 8px; font-size: 13px; border: 1px solid #334155; text-align: center; }
         .formula-card { background: #1e293b; padding: 15px; border-radius: 15px; margin-bottom: 15px; border-top: 3px solid var(--gold); }
@@ -46,41 +43,41 @@
 <body>
 
     <div class="nav">
-        <b style="color:var(--primary); font-size: 18px;">⚡ RAMA ExamSpeed</b>
-        <div style="font-size:10px; color:#94a3b8; font-weight:800;">V3.0 (PREMIUM)</div>
+        <b style="color:var(--primary); font-size: 18px;">⚡ ExamSpeed Math</b>
+        <div style="font-size:10px; color:#94a3b8; font-weight:800;">BY RAMA</div>
     </div>
 
     <div class="container" id="dashboard">
         <div class="motivation-card">
             <h4>📢 RAMA का विशेष संदेश</h4>
-            <p>"सफलता का कोई शॉर्टकट नहीं होता, इसके लिए आपको रोज तपना होगा। अपनी रफ्तार बढ़ाने के लिए इस App को अपनी **Daily Habit** बना लें। जो आज आप यहाँ प्रैक्टिस करेंगे, वही कल एग्जाम में आपका समय बचाएगा!"</p>
+            <p>"याद रखना, भीड़ हमेशा उस रास्ते पर चलती है जो रास्ता आसान लगता है, लेकिन इसका मतलब यह नहीं कि भीड़ हमेशा सही रास्ते पर चलती है। अपने रास्ते खुद चुनिए और इस App को अपनी **Daily Practice Habit** बनाइए। आज की मेहनत, कल की सफलता तय करेगी!"</p>
         </div>
 
         <div style="display:flex; gap:10px; margin-bottom: 20px;">
-            <div style="background:#1e293b; padding:15px; border-radius:15px; flex:1; text-align:center; border: 1px solid #334155;">
+            <div style="background:#1e293b; padding:15px; border-radius:15px; flex:1; text-align:center;">
                 <div id="main-xp" style="font-size:20px; font-weight:900; color:var(--gold);">0</div>
-                <div style="font-size:10px; color:#94a3b8;">MY XP</div>
+                <div style="font-size:10px;">MY XP</div>
             </div>
-            <div style="background:#1e293b; padding:15px; border-radius:15px; flex:1; text-align:center; border: 1px solid #334155;">
+            <div style="background:#1e293b; padding:15px; border-radius:15px; flex:1; text-align:center;">
                 <div id="total-solved" style="font-size:20px; font-weight:900; color:var(--primary);">0</div>
-                <div style="font-size:10px; color:#94a3b8;">SOLVED</div>
+                <div style="font-size:10px;">SOLVED</div>
             </div>
         </div>
 
         <a href="https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p" target="_blank" style="text-decoration:none;">
-            <div style="background:#25d366; color:white; padding:15px; border-radius:15px; text-align:center; font-weight:900; margin-bottom:20px; box-shadow: 0 4px 15px rgba(37,211,102,0.3);">JOIN WHATSAPP CHANNEL (FOR APK)</div>
+            <div style="background:#25d366; color:white; padding:15px; border-radius:15px; text-align:center; font-weight:900; margin-bottom:20px;">JOIN WHATSAPP CHANNEL (NEW UPDATES)</div>
         </a>
 
-        <div class="section-title">Exam Quiz Zone (Hindi Language)</div>
+        <div class="section-title">Exam Quiz Zone (50 Questions Each)</div>
         <button class="topic-btn" onclick="startQuiz('Percentage')">प्रतिशत (Percentage) ➔</button>
         <button class="topic-btn" onclick="startQuiz('ProfitLoss')">लाभ और हानि (Profit & Loss) ➔</button>
 
-        <div class="section-title">Advanced Revision (1-50 Range)</div>
+        <div class="section-title">Revision Zone (1-50 Range)</div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <button class="mode-btn" style="background:#7c3aed; color:white;" onclick="openRev('tables')">Tables (1-50)</button>
             <button class="mode-btn" style="background:#db2777; color:white;" onclick="openRev('squares')">Squares (1-50)</button>
             <button class="mode-btn" style="background:#0284c7; color:white;" onclick="openRev('cubes')">Cubes (1-50)</button>
-            <button class="mode-btn" style="background:#f59e0b; color:white;" onclick="openRev('formula')">All Formulas</button>
+            <button class="mode-btn" style="background:#f59e0b; color:white;" onclick="openRev('formula')">All Formulae</button>
         </div>
     </div>
 
@@ -92,7 +89,7 @@
         <div class="quiz-q-box" id="quiz-question"></div>
         <div id="quiz-options"></div>
         <div class="solution-box" id="solution-text"></div>
-        <button id="next-btn" onclick="nextQuestion()" style="display:none; width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:12px; margin-top:15px; font-weight:900;">AGLA SAWAL (Next) ➔</button>
+        <button id="next-btn" onclick="nextQuestion()" style="display:none; width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:12px; margin-top:15px; font-weight:900;">AGLA SAWAL ➔</button>
     </div>
 
     <div id="rev-overlay" class="overlay">
@@ -108,19 +105,25 @@
     </div>
 
     <script>
-        // Version Buster
-        const APP_V = "3.1";
-        if(localStorage.getItem('v') !== APP_V) { localStorage.clear(); localStorage.setItem('v', APP_V); }
-
+        // Data containing 50 logic-based exam patterns
         const quizData = {
-            'Percentage': [
-                { q: "यदि चीनी के मूल्य में 20% की वृद्धि होती है, तो एक परिवार को खपत में कितने प्रतिशत की कमी करनी चाहिए ताकि खर्च न बढ़े?", opts: ["16.66%", "20%", "25%", "15%"], ans: "16.66%", sol: "Solution: सूत्र = [r / (100 + r)] × 100 -> [20 / 120] × 100 = 16.66%." },
-                { q: "एक परीक्षा में एक छात्र को पास होने के लिए 33% अंक चाहिए। उसे 125 अंक मिले और वह 40 अंकों से फेल हो गया। अधिकतम अंक ज्ञात करें?", opts: ["500", "600", "400", "550"], ans: "500", sol: "Solution: पासिंग मार्क्स = 125 + 40 = 165. अब, 33% = 165, तो 100% = (165/33) × 100 = 500." }
-            ],
-            'ProfitLoss': [
-                { q: "एक घड़ी को ₹1440 में बेचने पर एक व्यक्ति को 10% की हानि होती है। 10% लाभ कमाने के लिए उसे कितने में बेचना चाहिए?", opts: ["₹1760", "₹1600", "₹1800", "₹1550"], ans: "₹1760", sol: "Solution: 90% = 1440, तो 110% = (1440/90) × 110 = 1760." }
-            ]
+            'Percentage': Array.from({length: 50}, (_, i) => ({
+                q: `प्रतिशत प्रश्न संख्या ${i+1}: यदि किसी संख्या का ${10+i}% मूल्य ${100+i*5} है, तो वह संख्या क्या होगी?`,
+                opts: [`${Math.round((100+i*5)/(10+i)*100)}`, `${i*10+50}`, `${i*5+200}`, "None"],
+                ans: `${Math.round((100+i*5)/(10+i)*100)}`,
+                sol: `Solution: संख्या = (मान / प्रतिशत) × 100. यहाँ (${100+i*5} / ${10+i}) × 100 = ${Math.round((100+i*5)/(10+i)*100)}.`
+            })),
+            'ProfitLoss': Array.from({length: 50}, (_, i) => ({
+                q: `लाभ-हानि प्रश्न ${i+1}: एक वस्तु को ₹${500+i*10} में बेचने पर ${10+i%5}% का लाभ होता है। लागत मूल्य क्या है?`,
+                opts: [`${Math.round((500+i*10)/(1+(10+i%5)/100))}`, `${400+i}`, "550", "600"],
+                ans: `${Math.round((500+i*10)/(1+(10+i%5)/100))}`,
+                sol: `Solution: CP = SP / (1 + P%/100). यहाँ ₹${500+i*10} / (1 + ${10+i%5}/100) = ₹${Math.round((500+i*10)/(1+(10+i%5)/100))}.`
+            }))
         };
+
+        // Static Real Samples for Accuracy
+        quizData['Percentage'][0] = { q: "यदि A की आय B से 25% अधिक है, तो B की आय A से कितने % कम है?", opts: ["20%", "25%", "30%", "15%"], ans: "20%", sol: "Solution: [25/(100+25)] × 100 = 20%." };
+        quizData['ProfitLoss'][0] = { q: "₹1200 की वस्तु को 20% हानि पर बेचने पर विक्रय मूल्य क्या होगा?", opts: ["₹960", "₹1000", "₹840", "₹1100"], ans: "₹960", sol: "Solution: 1200 का 80% = 960." };
 
         let xp = parseInt(localStorage.getItem('math_xp')) || 0;
         let solved = parseInt(localStorage.getItem('math_solved')) || 0;
@@ -132,7 +135,7 @@
         function startQuiz(topic) {
             currentTopic = topic; qIdx = 0;
             document.getElementById('quiz-overlay').style.display = 'flex';
-            document.getElementById('quiz-title').innerText = topic;
+            document.getElementById('quiz-title').innerText = topic + " (50 Questions)";
             showQuestion();
         }
 
@@ -151,12 +154,10 @@
         function checkQuizAns(btn, selected, correct, sol) {
             const allBtns = document.querySelectorAll('.opt-btn');
             allBtns.forEach(b => b.style.pointerEvents = 'none');
-            
             if(selected === correct) {
                 btn.classList.add('correct');
                 xp += 20; solved++;
-                localStorage.setItem('math_xp', xp);
-                localStorage.setItem('math_solved', solved);
+                localStorage.setItem('math_xp', xp); localStorage.setItem('math_solved', solved);
                 confetti({ particleCount: 50 });
             } else {
                 btn.classList.add('wrong');
@@ -169,54 +170,30 @@
 
         function nextQuestion() {
             qIdx++;
-            if(qIdx < quizData[currentTopic].length) showQuestion();
-            else { alert("Bravo! Topic Complete."); location.reload(); }
+            if(qIdx < 50) showQuestion();
+            else { alert("Congratulations! 50 Questions Completed."); location.reload(); }
         }
 
         function openRev(type) {
             document.getElementById('rev-overlay').style.display = 'flex';
             let content = '';
             if(type === 'tables') {
-                document.getElementById('rev-title').innerText = "Tables (1-50)";
                 for(let i=1; i<=50; i++) {
-                    content += `<div style='margin-bottom:15px; border:1px solid #334155; padding:10px; border-radius:10px;'><b style='color:var(--gold)'>Table of ${i}</b><div class='rev-grid'>`;
+                    content += `<div style='margin-bottom:15px;'><b style='color:var(--gold)'>Table of ${i}</b><div class='rev-grid'>`;
                     for(let j=1; j<=10; j++) content += `<div class='rev-item'>${i}×${j}=${i*j}</div>`;
                     content += `</div></div>`;
                 }
             } else if(type === 'squares') {
-                document.getElementById('rev-title').innerText = "Squares (1-50)";
                 content = "<div class='rev-grid'>";
                 for(let i=1; i<=50; i++) content += `<div class='rev-item'>${i}² = <b>${i*i}</b></div>`;
                 content += "</div>";
             } else if(type === 'cubes') {
-                document.getElementById('rev-title').innerText = "Cubes (1-50)";
                 content = "<div class='rev-grid'>";
                 for(let i=1; i<=50; i++) content += `<div class='rev-item'>${i}³ = <b>${i*i*i}</b></div>`;
                 content += "</div>";
             } else if(type === 'formula') {
-                document.getElementById('rev-title').innerText = "Important Formulae";
-                content = `
-                    <div class='formula-card'>
-                        <h3 style='color:var(--primary)'>Algebra</h3>
-                        <p>1. (a+b)² = a² + b² + 2ab</p>
-                        <p>2. (a-b)² = a² + b² - 2ab</p>
-                        <p>3. (a²-b²) = (a+b)(a-b)</p>
-                        <p>4. (a+b)³ = a³ + b³ + 3ab(a+b)</p>
-                    </div>
-                    <div class='formula-card'>
-                        <h3 style='color:var(--primary)'>Mensuration 2D (Area)</h3>
-                        <p>● Circle: πr² (Circumference: 2πr)</p>
-                        <p>● Square: side² (Perimeter: 4×side)</p>
-                        <p>● Rectangle: L × B</p>
-                        <p>● Triangle: ½ × Base × Height</p>
-                    </div>
-                    <div class='formula-card'>
-                        <h3 style='color:var(--primary)'>Mensuration 3D (Volume)</h3>
-                        <p>● Cube: a³</p>
-                        <p>● Cylinder: πr²h</p>
-                        <p>● Sphere: 4/3 πr³</p>
-                    </div>
-                `;
+                content = `<div class='formula-card'><h3>Algebra</h3><p>(a+b)² = a²+b²+2ab</p><p>a²-b² = (a-b)(a+b)</p></div>
+                           <div class='formula-card'><h3>Mensuration</h3><p>Circle: πr²</p><p>Square: a²</p></div>`;
             }
             document.getElementById('rev-content').innerHTML = content;
         }
