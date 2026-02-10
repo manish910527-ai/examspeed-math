@@ -77,6 +77,10 @@
         .table-popup.active { transform: translateY(0); }
         .t-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 18px; font-weight: 600; }
 
+        /* Visitor Counter Style */
+        .visitor-counter { text-align: center; margin-top: 30px; padding: 10px; opacity: 0.7; border-top: 1px solid #334155; }
+        .visitor-counter small { display: block; margin-bottom: 5px; font-size: 10px; color: #94a3b8; }
+
     </style>
 </head>
 <body>
@@ -119,6 +123,13 @@
                 <div class="card" onclick="openLearn('Formulas')"><span class="card-icon">📜</span><h3>Exam Formulas</h3></div>
             </div>
         </div>
+
+        <div class="visitor-counter">
+            <small>TOTAL STUDENTS PRACTICING</small>
+            <a href="https://www.hitwebcounter.com/" target="_blank">
+            <img src="https://hitwebcounter.com/counter/counter.php?page=21475731&style=0001&nbdigits=5&type=page&initCount=0" title="Free Tools" Alt="Free Tools"   border="0" /></a>
+            </div>
+
     </div>
 
     <div id="learn-overlay" class="overlay">
@@ -352,63 +363,4 @@
                 if(fake > 0 && fake !== correct) opts.add(fake);
             }
             
-            let arr = Array.from(opts).sort(()=>Math.random()-0.5);
-            let h = '';
-            arr.forEach(o => {
-                h += `<button class="opt-btn" onclick="checkAns(this, ${o})">${o}</button>`;
-            });
-            document.getElementById('opt-area').innerHTML = h;
-        }
-
-        function checkAns(btn, val) {
-            // Disable clicks
-            document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
-
-            if (val === cAns) {
-                btn.style.background = 'var(--success)';
-                btn.style.borderColor = 'var(--success)';
-                score++;
-                confetti({ particleCount: 20, origin: { y: 0.7 } });
-            } else {
-                btn.style.background = 'var(--danger)';
-                btn.style.borderColor = 'var(--danger)';
-                // Highlight correct
-                document.querySelectorAll('.opt-btn').forEach(b => {
-                    if(parseInt(b.innerText) === cAns) b.style.background = 'var(--success)';
-                });
-            }
-
-            setTimeout(() => {
-                qNum++;
-                nextQuestion();
-            }, 800);
-        }
-
-        function finishQuiz() {
-            clearInterval(timerInt);
-            document.getElementById('quiz-engine').style.display = 'none';
-            document.getElementById('quiz-result').style.display = 'block';
-            
-            document.getElementById('final-score').innerText = `${score}/${totalQ}`;
-            document.getElementById('time-taken').innerText = `Total Time: ${timer}s`;
-            document.getElementById('quote-box').innerText = quotes[r(0, quotes.length-1)];
-            
-            // Celebration
-            if(score/totalQ > 0.8) {
-                let duration = 3000;
-                let end = Date.now() + duration;
-                (function frame() {
-                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
-                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
-                    if (Date.now() < end) requestAnimationFrame(frame);
-                }());
-            }
-        }
-
-        function shareScore() {
-            let txt = `🔥 *Math Challenge* 🔥\nMode: ${currentMode}\nScore: ${score}/${totalQ}\nTime: ${timer}s\n\nCan you beat me? 👇\nhttps://examspeed-math.vercel.app/`;
-            window.open('whatsapp://send?text=' + encodeURIComponent(txt));
-        }
-    </script>
-</body>
-</html>
+            let arr = A
