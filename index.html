@@ -13,7 +13,6 @@
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
         :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --gold: #fbbf24; --success: #22c55e; --danger: #ef4444; }
@@ -28,18 +27,18 @@
         .hub-title { font-size: 12px; color: #94a3b8; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
 
         .grid-card { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .card { background: var(--card); border-radius: 16px; padding: 20px 15px; border: 1px solid #334155; text-align: center; cursor: pointer; position: relative; overflow: hidden; }
-        .card:active { background: #283548; transform: scale(0.98); }
+        .card { background: var(--card); border-radius: 16px; padding: 20px 15px; border: 1px solid #334155; text-align: center; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.1s; }
+        .card:active { background: #283548; transform: scale(0.96); }
         .card h3 { font-size: 14px; color: #e2e8f0; margin-top: 8px; font-weight: 600; pointer-events: none; }
         .card-icon { font-size: 24px; margin-bottom: 5px; display: block; pointer-events: none; }
 
-        /* LIVE CHALLENGE BUTTON (Special) */
+        /* LIVE BUTTON */
         .live-btn { width: 100%; background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 20px; border-radius: 15px; text-align: left; position: relative; overflow: hidden; border: none; cursor: pointer; color: white; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
-        .live-btn h2 { font-size: 20px; font-weight: 800; margin-bottom: 5px; display:flex; align-items:center; gap:10px; }
-        .live-badge { background: white; color: #b91c1c; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 900; }
+        .live-btn:active { transform: scale(0.98); }
 
+        /* BIG BUTTON */
         .big-btn { width: 100%; background: linear-gradient(135deg, #3b82f6, #2563eb); padding: 20px; border-radius: 15px; text-align: left; position: relative; overflow: hidden; border: none; cursor: pointer; color: white; }
-        .big-btn h2 { font-size: 20px; font-weight: 800; margin-bottom: 5px; }
+        .big-btn:active { transform: scale(0.98); }
 
         /* Overlays */
         .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; padding: 20px; }
@@ -54,11 +53,11 @@
         .start-btn { width: 100%; padding: 18px; background: var(--success); border: none; color: #000; border-radius: 12px; font-weight: 900; font-size: 18px; cursor: pointer; }
         
         .q-box { background: var(--card); padding: 30px 20px; border-radius: 20px; text-align: center; margin: 20px 0; border: 2px solid #334155; position: relative; }
-        .q-text { font-size: 24px; font-weight: 800; line-height: 1.4; } /* Smaller font for long questions */
+        .q-text { font-size: 24px; font-weight: 800; line-height: 1.4; }
         .timer-pill { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 4px 12px; border-radius: 15px; font-weight: 800; font-size: 12px; }
 
-        .opt-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; } /* Single column for text options */
-        .opt-btn { background: var(--card); border: 2px solid #334155; padding: 15px; border-radius: 12px; color: white; font-size: 18px; font-weight: 600; cursor: pointer; text-align: left; }
+        .opt-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
+        .opt-btn { background: var(--card); border: 2px solid #334155; padding: 15px; border-radius: 12px; color: white; font-size: 18px; font-weight: 600; cursor: pointer; text-align: left; transition: background 0.2s; }
         
         /* Table Popup */
         .table-popup { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; border-top-left-radius: 25px; border-top-right-radius: 25px; padding: 25px; z-index: 3000; transform: translateY(100%); transition: transform 0.3s; height: 70vh; display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
@@ -69,28 +68,25 @@
 <body>
 
     <div class="header">
-        <div>
-            <span class="app-name">ExamSpeed</span> <span style="font-size:10px; color:var(--primary)">PRO</span>
-        </div>
+        <div><span class="app-name">ExamSpeed</span> <span style="font-size:10px; color:var(--primary)">LITE</span></div>
         <button onclick="window.open('https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p')" style="background:#25d366; border:none; color:white; padding:6px 12px; border-radius:8px; font-weight:800; font-size:11px;">JOIN WA</button>
     </div>
 
     <div class="main-container">
-        
         <button class="live-btn" onclick="startLiveChallenge()">
-            <h2>🔥 Daily Challenge <span class="live-badge">LIVE</span></h2>
-            <p>Admin's Special Questions (Click to Play)</p>
+            <h2 style="font-size:18px; font-weight:800; margin-bottom:5px;">🔥 Daily Challenge</h2>
+            <p style="font-size:12px; opacity:0.9;">Questions from Admin Panel</p>
         </button>
 
         <div class="hub-section">
             <button class="big-btn" onclick="setupQuiz('Mix Speed Test')">
-                <h2>⚡ Mix Speed Test</h2>
-                <p>Random Math Questions (SSC/Bank)</p>
+                <h2 style="font-size:18px; font-weight:800; margin-bottom:5px;">⚡ Mix Speed Test</h2>
+                <p style="font-size:12px; opacity:0.9;">Random Math Questions</p>
             </button>
         </div>
 
         <div class="hub-section">
-            <div class="hub-title">Math Practice Area</div>
+            <div class="hub-title">Practice Area</div>
             <div class="grid-card">
                 <button class="card" onclick="setupQuiz('Addition')"><span class="card-icon">➕</span><h3>Addition</h3></button>
                 <button class="card" onclick="setupQuiz('Subtraction')"><span class="card-icon">➖</span><h3>Subtraction</h3></button>
@@ -141,14 +137,11 @@
                 <option value="medium" selected>Exam Level (SSC/Bank)</option>
                 <option value="adv">Mains Level (Hard)</option>
             </select>
-
             <p style="color:#94a3b8; font-size:12px; margin-bottom:5px;">QUESTIONS</p>
             <select id="q-count">
                 <option value="10">10 Questions</option>
                 <option value="20">20 Questions</option>
-                <option value="50">50 Questions</option>
             </select>
-
             <button class="start-btn" onclick="startMathQuiz()">START TEST ➔</button>
         </div>
 
@@ -165,14 +158,13 @@
             <div style="font-size:60px; margin-bottom:10px;">🏆</div>
             <h2 style="font-size:28px; margin-bottom:10px;">Score: <span id="final-score" style="color:var(--success)">0</span></h2>
             <p id="time-taken" style="color:#94a3b8; margin-bottom:30px;">Time: 0s</p>
-            
             <button class="start-btn" style="background:#25d366; color:white; margin-bottom:15px;" onclick="shareScore()">SHARE RESULT ➔</button>
             <button class="start-btn" style="background:#334155; color:white;" onclick="quitQuiz()">MAIN MENU</button>
         </div>
     </div>
 
     <script>
-        // --- FIREBASE CONFIG ---
+        // --- YOUR FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyAv5aEJ1rBFRM1qV7GqxbDYG2OIVzzIJDE",
             authDomain: "examspeed-math-9f575.firebaseapp.com",
@@ -182,48 +174,42 @@
             appId: "1:318204688428:web:c7d6040c49d9ff30fbf989",
             measurementId: "G-FX89QZ403E"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // Error handling for Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            window.db = firebase.firestore();
+        } catch(e) { console.error("Firebase Error:", e); }
 
         // --- GLOBAL VARS ---
         let currentMode = '';
         let timer = 0, timerInt;
         let score = 0, qNum = 1, totalQ = 10;
         let cAns = 0;
-        let liveQuestions = []; // Stores fetched questions
+        let liveQuestions = [];
         let isLiveMode = false;
 
-        // --- CORE FUNCTIONS ---
-
+        // --- FUNCTIONS ---
         function openLearn(type) {
-            try {
-                const ol = document.getElementById('learn-overlay');
-                const title = document.getElementById('learn-title');
-                const content = document.getElementById('learn-content');
-                ol.style.display = 'flex';
-                title.innerText = type.replace(' List', '');
-                content.innerHTML = '';
+            const ol = document.getElementById('learn-overlay');
+            const content = document.getElementById('learn-content');
+            ol.style.display = 'flex';
+            document.getElementById('learn-title').innerText = type.replace(' List', '');
+            content.innerHTML = '';
 
-                if (type === 'Tables') {
-                    let h = '<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">';
-                    for(let i=1; i<=50; i++) h += `<button class="card" onclick="showTable(${i})" style="font-weight:bold; font-size:18px;">${i}</button>`;
-                    content.innerHTML = h + '</div>';
-                } else if (type === 'Formulas') {
-                    content.innerHTML = `
-                        <div class="f-item"><b>Equilateral Triangle Area:</b> (√3/4)a²</div>
-                        <div class="f-item"><b>Circle:</b> Area = πr² | Circumference = 2πr</div>
-                        <div class="f-item"><b>Algebra:</b> a³+b³ = (a+b)(a²-ab+b²)</div>
-                        <div class="f-item"><b>Percent:</b> 16.66%=1/6 | 14.28%=1/7 | 12.5%=1/8</div>
-                    `;
-                } else {
-                    let h = '';
-                    for(let i=1; i<=50; i++) {
-                        let txt = (type==='Squares List') ? `${i}² = ${i*i}` : (type==='Cubes List' ? `${i}³ = ${i*i*i}` : `∛${i*i*i} = ${i}`);
-                        h += `<div class="f-item" style="text-align:center">${txt}</div>`;
-                    }
-                    content.innerHTML = h;
+            if (type === 'Tables') {
+                let h = '<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">';
+                for(let i=1; i<=50; i++) h += `<button class="card" onclick="showTable(${i})" style="font-weight:bold; font-size:18px;">${i}</button>`;
+                content.innerHTML = h + '</div>';
+            } else if (type === 'Formulas') {
+                content.innerHTML = `<div class="f-item"><b>Equilateral Triangle:</b> (√3/4)a²</div><div class="f-item"><b>Circle:</b> πr²</div>`;
+            } else {
+                let h = '';
+                for(let i=1; i<=50; i++) {
+                    let txt = (type==='Squares List') ? `${i}² = ${i*i}` : (type==='Cubes List' ? `${i}³ = ${i*i*i}` : `∛${i*i*i} = ${i}`);
+                    h += `<div class="f-item" style="text-align:center">${txt}</div>`;
                 }
-            } catch(e) {}
+                content.innerHTML = h;
+            }
         }
 
         function showTable(n) {
@@ -234,8 +220,6 @@
             document.getElementById('table-popup').classList.add('active');
         }
 
-        // --- QUIZ SETUP ---
-        
         function setupQuiz(mode) {
             currentMode = mode;
             isLiveMode = false;
@@ -251,50 +235,36 @@
             clearInterval(timerInt);
         }
 
-        // --- MATH MODE START ---
         function startMathQuiz() {
-            const countElem = document.getElementById('q-count');
-            totalQ = parseInt(countElem.value);
+            totalQ = parseInt(document.getElementById('q-count').value);
             qNum = 1; score = 0; timer = 0;
-            
             document.getElementById('quiz-setup').style.display = 'none';
             document.getElementById('quiz-engine').style.display = 'block';
-            
             startTimer();
             nextQuestion();
         }
 
-        // --- LIVE CHALLENGE START ---
         function startLiveChallenge() {
             currentMode = "Daily Challenge";
             isLiveMode = true;
             document.getElementById('quiz-title').innerText = "Daily Challenge";
             document.getElementById('quiz-overlay').style.display = 'flex';
-            document.getElementById('quiz-setup').style.display = 'none'; // Skip setup
+            document.getElementById('quiz-setup').style.display = 'none';
             document.getElementById('quiz-engine').style.display = 'block';
             document.getElementById('quiz-result').style.display = 'none';
+            document.getElementById('q-disp').innerText = "Loading...";
             
-            document.getElementById('q-disp').innerText = "Loading Questions...";
-            document.getElementById('opt-area').innerHTML = "";
+            if(!window.db) { alert("Database Error!"); quitQuiz(); return; }
 
-            // Fetch from Firebase
             liveQuestions = [];
             db.collection("challenges").orderBy("timestamp", "desc").limit(20).get().then((snap) => {
-                if(snap.empty) {
-                    alert("No live questions added by Admin today! Try Mix Speed Test.");
-                    quitQuiz();
-                    return;
-                }
+                if(snap.empty) { alert("No questions from Admin today!"); quitQuiz(); return; }
                 snap.forEach(doc => liveQuestions.push(doc.data()));
                 totalQ = liveQuestions.length;
                 qNum = 1; score = 0; timer = 0;
                 startTimer();
                 nextQuestion();
-            }).catch(e => {
-                console.log(e);
-                alert("Internet Error! Check connection.");
-                quitQuiz();
-            });
+            }).catch(e => { alert("Check Internet Connection!"); quitQuiz(); });
         }
 
         function startTimer() {
@@ -311,15 +281,12 @@
             if (qNum > totalQ) { finishQuiz(); return; }
             document.getElementById('prog-disp').innerText = `${qNum}/${totalQ}`;
             
-            // LOGIC FOR LIVE VS MATH
             if (isLiveMode) {
-                // Live Question Logic
                 let qData = liveQuestions[qNum - 1];
                 document.getElementById('q-disp').innerText = qData.q;
-                cAns = qData.correct; // Answer is string here
-                renderOptions(qData.options, false); // false = don't shuffle (optional)
+                cAns = qData.correct;
+                renderOptions(qData.options);
             } else {
-                // Math Logic
                 generateMathQuestion();
             }
         }
@@ -327,7 +294,6 @@
         function generateMathQuestion() {
             let lvl = document.getElementById('q-level').value;
             let mode = (currentMode === 'Mix Speed Test') ? ['Addition','Subtraction','Multiplication','Division','Percentage','Squares Test'][r(0,5)] : currentMode;
-            
             let qStr = '', ans = 0, n1, n2;
 
             if (mode === 'Addition') {
@@ -335,34 +301,60 @@
                 else if(lvl === 'medium') { n1=r(150,499); n2=r(50,299); }
                 else { n1=r(499,999); n2=r(250,999); }
                 qStr = `${n1} + ${n2}`; ans = n1+n2;
-            }
-            else if (mode === 'Multiplication') {
+            } else if (mode === 'Multiplication') {
                 if(lvl === 'basic') { n1=r(12,19); n2=r(2,9); }
                 else if(lvl === 'medium') { n1=r(12,25); n2=r(11,19); } 
                 else { n1=r(25,99); n2=r(11,25); }
                 qStr = `${n1} × ${n2}`; ans = n1*n2;
-            }
-            else if (mode === 'Subtraction') {
-                if(lvl==='basic') { n1=r(50,99); n2=r(11,49); }
-                else { n1=r(500,1000); n2=r(100,499); }
-                qStr = `${n1} - ${n2}`; ans = n1-n2;
-            }
-            else if (mode === 'Percentage') {
-                let fracs = [{p:'50%',v:2}, {p:'25%',v:4}, {p:'20%',v:5}, {p:'10%',v:10}, {p:'33.33%',v:3}, {p:'16.66%',v:6}, {p:'12.5%',v:8}];
-                let f = fracs[r(0, (lvl==='basic'?3:fracs.length-1))];
-                let mul = r(2, 20);
-                let val = f.v * mul * (lvl==='adv'?10:1);
+            } else if (mode === 'Percentage') {
+                let f = [{p:'50%',v:2}, {p:'25%',v:4}, {p:'20%',v:5}, {p:'10%',v:10}, {p:'33.33%',v:3}, {p:'12.5%',v:8}][r(0,5)];
+                let val = f.v * r(2,20) * (lvl==='adv'?10:1);
                 qStr = `${f.p} of ${val}`; ans = Math.round(val / f.v);
-            }
-            else if (mode === 'Squares Test') {
+            } else if (mode === 'Squares Test') {
                 n1 = (lvl==='basic') ? r(11,25) : r(26,60);
                 qStr = `${n1}²`; ans = n1*n1;
-            }
-            else { 
-                let d = r(2, 20); let q = r(5, 20);
-                qStr = `${d*q} ÷ ${d}`; ans = q;
+            } else if (mode === 'Subtraction') {
+                n1=r(50,500); n2=r(10,n1); qStr = `${n1} - ${n2}`; ans = n1-n2;
+            } else { 
+                let d = r(2, 20); let q = r(5, 20); qStr = `${d*q} ÷ ${d}`; ans = q;
             }
 
-            cAns = ans; // Answer is number
+            cAns = ans;
             document.getElementById('q-disp').innerText = qStr;
-            generateMathOptions(a
+            let opts = new Set([ans]);
+            while(opts.size < 4) opts.add(ans + r(-10, 10) || ans+1);
+            renderOptions(Array.from(opts).sort(()=>Math.random()-0.5));
+        }
+
+        function renderOptions(arr) {
+            let h = '';
+            arr.forEach(o => h += `<button class="opt-btn" onclick="checkAns(this, '${o}')">${o}</button>`);
+            document.getElementById('opt-area').innerHTML = h;
+        }
+
+        function checkAns(btn, val) {
+            let btns = document.querySelectorAll('.opt-btn');
+            btns.forEach(b => b.disabled = true);
+            if (val == cAns) {
+                btn.style.background = 'var(--success)'; score++;
+            } else {
+                btn.style.background = 'var(--danger)';
+                btns.forEach(b => { if(b.innerText == cAns) b.style.background = 'var(--success)'; });
+            }
+            setTimeout(() => { qNum++; nextQuestion(); }, 800);
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInt);
+            document.getElementById('quiz-engine').style.display = 'none';
+            document.getElementById('quiz-result').style.display = 'block';
+            document.getElementById('final-score').innerText = `${score}/${totalQ}`;
+            document.getElementById('time-taken').innerText = `Time: ${timer}s`;
+        }
+
+        function shareScore() {
+            window.open('whatsapp://send?text=' + encodeURIComponent(`Scored ${score}/${totalQ} on ExamSpeed! Beat me: https://examspeed-math.vercel.app/`));
+        }
+    </script>
+</body>
+</html>
