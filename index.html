@@ -8,12 +8,11 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <title>ExamSpeed Math - Pro</title>
+    <title>ExamSpeed Math</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
         :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --gold: #fbbf24; --success: #22c55e; --danger: #ef4444; }
@@ -24,9 +23,8 @@
         .header { padding: 15px 20px; background: rgba(30, 41, 59, 0.95); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
         .app-name { font-size: 18px; font-weight: 900; letter-spacing: 0.5px; }
 
-        /* NOTICE BOARD (New Feature) */
-        #notice-box { background: var(--gold); color: black; font-weight: 800; padding: 8px 0; font-size: 13px; display: none; border-bottom: 1px solid #b45309; }
-        marquee { letter-spacing: 0.5px; }
+        /* NOTICE BOARD */
+        #notice-box { background: var(--gold); color: black; font-weight: 800; padding: 10px 0; font-size: 14px; display: none; border-bottom: 2px solid #b45309; }
         
         /* MAIN CONTAINER */
         .main-container { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
@@ -63,7 +61,7 @@
         .timer-pill { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 4px 12px; border-radius: 15px; font-weight: 800; font-size: 12px; }
 
         .opt-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
-        .opt-btn { background: var(--card); border: 2px solid #334155; padding: 15px; border-radius: 12px; color: white; font-size: 18px; font-weight: 600; cursor: pointer; text-align: left; transition: background 0.2s; }
+        .opt-btn { background: var(--card); border: 2px solid #334155; padding: 15px; border-radius: 12px; color: white; font-size: 18px; font-weight: 600; cursor: pointer; text-align: left; transition: background 0.1s; }
         
         /* Table Popup */
         .table-popup { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; border-top-left-radius: 25px; border-top-right-radius: 25px; padding: 25px; z-index: 3000; transform: translateY(100%); transition: transform 0.3s; height: 70vh; display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
@@ -74,12 +72,12 @@
 <body>
 
     <div class="header">
-        <div><span class="app-name">ExamSpeed</span> <span style="font-size:10px; color:var(--primary)">PRO</span></div>
+        <div><span class="app-name">ExamSpeed</span> <span style="font-size:10px; color:var(--primary)">LITE</span></div>
         <button onclick="window.open('https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p')" style="background:#25d366; border:none; color:white; padding:6px 12px; border-radius:8px; font-weight:800; font-size:11px;">JOIN WA</button>
     </div>
 
     <div id="notice-box">
-        <marquee behavior="scroll" direction="left" id="notice-text">Welcome to ExamSpeed Math!</marquee>
+        <marquee behavior="scroll" direction="left" id="notice-text">Welcome to ExamSpeed!</marquee>
     </div>
 
     <div class="main-container">
@@ -174,7 +172,7 @@
     </div>
 
     <script>
-        // --- YOUR FIREBASE CONFIG ---
+        // --- CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyAv5aEJ1rBFRM1qV7GqxbDYG2OIVzzIJDE",
             authDomain: "examspeed-math-9f575.firebaseapp.com",
@@ -187,9 +185,9 @@
         try {
             firebase.initializeApp(firebaseConfig);
             window.db = firebase.firestore();
-        } catch(e) { console.error("Firebase Error:", e); }
+        } catch(e) { console.error("Firebase Init Error:", e); }
 
-        // --- GLOBAL VARS ---
+        // --- VARS ---
         let currentMode = '';
         let timer = 0, timerInt;
         let score = 0, qNum = 1, totalQ = 10;
@@ -197,7 +195,7 @@
         let liveQuestions = [];
         let isLiveMode = false;
 
-        // --- 1. NOTICE BOARD LOGIC (NEW) ---
+        // --- NOTICE BOARD ---
         if(window.db) {
             db.collection('config').doc('notice').onSnapshot(doc => {
                 const box = document.getElementById('notice-box');
@@ -356,3 +354,8 @@
 
         function checkAns(btn, val) {
             let btns = document.querySelectorAll('.opt-btn');
+            btns.forEach(b => b.disabled = true);
+            if (val == cAns) {
+                btn.style.background = 'var(--success)'; score++;
+                // Confetti Removed Here for Speed
+      
