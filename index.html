@@ -8,8 +8,12 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <title>ExamSpeed Math - Super Fast</title>
+    <title>ExamSpeed Math - Live</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
         :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --gold: #fbbf24; --success: #22c55e; --danger: #ef4444; }
@@ -20,19 +24,22 @@
         .app-name { font-size: 18px; font-weight: 900; letter-spacing: 0.5px; }
         
         .main-container { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
-        .hub-section { margin-bottom: 30px; }
+        .hub-section { margin-bottom: 25px; }
         .hub-title { font-size: 12px; color: #94a3b8; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
 
         .grid-card { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        /* Clickable Card Fix */
         .card { background: var(--card); border-radius: 16px; padding: 20px 15px; border: 1px solid #334155; text-align: center; cursor: pointer; position: relative; overflow: hidden; }
         .card:active { background: #283548; transform: scale(0.98); }
         .card h3 { font-size: 14px; color: #e2e8f0; margin-top: 8px; font-weight: 600; pointer-events: none; }
         .card-icon { font-size: 24px; margin-bottom: 5px; display: block; pointer-events: none; }
 
-        .big-btn { width: 100%; background: linear-gradient(135deg, #3b82f6, #2563eb); padding: 25px; border-radius: 20px; text-align: left; position: relative; overflow: hidden; border: none; cursor: pointer; color: white; }
-        .big-btn h2 { font-size: 22px; font-weight: 800; margin-bottom: 5px; }
-        .big-btn:active { transform: scale(0.98); opacity: 0.9; }
+        /* LIVE CHALLENGE BUTTON (Special) */
+        .live-btn { width: 100%; background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 20px; border-radius: 15px; text-align: left; position: relative; overflow: hidden; border: none; cursor: pointer; color: white; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
+        .live-btn h2 { font-size: 20px; font-weight: 800; margin-bottom: 5px; display:flex; align-items:center; gap:10px; }
+        .live-badge { background: white; color: #b91c1c; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 900; }
+
+        .big-btn { width: 100%; background: linear-gradient(135deg, #3b82f6, #2563eb); padding: 20px; border-radius: 15px; text-align: left; position: relative; overflow: hidden; border: none; cursor: pointer; color: white; }
+        .big-btn h2 { font-size: 20px; font-weight: 800; margin-bottom: 5px; }
 
         /* Overlays */
         .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; padding: 20px; }
@@ -41,18 +48,17 @@
 
         .list-content { overflow-y: auto; flex: 1; padding-bottom: 50px; }
         .f-item { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--primary); font-size: 15px; }
-        .f-head { color: var(--gold); font-weight: 800; margin: 20px 0 10px 0; font-size: 14px; }
 
         /* Quiz UI */
         select { width: 100%; padding: 15px; border-radius: 12px; background: var(--card); color: white; border: 1px solid #334155; font-size: 16px; margin-bottom: 15px; }
         .start-btn { width: 100%; padding: 18px; background: var(--success); border: none; color: #000; border-radius: 12px; font-weight: 900; font-size: 18px; cursor: pointer; }
         
         .q-box { background: var(--card); padding: 30px 20px; border-radius: 20px; text-align: center; margin: 20px 0; border: 2px solid #334155; position: relative; }
-        .q-text { font-size: 38px; font-weight: 900; }
+        .q-text { font-size: 24px; font-weight: 800; line-height: 1.4; } /* Smaller font for long questions */
         .timer-pill { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 4px 12px; border-radius: 15px; font-weight: 800; font-size: 12px; }
 
-        .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-        .opt-btn { background: var(--card); border: 2px solid #334155; padding: 20px 5px; border-radius: 14px; color: white; font-size: 20px; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+        .opt-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; } /* Single column for text options */
+        .opt-btn { background: var(--card); border: 2px solid #334155; padding: 15px; border-radius: 12px; color: white; font-size: 18px; font-weight: 600; cursor: pointer; text-align: left; }
         
         /* Table Popup */
         .table-popup { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; border-top-left-radius: 25px; border-top-right-radius: 25px; padding: 25px; z-index: 3000; transform: translateY(100%); transition: transform 0.3s; height: 70vh; display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
@@ -64,21 +70,27 @@
 
     <div class="header">
         <div>
-            <span class="app-name">ExamSpeed</span> <span style="font-size:10px; color:var(--primary)">FAST</span>
+            <span class="app-name">ExamSpeed</span> <span style="font-size:10px; color:var(--primary)">PRO</span>
         </div>
         <button onclick="window.open('https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p')" style="background:#25d366; border:none; color:white; padding:6px 12px; border-radius:8px; font-weight:800; font-size:11px;">JOIN WA</button>
     </div>
 
     <div class="main-container">
+        
+        <button class="live-btn" onclick="startLiveChallenge()">
+            <h2>🔥 Daily Challenge <span class="live-badge">LIVE</span></h2>
+            <p>Admin's Special Questions (Click to Play)</p>
+        </button>
+
         <div class="hub-section">
             <button class="big-btn" onclick="setupQuiz('Mix Speed Test')">
                 <h2>⚡ Mix Speed Test</h2>
-                <p>Random Questions (SSC/Bank)</p>
+                <p>Random Math Questions (SSC/Bank)</p>
             </button>
         </div>
 
         <div class="hub-section">
-            <div class="hub-title">Practice Area</div>
+            <div class="hub-title">Math Practice Area</div>
             <div class="grid-card">
                 <button class="card" onclick="setupQuiz('Addition')"><span class="card-icon">➕</span><h3>Addition</h3></button>
                 <button class="card" onclick="setupQuiz('Subtraction')"><span class="card-icon">➖</span><h3>Subtraction</h3></button>
@@ -137,13 +149,13 @@
                 <option value="50">50 Questions</option>
             </select>
 
-            <button class="start-btn" onclick="startQuiz()">START TEST ➔</button>
+            <button class="start-btn" onclick="startMathQuiz()">START TEST ➔</button>
         </div>
 
         <div id="quiz-engine" style="display:none; margin-top:20px;">
             <div class="q-box">
                 <div class="timer-pill" id="timer-disp">0s</div>
-                <div class="q-text" id="q-disp">?</div>
+                <div class="q-text" id="q-disp">Loading...</div>
             </div>
             <div style="text-align:right; font-size:12px; color:#94a3b8; margin-bottom:10px;" id="prog-disp">1/10</div>
             <div class="opt-grid" id="opt-area"></div>
@@ -160,18 +172,26 @@
     </div>
 
     <script>
-        // Force Clear Cache for Service Workers
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(regs) {
-                for(let reg of regs) reg.unregister();
-            }).catch(err => console.log('SW Error:', err));
-        }
+        // --- FIREBASE CONFIG ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAv5aEJ1rBFRM1qV7GqxbDYG2OIVzzIJDE",
+            authDomain: "examspeed-math-9f575.firebaseapp.com",
+            projectId: "examspeed-math-9f575",
+            storageBucket: "examspeed-math-9f575.firebasestorage.app",
+            messagingSenderId: "318204688428",
+            appId: "1:318204688428:web:c7d6040c49d9ff30fbf989",
+            measurementId: "G-FX89QZ403E"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        // Global Variables
+        // --- GLOBAL VARS ---
         let currentMode = '';
         let timer = 0, timerInt;
         let score = 0, qNum = 1, totalQ = 10;
         let cAns = 0;
+        let liveQuestions = []; // Stores fetched questions
+        let isLiveMode = false;
 
         // --- CORE FUNCTIONS ---
 
@@ -180,9 +200,6 @@
                 const ol = document.getElementById('learn-overlay');
                 const title = document.getElementById('learn-title');
                 const content = document.getElementById('learn-content');
-                
-                if(!ol || !content) return;
-
                 ol.style.display = 'flex';
                 title.innerText = type.replace(' List', '');
                 content.innerHTML = '';
@@ -193,15 +210,10 @@
                     content.innerHTML = h + '</div>';
                 } else if (type === 'Formulas') {
                     content.innerHTML = `
-                        <div class="f-head">GEOMETRY</div>
-                        <div class="f-item">Equilateral Triangle Area = (√3/4)a²</div>
-                        <div class="f-item">Circle Area = πr² | Circumference = 2πr</div>
-                        <div class="f-head">ALGEBRA</div>
-                        <div class="f-item">a³+b³ = (a+b)(a²-ab+b²)</div>
-                        <div class="f-item">a³-b³ = (a-b)(a²+ab+b²)</div>
-                        <div class="f-head">PERCENTAGE</div>
-                        <div class="f-item">16.66% = 1/6 | 14.28% = 1/7</div>
-                        <div class="f-item">12.5% = 1/8 | 83.33% = 5/6</div>
+                        <div class="f-item"><b>Equilateral Triangle Area:</b> (√3/4)a²</div>
+                        <div class="f-item"><b>Circle:</b> Area = πr² | Circumference = 2πr</div>
+                        <div class="f-item"><b>Algebra:</b> a³+b³ = (a+b)(a²-ab+b²)</div>
+                        <div class="f-item"><b>Percent:</b> 16.66%=1/6 | 14.28%=1/7 | 12.5%=1/8</div>
                     `;
                 } else {
                     let h = '';
@@ -211,7 +223,7 @@
                     }
                     content.innerHTML = h;
                 }
-            } catch(e) { console.error(e); }
+            } catch(e) {}
         }
 
         function showTable(n) {
@@ -222,8 +234,11 @@
             document.getElementById('table-popup').classList.add('active');
         }
 
+        // --- QUIZ SETUP ---
+        
         function setupQuiz(mode) {
             currentMode = mode;
+            isLiveMode = false;
             document.getElementById('quiz-title').innerText = mode;
             document.getElementById('quiz-overlay').style.display = 'flex';
             document.getElementById('quiz-setup').style.display = 'block';
@@ -236,33 +251,80 @@
             clearInterval(timerInt);
         }
 
-        function startQuiz() {
+        // --- MATH MODE START ---
+        function startMathQuiz() {
             const countElem = document.getElementById('q-count');
-            if(countElem) totalQ = parseInt(countElem.value);
-            
+            totalQ = parseInt(countElem.value);
             qNum = 1; score = 0; timer = 0;
             
             document.getElementById('quiz-setup').style.display = 'none';
             document.getElementById('quiz-engine').style.display = 'block';
             
+            startTimer();
+            nextQuestion();
+        }
+
+        // --- LIVE CHALLENGE START ---
+        function startLiveChallenge() {
+            currentMode = "Daily Challenge";
+            isLiveMode = true;
+            document.getElementById('quiz-title').innerText = "Daily Challenge";
+            document.getElementById('quiz-overlay').style.display = 'flex';
+            document.getElementById('quiz-setup').style.display = 'none'; // Skip setup
+            document.getElementById('quiz-engine').style.display = 'block';
+            document.getElementById('quiz-result').style.display = 'none';
+            
+            document.getElementById('q-disp').innerText = "Loading Questions...";
+            document.getElementById('opt-area').innerHTML = "";
+
+            // Fetch from Firebase
+            liveQuestions = [];
+            db.collection("challenges").orderBy("timestamp", "desc").limit(20).get().then((snap) => {
+                if(snap.empty) {
+                    alert("No live questions added by Admin today! Try Mix Speed Test.");
+                    quitQuiz();
+                    return;
+                }
+                snap.forEach(doc => liveQuestions.push(doc.data()));
+                totalQ = liveQuestions.length;
+                qNum = 1; score = 0; timer = 0;
+                startTimer();
+                nextQuestion();
+            }).catch(e => {
+                console.log(e);
+                alert("Internet Error! Check connection.");
+                quitQuiz();
+            });
+        }
+
+        function startTimer() {
             clearInterval(timerInt);
             timerInt = setInterval(() => {
                 timer++;
-                const tDisp = document.getElementById('timer-disp');
-                if(tDisp) tDisp.innerText = timer + 's';
+                document.getElementById('timer-disp').innerText = timer + 's';
             }, 1000);
-            
-            nextQuestion();
         }
 
         function r(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
         function nextQuestion() {
             if (qNum > totalQ) { finishQuiz(); return; }
+            document.getElementById('prog-disp').innerText = `${qNum}/${totalQ}`;
             
-            const pDisp = document.getElementById('prog-disp');
-            if(pDisp) pDisp.innerText = `${qNum}/${totalQ}`;
-            
+            // LOGIC FOR LIVE VS MATH
+            if (isLiveMode) {
+                // Live Question Logic
+                let qData = liveQuestions[qNum - 1];
+                document.getElementById('q-disp').innerText = qData.q;
+                cAns = qData.correct; // Answer is string here
+                renderOptions(qData.options, false); // false = don't shuffle (optional)
+            } else {
+                // Math Logic
+                generateMathQuestion();
+            }
+        }
+
+        function generateMathQuestion() {
             let lvl = document.getElementById('q-level').value;
             let mode = (currentMode === 'Mix Speed Test') ? ['Addition','Subtraction','Multiplication','Division','Percentage','Squares Test'][r(0,5)] : currentMode;
             
@@ -301,64 +363,6 @@
                 qStr = `${d*q} ÷ ${d}`; ans = q;
             }
 
-            cAns = ans;
+            cAns = ans; // Answer is number
             document.getElementById('q-disp').innerText = qStr;
-            generateOptions(ans);
-        }
-
-        function generateOptions(correct) {
-            let opts = new Set([correct]);
-            while(opts.size < 4) {
-                let type = r(1,3);
-                let fake = correct;
-                if(type === 1) fake = correct + r(-5, 5); 
-                if(type === 2) fake = correct + (r(-2, 2)*10);
-                if(type === 3) fake = correct + r(-20, 20);
-                if(fake > 0 && fake !== correct) opts.add(fake);
-            }
-            
-            let arr = Array.from(opts).sort(()=>Math.random()-0.5);
-            let h = '';
-            arr.forEach(o => {
-                h += `<button class="opt-btn" onclick="checkAns(this, ${o})">${o}</button>`;
-            });
-            document.getElementById('opt-area').innerHTML = h;
-        }
-
-        function checkAns(btn, val) {
-            const allBtns = document.querySelectorAll('.opt-btn');
-            allBtns.forEach(b => b.disabled = true);
-
-            if (val === cAns) {
-                btn.style.background = 'var(--success)';
-                btn.style.borderColor = 'var(--success)';
-                score++;
-            } else {
-                btn.style.background = 'var(--danger)';
-                btn.style.borderColor = 'var(--danger)';
-                allBtns.forEach(b => {
-                    if(parseInt(b.innerText) === cAns) b.style.background = 'var(--success)';
-                });
-            }
-
-            setTimeout(() => {
-                qNum++;
-                nextQuestion();
-            }, 800);
-        }
-
-        function finishQuiz() {
-            clearInterval(timerInt);
-            document.getElementById('quiz-engine').style.display = 'none';
-            document.getElementById('quiz-result').style.display = 'block';
-            document.getElementById('final-score').innerText = `${score}/${totalQ}`;
-            document.getElementById('time-taken').innerText = `Time: ${timer}s`;
-        }
-
-        function shareScore() {
-            let txt = `🔥 I scored ${score}/${totalQ} in ${currentMode} (Time: ${timer}s) on ExamSpeed Math! Beat me: https://examspeed-math.vercel.app/`;
-            window.open('whatsapp://send?text=' + encodeURIComponent(txt));
-        }
-    </script>
-</body>
-</html>
+            generateMathOptions(a
