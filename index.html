@@ -11,18 +11,10 @@
     <title>ExamSpeed Math</title>
     
     <script>
-        // अगर वर्जन पुराना है, तो पेज रिलोड करो
-        const APP_VERSION = "5.0"; // जब भी अपडेट करें, इसे बढ़ा दें
-        const savedVer = localStorage.getItem("app_ver");
-        
-        if (savedVer !== APP_VERSION) {
-            localStorage.setItem("app_ver", APP_VERSION);
-            // Force reload from server, ignoring cache
-            if(window.location.href.indexOf('?') === -1) {
-                window.location.href = window.location.href + '?v=' + new Date().getTime();
-            } else {
-                window.location.reload(true);
-            }
+        const APP_VER = "6.0-EXAM-LEVEL";
+        if(localStorage.getItem("ver") !== APP_VER) {
+            localStorage.setItem("ver", APP_VER);
+            window.location.reload(true);
         }
     </script>
 
@@ -34,55 +26,26 @@
     <style>
         :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --gold: #fbbf24; --success: #22c55e; --danger: #ef4444; }
         
-        /* 3. TOUCH FIXES (CSS) */
-        * { 
-            box-sizing: border-box; 
-            font-family: 'Outfit', sans-serif; 
-            margin: 0; padding: 0; 
-            -webkit-tap-highlight-color: transparent; 
-            touch-action: manipulation; /* Improves touch response */
-        }
+        * { box-sizing: border-box; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         
         body { background: var(--bg); color: white; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* HEADER */
-        .header { padding: 15px; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; z-index: 100; }
+        .header { padding: 15px; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
         .app-name { font-size: 18px; font-weight: 900; }
 
-        /* NOTICE */
         #notice-box { background: var(--gold); color: black; font-weight: 800; padding: 8px 0; font-size: 13px; display: none; }
         
-        /* CONTAINER */
-        .main-container { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 80px; -webkit-overflow-scrolling: touch; }
+        .main-container { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 80px; }
         
-        /* BUTTONS */
         button { cursor: pointer; user-select: none; }
         
-        .live-btn { 
-            width: 100%; background: linear-gradient(135deg, #ef4444, #b91c1c); 
-            padding: 20px; border-radius: 14px; border: none; color: white; 
-            text-align: left; margin-bottom: 15px; 
-            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-        }
-        .live-btn:active { transform: scale(0.98); opacity: 0.9; }
-
-        .big-btn { 
-            width: 100%; background: linear-gradient(135deg, #3b82f6, #2563eb); 
-            padding: 20px; border-radius: 14px; border: none; color: white; 
-            text-align: left; margin-bottom: 25px;
-        }
-        .big-btn:active { transform: scale(0.98); opacity: 0.9; }
+        .live-btn { width: 100%; background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 20px; border-radius: 14px; border: none; color: white; text-align: left; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+        .big-btn { width: 100%; background: linear-gradient(135deg, #3b82f6, #2563eb); padding: 20px; border-radius: 14px; border: none; color: white; text-align: left; margin-bottom: 25px; }
 
         .grid-card { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        
-        .card { 
-            background: var(--card); border: 1px solid #334155; 
-            padding: 20px 10px; border-radius: 14px; color: white; 
-            font-size: 14px; font-weight: 600; text-align: center;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .card span { font-size: 24px; margin-bottom: 5px; display: block; }
-        .card:active { background: #334155; transform: scale(0.95); transition: 0.1s; }
+        .card { background: var(--card); border: 1px solid #334155; padding: 20px 10px; border-radius: 14px; color: white; font-size: 14px; font-weight: 600; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .card span { font-size: 24px; margin-bottom: 5px; }
+        .card:active { background: #334155; transform: scale(0.96); }
 
         .hub-title { font-size: 12px; color: #94a3b8; font-weight: 800; text-transform: uppercase; margin: 15px 0 10px 0; border-bottom: 1px solid #334155; padding-bottom: 5px; }
 
@@ -90,7 +53,7 @@
         .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; padding: 20px; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         
-        .opt-btn { width: 100%; padding: 16px; background: var(--card); border: 1px solid #334155; margin-bottom: 10px; color: white; border-radius: 10px; font-size: 18px; text-align: left; }
+        .opt-btn { width: 100%; padding: 18px; background: var(--card); border: 2px solid #334155; margin-bottom: 10px; color: white; border-radius: 12px; font-size: 20px; text-align: left; font-weight: bold; }
         
         /* Table Popup */
         .table-popup { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 20px; z-index: 3000; transform: translateY(100%); transition: transform 0.3s; height: 60vh; display: flex; flex-direction: column; box-shadow: 0 -10px 50px rgba(0,0,0,0.8); }
@@ -113,12 +76,12 @@
     <div class="main-container">
         <button class="live-btn" onclick="startLiveChallenge()">
             <h2 style="font-size:18px; font-weight:900; margin-bottom:5px;">🔥 Daily Challenge</h2>
-            <p style="font-size:12px; opacity:0.9;">Live Questions from Admin</p>
+            <p style="font-size:12px; opacity:0.9;">Questions from Admin</p>
         </button>
 
         <button class="big-btn" onclick="setupQuiz('Mix Speed Test')">
             <h2 style="font-size:18px; font-weight:900; margin-bottom:5px;">⚡ Mix Speed Test</h2>
-            <p style="font-size:12px; opacity:0.9;">Random Math Questions</p>
+            <p style="font-size:12px; opacity:0.9;">Exam Level Random Questions</p>
         </button>
 
         <div class="hub-title">Practice Area</div>
@@ -147,9 +110,9 @@
         </div>
 
         <div id="quiz-setup">
-            <p style="color:#94a3b8; font-size:12px; margin-bottom:5px;">LEVEL</p>
+            <p style="color:#94a3b8; font-size:12px; margin-bottom:5px;">DIFFICULTY LEVEL</p>
             <select id="q-level" style="width:100%; padding:15px; margin-bottom:15px; background:#1e293b; color:white; border:1px solid #334155; border-radius:10px;">
-                <option value="basic">Basic (Warmup)</option>
+                <option value="basic">Basic (Class 5-8)</option>
                 <option value="medium" selected>Exam Level (SSC/Bank)</option>
                 <option value="adv">Mains Level (Hard)</option>
             </select>
@@ -162,9 +125,9 @@
         </div>
 
         <div id="quiz-engine" style="display:none; margin-top:20px;">
-            <div style="background:#1e293b; padding:30px 20px; border-radius:16px; text-align:center; border:2px solid #334155; position:relative;">
+            <div style="background:#1e293b; padding:30px 10px; border-radius:16px; text-align:center; border:2px solid #334155; position:relative;">
                 <div id="timer-disp" style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--gold); color:black; padding:4px 12px; border-radius:12px; font-weight:800; font-size:12px;">0s</div>
-                <div id="q-disp" style="font-size:28px; font-weight:800; margin-top:10px;">...</div>
+                <div id="q-disp" style="font-size:26px; font-weight:800; margin-top:10px;">...</div>
             </div>
             <div style="text-align:right; font-size:12px; color:#94a3b8; margin:10px 0;" id="prog-disp">1/10</div>
             <div id="opt-area"></div>
@@ -186,7 +149,6 @@
         </div>
         <div id="learn-content"></div>
     </div>
-
     <div id="table-popup" class="table-popup">
         <div class="top-bar">
             <h2 style="color:var(--primary)" id="table-head-title">Table</h2>
@@ -202,20 +164,14 @@
             projectId: "examspeed-math-9f575",
             storageBucket: "examspeed-math-9f575.firebasestorage.app",
             messagingSenderId: "318204688428",
-            appId: "1:318204688428:web:c7d6040c49d9ff30fbf989",
-            measurementId: "G-FX89QZ403E"
+            appId: "1:318204688428:web:c7d6040c49d9ff30fbf989"
         };
         try { firebase.initializeApp(firebaseConfig); window.db = firebase.firestore(); } catch(e){}
 
         // VARS
-        let currentMode = '';
-        let timer = 0, timerInt;
-        let score = 0, qNum = 1, totalQ = 10;
-        let cAns = 0;
-        let liveQuestions = [];
-        let isLiveMode = false;
+        let currentMode = '', timer = 0, timerInt, score = 0, qNum = 1, totalQ = 10, cAns = 0;
+        let liveQuestions = [], isLiveMode = false;
 
-        // NOTICE
         if(window.db) {
             db.collection('config').doc('notice').onSnapshot(doc => {
                 const box = document.getElementById('notice-box');
@@ -226,7 +182,102 @@
             });
         }
 
-        // FUNCTIONS
+        // --- NEW EXAM LEVEL MATH LOGIC ---
+        function r(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+        function generateMathQuestion() {
+            let lvl = document.getElementById('q-level').value;
+            let mode = (currentMode === 'Mix Speed Test') ? ['Addition','Subtraction','Multiplication','Division','Percentage','Squares Test'][r(0,5)] : currentMode;
+            let qStr = '', ans = 0, n1, n2;
+
+            // 1. ADDITION (Bank Level: 3 Digits)
+            if (mode === 'Addition') {
+                if(lvl === 'basic') { n1=r(20,99); n2=r(10,99); }
+                else if(lvl === 'medium') { n1=r(150,500); n2=r(150,500); }
+                else { n1=r(500,999); n2=r(500,999); } // Hard
+                qStr = `${n1} + ${n2}`; ans = n1+n2;
+            } 
+            
+            // 2. SUBTRACTION (Confusing borrowings)
+            else if (mode === 'Subtraction') {
+                if(lvl === 'basic') { n1=r(50,99); n2=r(10,n1); }
+                else if(lvl === 'medium') { n1=r(500,999); n2=r(200,n1); }
+                else { n1=r(1000,5000); n2=r(500,n1); }
+                qStr = `${n1} - ${n2}`; ans = n1-n2;
+            }
+
+            // 3. MULTIPLICATION (Vedic Math Range)
+            else if (mode === 'Multiplication') {
+                if(lvl === 'basic') { n1=r(12,20); n2=r(2,9); }
+                else if(lvl === 'medium') { n1=r(15,29); n2=r(12,19); } // Exam favorite
+                else { n1=r(30,99); n2=r(12,25); } 
+                qStr = `${n1} × ${n2}`; ans = n1*n2;
+            }
+
+            // 4. DIVISION (Perfect Divisors)
+            else if (mode === 'Division') {
+                let d = r(2, lvl==='basic'?12 : (lvl==='medium'?19 : 29)); // Divisor
+                let q = r(5, lvl==='basic'?20 : (lvl==='medium'?50 : 99)); // Quotient
+                qStr = `${d*q} ÷ ${d}`; ans = q;
+            }
+
+            // 5. PERCENTAGE (Fraction Based - Exam Style)
+            else if (mode === 'Percentage') {
+                // Exam fractions: 1/2, 1/3, 1/4, 1/5, 1/6, 1/8, 1/10
+                let fracs = [
+                    {p:'50%', d:2}, {p:'25%', d:4}, {p:'20%', d:5}, {p:'10%', d:10}, 
+                    {p:'33.33%', d:3}, {p:'16.66%', d:6}, {p:'12.5%', d:8}, {p:'11.11%', d:9}
+                ];
+                
+                // For basic, use simple (50%, 20%). For Exam, use Hard (33%, 12.5%)
+                let useF = (lvl==='basic') ? fracs.slice(0,4) : fracs; 
+                let f = useF[r(0, useF.length-1)];
+                
+                let val = f.d * r(5, lvl==='adv'?50:20); // Ensures Integer answer
+                qStr = `${f.p} of ${val}`; ans = Math.round(val / f.d);
+            }
+
+            // 6. SQUARES (Exam Range 1-60)
+            else if (mode === 'Squares Test') {
+                if(lvl==='basic') n1=r(11,25);
+                else if(lvl==='medium') n1=r(26,50);
+                else n1=r(51,80);
+                qStr = `${n1}²`; ans = n1*n1;
+            }
+
+            cAns = ans;
+            document.getElementById('q-disp').innerText = qStr;
+            
+            // CONFUSING OPTIONS LOGIC
+            let opts = new Set([ans]);
+            while(opts.size < 4) {
+                // Trap options: +1, -1, +10, -10 (Common mistakes)
+                let trap = [ans+1, ans-1, ans+10, ans-10, ans+2, ans-2][r(0,5)];
+                if(trap > 0) opts.add(trap);
+                else opts.add(ans + r(5,20)); // fallback
+            }
+            renderOptions(Array.from(opts).sort(()=>Math.random()-0.5));
+        }
+
+        // --- STANDARD FUNCTIONS ---
+        function renderOptions(arr) {
+            let h = '';
+            arr.forEach(o => h += `<button class="opt-btn" onclick="checkAns(this, '${o}')">${o}</button>`);
+            document.getElementById('opt-area').innerHTML = h;
+        }
+
+        function checkAns(btn, val) {
+            let btns = document.querySelectorAll('.opt-btn');
+            btns.forEach(b => b.disabled = true);
+            if (val == cAns) {
+                btn.style.background = 'var(--success)'; score++;
+            } else {
+                btn.style.background = 'var(--danger)';
+                btns.forEach(b => { if(b.innerText == cAns) b.style.background = 'var(--success)'; });
+            }
+            setTimeout(() => { qNum++; nextQuestion(); }, 500);
+        }
+
         function setupQuiz(mode) {
             currentMode = mode; isLiveMode = false;
             document.getElementById('quiz-title').innerText = mode;
@@ -259,8 +310,7 @@
             document.getElementById('quiz-engine').style.display = 'block';
             document.getElementById('quiz-result').style.display = 'none';
             document.getElementById('q-disp').innerText = "Loading...";
-            document.getElementById('opt-area').innerHTML = "";
-
+            
             liveQuestions = [];
             db.collection("challenges").orderBy("timestamp", "desc").limit(20).get().then((snap) => {
                 if(snap.empty) { alert("No questions today!"); quitQuiz(); return; }
@@ -272,94 +322,9 @@
             }).catch(e => { alert("Check Internet!"); quitQuiz(); });
         }
 
-        function startTimer() {
-            clearInterval(timerInt);
-            timerInt = setInterval(() => {
-                timer++;
-                document.getElementById('timer-disp').innerText = timer + 's';
-            }, 1000);
-        }
+        function startTimer() { clearInterval(timerInt); timerInt = setInterval(() => { timer++; document.getElementById('timer-disp').innerText = timer + 's'; }, 1000); }
 
-        function r(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-
-        function nextQuestion() {
-            if (qNum > totalQ) { finishQuiz(); return; }
-            document.getElementById('prog-disp').innerText = `${qNum}/${totalQ}`;
-            
-            if (isLiveMode) {
-                let qData = liveQuestions[qNum - 1];
-                document.getElementById('q-disp').innerText = qData.q;
-                cAns = qData.correct;
-                renderOptions(qData.options);
-            } else {
-                generateMathQuestion();
-            }
-        }
-
-        function generateMathQuestion() {
-            let lvl = document.getElementById('q-level').value;
-            let mode = (currentMode === 'Mix Speed Test') ? ['Addition','Subtraction','Multiplication','Division','Percentage','Squares Test'][r(0,5)] : currentMode;
-            let qStr = '', ans = 0, n1, n2;
-
-            if (mode === 'Addition') {
-                if(lvl === 'basic') { n1=r(15,99); n2=r(11,99); }
-                else if(lvl === 'medium') { n1=r(150,499); n2=r(50,299); }
-                else { n1=r(499,999); n2=r(250,999); }
-                qStr = `${n1} + ${n2}`; ans = n1+n2;
-            } else if (mode === 'Multiplication') {
-                if(lvl === 'basic') { n1=r(12,19); n2=r(2,9); }
-                else if(lvl === 'medium') { n1=r(12,25); n2=r(11,19); } 
-                else { n1=r(25,99); n2=r(11,25); }
-                qStr = `${n1} × ${n2}`; ans = n1*n2;
-            } else if (mode === 'Percentage') {
-                let f = [{p:'50%',v:2}, {p:'25%',v:4}, {p:'20%',v:5}, {p:'10%',v:10}, {p:'33.33%',v:3}, {p:'12.5%',v:8}][r(0,5)];
-                let val = f.v * r(2,20) * (lvl==='adv'?10:1);
-                qStr = `${f.p} of ${val}`; ans = Math.round(val / f.v);
-            } else if (mode === 'Squares Test') {
-                n1 = (lvl==='basic') ? r(11,25) : r(26,60);
-                qStr = `${n1}²`; ans = n1*n1;
-            } else if (mode === 'Subtraction') {
-                n1=r(50,500); n2=r(10,n1); qStr = `${n1} - ${n2}`; ans = n1-n2;
-            } else { 
-                let d = r(2, 20); let q = r(5, 20); qStr = `${d*q} ÷ ${d}`; ans = q;
-            }
-
-            cAns = ans;
-            document.getElementById('q-disp').innerText = qStr;
-            let opts = new Set([ans]);
-            while(opts.size < 4) opts.add(ans + r(-10, 10) || ans+1);
-            renderOptions(Array.from(opts).sort(()=>Math.random()-0.5));
-        }
-
-        function renderOptions(arr) {
-            let h = '';
-            arr.forEach(o => h += `<button class="opt-btn" onclick="checkAns(this, '${o}')">${o}</button>`);
-            document.getElementById('opt-area').innerHTML = h;
-        }
-
-        function checkAns(btn, val) {
-            let btns = document.querySelectorAll('.opt-btn');
-            btns.forEach(b => b.disabled = true);
-            if (val == cAns) {
-                btn.style.background = 'var(--success)'; score++;
-            } else {
-                btn.style.background = 'var(--danger)';
-                btns.forEach(b => { if(b.innerText == cAns) b.style.background = 'var(--success)'; });
-            }
-            setTimeout(() => { qNum++; nextQuestion(); }, 500);
-        }
-
-        function finishQuiz() {
-            clearInterval(timerInt);
-            document.getElementById('quiz-engine').style.display = 'none';
-            document.getElementById('quiz-result').style.display = 'block';
-            document.getElementById('final-score').innerText = `${score}/${totalQ}`;
-            document.getElementById('time-taken').innerText = `Time: ${timer}s`;
-        }
-
-        function shareScore() {
-            window.open('whatsapp://send?text=' + encodeURIComponent(`Scored ${score}/${totalQ} on ExamSpeed! Beat me: https://examspeed-math.vercel.app/`));
-        }
+        function shareScore() { window.open('whatsapp://send?text=' + encodeURIComponent(`Scored ${score}/${totalQ} in ExamSpeed Math! Can you beat me? https://examspeed-math.vercel.app/`)); }
 
         function openLearn(type) {
             const ol = document.getElementById('learn-overlay');
@@ -373,10 +338,10 @@
                 for(let i=1; i<=30; i++) h += `<button onclick="showTable(${i})" style="padding:15px; background:#1e293b; color:white; border:1px solid #334155; border-radius:10px; font-weight:bold;">${i}</button>`;
                 content.innerHTML = h + '</div>';
             } else if (type === 'Formulas') {
-                 content.innerHTML = `<div style="background:#1e293b; padding:15px; border-radius:10px; margin-bottom:10px;"><b>Circle Area:</b> πr²</div>`;
+                 content.innerHTML = `<div style="background:#1e293b; padding:15px; border-radius:10px; margin-bottom:10px;"><b>Cylinder Vol:</b> πr²h</div><div style="background:#1e293b; padding:15px; border-radius:10px; margin-bottom:10px;"><b>Cone Vol:</b> (1/3)πr²h</div>`;
             } else {
                 let h = '';
-                for(let i=1; i<=30; i++) h += `<div style="background:#1e293b; padding:15px; margin-bottom:5px; border-radius:8px; text-align:center;">${i}² = ${i*i}</div>`;
+                for(let i=1; i<=30; i++) h += `<div style="background:#1e293b; padding:15px; margin-bottom:5px; border-radius:8px; text-align:center;">${i}² = ${i*i} | ${i}³ = ${i*i*i}</div>`;
                 content.innerHTML = h;
             }
         }
@@ -389,4 +354,5 @@
         }
     </script>
 </body>
-</html>
+                </html>
+            
