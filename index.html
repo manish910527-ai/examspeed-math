@@ -3,144 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <title>ExamSpeed Math</title>
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <title>ExamSpeed Math - Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
         :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --gold: #fbbf24; --success: #22c55e; --danger: #ef4444; }
-        * { box-sizing: border-box; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
         body { background: var(--bg); color: white; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        .header { padding: 15px; background: rgba(30, 41, 59, 0.95); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
-        .app-name { font-size: 18px; font-weight: 900; }
+        /* HEADER */
+        .header { padding: 15px 20px; background: rgba(30, 41, 59, 0.95); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+        .app-name { font-size: 18px; font-weight: 900; letter-spacing: 0.5px; }
 
-        /* NOTICE BOARD STYLE */
-        #notice-box { background: var(--gold); color: black; font-weight: 800; padding: 8px 0; font-size: 13px; display: none; }
+        /* NOTICE BOARD (New Feature) */
+        #notice-box { background: var(--gold); color: black; font-weight: 800; padding: 8px 0; font-size: 13px; display: none; border-bottom: 1px solid #b45309; }
+        marquee { letter-spacing: 0.5px; }
         
-        .main-container { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 80px; }
-        .card { background: var(--card); border-radius: 12px; padding: 15px; border: 1px solid #334155; text-align: center; margin-bottom: 10px; cursor: pointer; }
-        .card:active { transform: scale(0.98); background: #283548; }
+        /* MAIN CONTAINER */
+        .main-container { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
+        .hub-section { margin-bottom: 25px; }
+        .hub-title { font-size: 12px; color: #94a3b8; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
+
+        .grid-card { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .card { background: var(--card); border-radius: 16px; padding: 20px 15px; border: 1px solid #334155; text-align: center; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.1s; }
+        .card:active { background: #283548; transform: scale(0.96); }
+        .card h3 { font-size: 14px; color: #e2e8f0; margin-top: 8px; font-weight: 600; pointer-events: none; }
+        .card-icon { font-size: 24px; margin-bottom: 5px; display: block; pointer-events: none; }
+
+        /* BUTTONS */
+        .live-btn { width: 100%; background: linear-gradient(135deg, #ef4444, #b91c1c); padding: 20px; border-radius: 15px; text-align: left; position: relative; overflow: hidden; border: none; cursor: pointer; color: white; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
+        .live-btn:active { transform: scale(0.98); }
+
+        .big-btn { width: 100%; background: linear-gradient(135deg, #3b82f6, #2563eb); padding: 20px; border-radius: 15px; text-align: left; position: relative; overflow: hidden; border: none; cursor: pointer; color: white; }
+        .big-btn:active { transform: scale(0.98); }
+
+        /* OVERLAYS */
+        .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; padding: 20px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close-btn { background: #334155; border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-weight: bold; cursor: pointer; font-size: 18px; }
+
+        .list-content { overflow-y: auto; flex: 1; padding-bottom: 50px; }
+        .f-item { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid var(--primary); font-size: 15px; }
+
+        /* QUIZ UI */
+        select { width: 100%; padding: 15px; border-radius: 12px; background: var(--card); color: white; border: 1px solid #334155; font-size: 16px; margin-bottom: 15px; }
+        .start-btn { width: 100%; padding: 18px; background: var(--success); border: none; color: #000; border-radius: 12px; font-weight: 900; font-size: 18px; cursor: pointer; }
         
-        .live-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border: none; width: 100%; padding: 20px; border-radius: 12px; text-align: left; margin-bottom: 15px; cursor: pointer; }
+        .q-box { background: var(--card); padding: 30px 20px; border-radius: 20px; text-align: center; margin: 20px 0; border: 2px solid #334155; position: relative; }
+        .q-text { font-size: 24px; font-weight: 800; line-height: 1.4; }
+        .timer-pill { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 4px 12px; border-radius: 15px; font-weight: 800; font-size: 12px; }
+
+        .opt-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
+        .opt-btn { background: var(--card); border: 2px solid #334155; padding: 15px; border-radius: 12px; color: white; font-size: 18px; font-weight: 600; cursor: pointer; text-align: left; transition: background 0.2s; }
         
-        /* Overlays */
-        .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 200; display: none; flex-direction: column; padding: 20px; }
-        .opt-btn { width: 100%; padding: 15px; background: var(--card); border: 1px solid #334155; margin-bottom: 8px; color: white; border-radius: 8px; font-size: 16px; text-align: left; }
+        /* Table Popup */
+        .table-popup { position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; border-top-left-radius: 25px; border-top-right-radius: 25px; padding: 25px; z-index: 3000; transform: translateY(100%); transition: transform 0.3s; height: 70vh; display: flex; flex-direction: column; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
+        .table-popup.active { transform: translateY(0); }
+        .t-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 18px; font-weight: 600; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <span class="app-name">ExamSpeed <span style="color:var(--primary); font-size:10px;">PRO</span></span>
-        <button onclick="window.open('https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p')" style="background:#25d366; border:none; color:white; padding:5px 10px; border-radius:5px; font-weight:bold; font-size:10px;">JOIN WA</button>
+        <div><span class="app-name">ExamSpeed</span> <span style="font-size:10px; color:var(--primary)">PRO</span></div>
+        <button onclick="window.open('https://whatsapp.com/channel/0029VbCeXOeDp2QApxl6vi2p')" style="background:#25d366; border:none; color:white; padding:6px 12px; border-radius:8px; font-weight:800; font-size:11px;">JOIN WA</button>
     </div>
 
     <div id="notice-box">
-        <marquee behavior="scroll" direction="left" id="notice-text">Loading Notice...</marquee>
+        <marquee behavior="scroll" direction="left" id="notice-text">Welcome to ExamSpeed Math!</marquee>
     </div>
 
     <div class="main-container">
-        <button class="live-btn" onclick="startLive()">
-            <h2 style="margin:0;">🔥 Daily Challenge</h2>
-            <small>Live Questions from Admin</small>
+        <button class="live-btn" onclick="startLiveChallenge()">
+            <h2 style="font-size:18px; font-weight:800; margin-bottom:5px;">🔥 Daily Challenge</h2>
+            <p style="font-size:12px; opacity:0.9;">Live Questions from Admin</p>
         </button>
 
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div class="card" onclick="startMath('Addition')">➕ Add</div>
-            <div class="card" onclick="startMath('Subtraction')">➖ Subtract</div>
-            <div class="card" onclick="startMath('Multiplication')">✖️ Multiply</div>
-            <div class="card" onclick="startMath('Division')">➗ Divide</div>
-            <div class="card" onclick="startMath('Squares Test')">x² Squares</div>
-            <div class="card" onclick="startMath('Mix Speed Test')">⚡ Mix Test</div>
+        <div class="hub-section">
+            <button class="big-btn" onclick="setupQuiz('Mix Speed Test')">
+                <h2 style="font-size:18px; font-weight:800; margin-bottom:5px;">⚡ Mix Speed Test</h2>
+                <p style="font-size:12px; opacity:0.9;">Random Math Questions</p>
+            </button>
+        </div>
+
+        <div class="hub-section">
+            <div class="hub-title">Practice Area</div>
+            <div class="grid-card">
+                <button class="card" onclick="setupQuiz('Addition')"><span class="card-icon">➕</span><h3>Addition</h3></button>
+                <button class="card" onclick="setupQuiz('Subtraction')"><span class="card-icon">➖</span><h3>Subtraction</h3></button>
+                <button class="card" onclick="setupQuiz('Multiplication')"><span class="card-icon">✖️</span><h3>Multiplication</h3></button>
+                <button class="card" onclick="setupQuiz('Division')"><span class="card-icon">➗</span><h3>Division</h3></button>
+                <button class="card" onclick="setupQuiz('Percentage')"><span class="card-icon">%</span><h3>Percentage</h3></button>
+                <button class="card" onclick="setupQuiz('Squares Test')"><span class="card-icon">x²</span><h3>Squares</h3></button>
+            </div>
+        </div>
+
+        <div class="hub-section">
+            <div class="hub-title">Learning Hub</div>
+            <div class="grid-card">
+                <button class="card" onclick="openLearn('Tables')"><span class="card-icon">📖</span><h3>Tables</h3></button>
+                <button class="card" onclick="openLearn('Squares List')"><span class="card-icon">🔢</span><h3>Squares</h3></button>
+                <button class="card" onclick="openLearn('Cubes List')"><span class="card-icon">🧊</span><h3>Cubes</h3></button>
+                <button class="card" onclick="openLearn('Formulas')"><span class="card-icon">📜</span><h3>Formulas</h3></button>
+            </div>
         </div>
     </div>
 
-    <div id="quiz-overlay" class="overlay">
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-            <h2 id="q-title">Quiz</h2>
-            <button onclick="closeQuiz()" style="background:none; border:none; color:white; font-size:20px;">✕</button>
+    <div id="learn-overlay" class="overlay">
+        <div class="top-bar">
+            <h2 id="learn-title">Tables</h2>
+            <button class="close-btn" onclick="document.getElementById('learn-overlay').style.display='none'">✕</button>
         </div>
-        <div id="quiz-box" style="text-align:center; margin-top:50px;">
-            <h1 id="q-disp" style="font-size:30px; margin-bottom:30px;">Loading...</h1>
-            <div id="opt-area"></div>
+        <div id="learn-content" class="list-content"></div>
+    </div>
+
+    <div id="table-popup" class="table-popup">
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+            <h2 style="color:var(--primary)" id="table-head-title">Table</h2>
+            <button class="close-btn" onclick="document.getElementById('table-popup').classList.remove('active')">✕</button>
+        </div>
+        <div id="table-body" style="overflow-y:auto; flex:1;"></div>
+    </div>
+
+    <div id="quiz-overlay" class="overlay">
+        <div class="top-bar">
+            <h2 id="quiz-title">Quiz</h2>
+            <button class="close-btn" onclick="quitQuiz()">✕</button>
+        </div>
+
+        <div id="quiz-setup">
+            <p style="color:#94a3b8; font-size:12px; margin-bottom:5px;">LEVEL</p>
+            <select id="q-level">
+                <option value="basic">Basic (Warmup)</option>
+                <option value="medium" selected>Exam Level (SSC/Bank)</option>
+                <option value="adv">Mains Level (Hard)</option>
+            </select>
+            <p style="color:#94a3b8; font-size:12px; margin-bottom:5px;">QUESTIONS</p>
+            <select id="q-count">
+                <option value="10">10 Questions</option>
+                <option value="20">20 Questions</option>
+            </select>
+            <button class="start-btn" onclick="startMathQuiz()">START TEST ➔</button>
+        </div>
+
+        <div id="quiz-engine" style="display:none; margin-top:20px;">
+            <div class="q-box">
+                <div class="timer-pill" id="timer-disp">0s</div>
+                <div class="q-text" id="q-disp">Loading...</div>
+            </div>
+            <div style="text-align:right; font-size:12px; color:#94a3b8; margin-bottom:10px;" id="prog-disp">1/10</div>
+            <div class="opt-grid" id="opt-area"></div>
+        </div>
+
+        <div id="quiz-result" style="display:none; text-align:center; margin-top:50px;">
+            <div style="font-size:60px; margin-bottom:10px;">🏆</div>
+            <h2 style="font-size:28px; margin-bottom:10px;">Score: <span id="final-score" style="color:var(--success)">0</span></h2>
+            <p id="time-taken" style="color:#94a3b8; margin-bottom:30px;">Time: 0s</p>
+            <button class="start-btn" style="background:#25d366; color:white; margin-bottom:15px;" onclick="shareScore()">SHARE RESULT ➔</button>
+            <button class="start-btn" style="background:#334155; color:white;" onclick="quitQuiz()">MAIN MENU</button>
         </div>
     </div>
 
     <script>
+        // --- YOUR FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyAv5aEJ1rBFRM1qV7GqxbDYG2OIVzzIJDE",
             authDomain: "examspeed-math-9f575.firebaseapp.com",
             projectId: "examspeed-math-9f575",
             storageBucket: "examspeed-math-9f575.firebasestorage.app",
             messagingSenderId: "318204688428",
-            appId: "1:318204688428:web:c7d6040c49d9ff30fbf989"
+            appId: "1:318204688428:web:c7d6040c49d9ff30fbf989",
+            measurementId: "G-FX89QZ403E"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        try {
+            firebase.initializeApp(firebaseConfig);
+            window.db = firebase.firestore();
+        } catch(e) { console.error("Firebase Error:", e); }
 
-        // 1. NOTICE BOARD LOGIC (Real-time)
-        db.collection('config').doc('notice').onSnapshot(doc => {
-            const box = document.getElementById('notice-box');
-            if(doc.exists && doc.data().text && doc.data().text !== "") {
-                box.style.display = 'block';
-                document.getElementById('notice-text').innerText = "📢 " + doc.data().text;
-            } else {
-                box.style.display = 'none';
-            }
-        });
+        // --- GLOBAL VARS ---
+        let currentMode = '';
+        let timer = 0, timerInt;
+        let score = 0, qNum = 1, totalQ = 10;
+        let cAns = 0;
+        let liveQuestions = [];
+        let isLiveMode = false;
 
-        // 2. QUIZ LOGIC
-        let questions = [], qIdx = 0, score = 0;
-        
-        function startLive() {
-            db.collection("challenges").orderBy("timestamp", "desc").limit(20).get().then(snap => {
-                if(snap.empty) return alert("No Live Questions Today!");
-                questions = [];
-                snap.forEach(d => questions.push(d.data()));
-                runQuiz("Daily Challenge");
+        // --- 1. NOTICE BOARD LOGIC (NEW) ---
+        if(window.db) {
+            db.collection('config').doc('notice').onSnapshot(doc => {
+                const box = document.getElementById('notice-box');
+                if(doc.exists && doc.data().text && doc.data().text !== "") {
+                    box.style.display = 'block';
+                    document.getElementById('notice-text').innerText = "📢 " + doc.data().text;
+                } else {
+                    box.style.display = 'none';
+                }
             });
         }
 
-        function startMath(mode) {
-            questions = [];
-            for(let i=0; i<10; i++) {
-                let n1 = Math.floor(Math.random()*20)+2, n2 = Math.floor(Math.random()*10)+2;
-                let q, a;
-                if(mode=='Addition'){ q=`${n1} + ${n2}`; a=n1+n2; }
-                else if(mode=='Multiplication'){ q=`${n1} × ${n2}`; a=n1*n2; }
-                else { q=`${n1} - ${n2}`; a=n1-n2; }
-                
-                let opts = [a, a+1, a-1, a+2].sort(()=>Math.random()-0.5);
-                questions.push({q:q, correct:a, options:opts});
+        // --- FUNCTIONS ---
+        function openLearn(type) {
+            const ol = document.getElementById('learn-overlay');
+            const content = document.getElementById('learn-content');
+            ol.style.display = 'flex';
+            document.getElementById('learn-title').innerText = type.replace(' List', '');
+            content.innerHTML = '';
+
+            if (type === 'Tables') {
+                let h = '<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">';
+                for(let i=1; i<=50; i++) h += `<button class="card" onclick="showTable(${i})" style="font-weight:bold; font-size:18px;">${i}</button>`;
+                content.innerHTML = h + '</div>';
+            } else if (type === 'Formulas') {
+                content.innerHTML = `<div class="f-item"><b>Equilateral Triangle:</b> (√3/4)a²</div><div class="f-item"><b>Circle:</b> πr²</div><div class="f-item"><b>Algebra:</b> a³+b³ = (a+b)(a²-ab+b²)</div>`;
+            } else {
+                let h = '';
+                for(let i=1; i<=50; i++) {
+                    let txt = (type==='Squares List') ? `${i}² = ${i*i}` : (type==='Cubes List' ? `${i}³ = ${i*i*i}` : `∛${i*i*i} = ${i}`);
+                    h += `<div class="f-item" style="text-align:center">${txt}</div>`;
+                }
+                content.innerHTML = h;
             }
-            runQuiz(mode);
         }
 
-        function runQuiz(title) {
-            document.getElementById('q-title').innerText = title;
-            document.getElementById('quiz-overlay').style.display = 'flex';
-            qIdx = 0; score = 0;
-            showQ();
-        }
-
-        function showQ() {
-            if(qIdx >= questions.length) { alert("Game Over! Score: " + score); closeQuiz(); return; }
-            let curr = questions[qIdx];
-            document.getElementById('q-disp').innerText = curr.q;
+        function showTable(n) {
+            document.getElementById('table-head-title').innerText = `Table of ${n}`;
             let h = '';
-            curr.options.forEach(o => h += `<button class="opt-btn" onclick="check('${o}', '${curr.correct}')">${o}</button>`);
+            for(let i=1; i<=10; i++) h += `<div class="t-row"><span>${n} × ${i}</span><span>${n*i}</span></div>`;
+            document.getElementById('table-body').innerHTML = h;
+            document.getElementById('table-popup').classList.add('active');
+        }
+
+        function setupQuiz(mode) {
+            currentMode = mode;
+            isLiveMode = false;
+            document.getElementById('quiz-title').innerText = mode;
+            document.getElementById('quiz-overlay').style.display = 'flex';
+            document.getElementById('quiz-setup').style.display = 'block';
+            document.getElementById('quiz-engine').style.display = 'none';
+            document.getElementById('quiz-result').style.display = 'none';
+        }
+
+        function quitQuiz() {
+            document.getElementById('quiz-overlay').style.display = 'none';
+            clearInterval(timerInt);
+        }
+
+        function startMathQuiz() {
+            totalQ = parseInt(document.getElementById('q-count').value);
+            qNum = 1; score = 0; timer = 0;
+            document.getElementById('quiz-setup').style.display = 'none';
+            document.getElementById('quiz-engine').style.display = 'block';
+            startTimer();
+            nextQuestion();
+        }
+
+        function startLiveChallenge() {
+            currentMode = "Daily Challenge";
+            isLiveMode = true;
+            document.getElementById('quiz-title').innerText = "Daily Challenge";
+            document.getElementById('quiz-overlay').style.display = 'flex';
+            document.getElementById('quiz-setup').style.display = 'none';
+            document.getElementById('quiz-engine').style.display = 'block';
+            document.getElementById('quiz-result').style.display = 'none';
+            document.getElementById('q-disp').innerText = "Loading...";
+            
+            if(!window.db) { alert("Database Error!"); quitQuiz(); return; }
+
+            liveQuestions = [];
+            db.collection("challenges").orderBy("timestamp", "desc").limit(20).get().then((snap) => {
+                if(snap.empty) { alert("No questions from Admin today!"); quitQuiz(); return; }
+                snap.forEach(doc => liveQuestions.push(doc.data()));
+                totalQ = liveQuestions.length;
+                qNum = 1; score = 0; timer = 0;
+                startTimer();
+                nextQuestion();
+            }).catch(e => { alert("Check Internet Connection!"); quitQuiz(); });
+        }
+
+        function startTimer() {
+            clearInterval(timerInt);
+            timerInt = setInterval(() => {
+                timer++;
+                document.getElementById('timer-disp').innerText = timer + 's';
+            }, 1000);
+        }
+
+        function r(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+        function nextQuestion() {
+            if (qNum > totalQ) { finishQuiz(); return; }
+            document.getElementById('prog-disp').innerText = `${qNum}/${totalQ}`;
+            
+            if (isLiveMode) {
+                let qData = liveQuestions[qNum - 1];
+                document.getElementById('q-disp').innerText = qData.q;
+                cAns = qData.correct;
+                renderOptions(qData.options);
+            } else {
+                generateMathQuestion();
+            }
+        }
+
+        function generateMathQuestion() {
+            let lvl = document.getElementById('q-level').value;
+            let mode = (currentMode === 'Mix Speed Test') ? ['Addition','Subtraction','Multiplication','Division','Percentage','Squares Test'][r(0,5)] : currentMode;
+            let qStr = '', ans = 0, n1, n2;
+
+            if (mode === 'Addition') {
+                if(lvl === 'basic') { n1=r(15,99); n2=r(11,99); }
+                else if(lvl === 'medium') { n1=r(150,499); n2=r(50,299); }
+                else { n1=r(499,999); n2=r(250,999); }
+                qStr = `${n1} + ${n2}`; ans = n1+n2;
+            } else if (mode === 'Multiplication') {
+                if(lvl === 'basic') { n1=r(12,19); n2=r(2,9); }
+                else if(lvl === 'medium') { n1=r(12,25); n2=r(11,19); } 
+                else { n1=r(25,99); n2=r(11,25); }
+                qStr = `${n1} × ${n2}`; ans = n1*n2;
+            } else if (mode === 'Percentage') {
+                let f = [{p:'50%',v:2}, {p:'25%',v:4}, {p:'20%',v:5}, {p:'10%',v:10}, {p:'33.33%',v:3}, {p:'12.5%',v:8}][r(0,5)];
+                let val = f.v * r(2,20) * (lvl==='adv'?10:1);
+                qStr = `${f.p} of ${val}`; ans = Math.round(val / f.v);
+            } else if (mode === 'Squares Test') {
+                n1 = (lvl==='basic') ? r(11,25) : r(26,60);
+                qStr = `${n1}²`; ans = n1*n1;
+            } else if (mode === 'Subtraction') {
+                n1=r(50,500); n2=r(10,n1); qStr = `${n1} - ${n2}`; ans = n1-n2;
+            } else { 
+                let d = r(2, 20); let q = r(5, 20); qStr = `${d*q} ÷ ${d}`; ans = q;
+            }
+
+            cAns = ans;
+            document.getElementById('q-disp').innerText = qStr;
+            let opts = new Set([ans]);
+            while(opts.size < 4) opts.add(ans + r(-10, 10) || ans+1);
+            renderOptions(Array.from(opts).sort(()=>Math.random()-0.5));
+        }
+
+        function renderOptions(arr) {
+            let h = '';
+            arr.forEach(o => h += `<button class="opt-btn" onclick="checkAns(this, '${o}')">${o}</button>`);
             document.getElementById('opt-area').innerHTML = h;
         }
 
-        function check(sel, cor) {
-            if(sel == cor) score++;
-            qIdx++;
-            showQ();
-        }
-        function closeQuiz() { document.getElementById('quiz-overlay').style.display = 'none'; }
-    </script>
-</body>
-</html>
+        function checkAns(btn, val) {
+            let btns = document.querySelectorAll('.opt-btn');
